@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Planner</title>
+    <title>Luna - Planner de Ciclo</title>
     <style>
         * {
             margin: 0;
@@ -11,212 +11,319 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --fase-menstruacao: #E8B4E6;
+            --fase-folicular: #FFD4A3;
+            --fase-ovulacao: #FFE5B4;
+            --fase-luteal: #B4D4E8;
+            --accent: #9B59B6;
+            --dark: #2C2C2C;
+            --light: #F8F5F0;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--light) 0%, #F3E8FF 100%);
             min-height: 100vh;
-            padding: 20px;
+            color: var(--dark);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 40px;
-            color: #333;
+            animation: fadeInDown 0.6s ease;
         }
 
-        .titulo-principal {
-            font-size: 3em;
+        .luna-logo {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 10px;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            transition: all 0.2s;
         }
 
-        .titulo-principal:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+        .header-subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
         }
 
-        .subtitulo {
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .subtitulo:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .controles {
-            display: flex;
+        .ciclo-visual {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .controle-grupo {
+        .fase {
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+        }
+
+        .fase.menstruacao {
+            background: linear-gradient(135deg, var(--fase-menstruacao) 0%, #F5D9F0 100%);
+            color: #7a3f6f;
+        }
+
+        .fase.folicular {
+            background: linear-gradient(135deg, var(--fase-folicular) 0%, #FFE4C4 100%);
+            color: #8B5A00;
+        }
+
+        .fase.ovulacao {
+            background: linear-gradient(135deg, var(--fase-ovulacao) 0%, #FFF0DB 100%);
+            color: #CC6B00;
+        }
+
+        .fase.luteal {
+            background: linear-gradient(135deg, var(--fase-luteal) 0%, #D4E4F0 100%);
+            color: #2C5282;
+        }
+
+        .fase.ativa {
+            transform: scale(1.08);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.2);
+        }
+
+        .fase-titulo {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .fase-descricao {
+            font-size: 0.85em;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .painel {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .painel-titulo {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        label {
-            font-weight: 600;
-            color: #333;
+        .emoji {
+            font-size: 1.3em;
         }
 
-        input[type="text"],
-        input[type="color"],
-        input[type="file"],
-        textarea {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 1em;
-            transition: border 0.2s;
+        .info-ciclo {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #F8F5F0;
+            border-radius: 10px;
         }
 
-        input[type="text"]:focus,
-        input[type="color"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
+        .info-item {
+            text-align: center;
         }
 
-        input[type="color"] {
-            cursor: pointer;
-            width: 50px;
-            height: 40px;
-            padding: 3px;
+        .info-label {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 5px;
         }
 
-        button {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        button:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-secundario {
-            background: #48bb78;
-        }
-
-        .btn-secundario:hover {
-            background: #38a169;
-        }
-
-        .btn-deletar {
-            background: #f56565;
-        }
-
-        .btn-deletar:hover {
-            background: #e53e3e;
-        }
-
-        .tarefas-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .tarefa-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            border-left: 5px solid #667eea;
-        }
-
-        .tarefa-card:hover {
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transform: translateY(-5px);
-        }
-
-        .tarefa-card.concluida {
-            opacity: 0.6;
-        }
-
-        .tarefa-card.concluida .tarefa-titulo {
-            text-decoration: line-through;
-        }
-
-        .tarefa-titulo {
+        .info-valor {
             font-size: 1.3em;
             font-weight: 700;
-            margin-bottom: 10px;
-            color: #333;
-            word-break: break-word;
+            color: var(--accent);
         }
 
-        .tarefa-descricao {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            word-break: break-word;
+        .tarefas-por-fase {
+            margin-bottom: 30px;
         }
 
-        .tarefa-imagem {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
+        .fase-tarefas {
+            margin-bottom: 25px;
+        }
+
+        .fase-tarefas-titulo {
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            font-size: 0.95em;
         }
 
-        .tarefa-acoes {
+        .fase-tarefas-titulo.menstruacao {
+            background: var(--fase-menstruacao);
+            color: #7a3f6f;
+        }
+
+        .fase-tarefas-titulo.folicular {
+            background: var(--fase-folicular);
+            color: #8B5A00;
+        }
+
+        .fase-tarefas-titulo.ovulacao {
+            background: var(--fase-ovulacao);
+            color: #CC6B00;
+        }
+
+        .fase-tarefas-titulo.luteal {
+            background: var(--fase-luteal);
+            color: #2C5282;
+        }
+
+        .tarefa-item {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: #F8F5F0;
+            border-radius: 8px;
+            align-items: center;
+            animation: slideIn 0.3s ease;
         }
 
-        .tarefa-acoes button {
-            flex: 1;
-            min-width: 80px;
-            font-size: 0.9em;
-            padding: 8px 12px;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .tarefa-checkbox {
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: var(--accent);
+            flex-shrink: 0;
         }
 
-        .checkbox-container {
+        .tarefa-texto {
+            flex: 1;
+            font-size: 0.95em;
+        }
+
+        .tarefa-item.concluida .tarefa-texto {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .btn-adicionar-fase {
+            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-adicionar-fase:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+        }
+
+        .energia-tracker {
+            margin-bottom: 30px;
+        }
+
+        .energia-bar {
+            background: #E8E8E8;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .energia-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D946EF 0%, #9B59B6 100%);
+            transition: width 0.6s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .dicas {
+            background: linear-gradient(135deg, #F3E8FF 0%, #FCE7F3 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .dica-titulo {
+            font-weight: 700;
             margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .dica-texto {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.6;
         }
 
         .modal {
@@ -238,16 +345,16 @@
 
         .modal-conteudo {
             background-color: white;
-            margin: 5% auto;
+            margin: 10% auto;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
         }
 
-        @keyframes slideIn {
+        @keyframes slideDown {
             from {
                 transform: translateY(-50px);
                 opacity: 0;
@@ -258,75 +365,114 @@
             }
         }
 
-        .modal-header {
-            font-size: 1.5em;
-            font-weight: 700;
+        .form-group {
             margin-bottom: 20px;
-            color: #333;
         }
 
-        .modal-input {
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            margin-bottom: 15px;
+            padding: 12px;
+            border: 2px solid #E8E8E8;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: border 0.2s;
         }
 
-        .modal-input input,
-        .modal-input textarea {
-            width: 100%;
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
-        .modal-acoes {
+        .btn-grupo {
             display: flex;
             gap: 10px;
-            justify-content: flex-end;
+            margin-top: 25px;
         }
 
-        .fechar-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
+        .btn-grupo button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
 
-        .fechar-modal:hover,
-        .fechar-modal:focus {
-            color: #000;
+        .btn-salvar {
+            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
+            color: white;
         }
 
-        .msg-vazia {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            font-size: 1.2em;
+        .btn-salvar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+        }
+
+        .btn-cancelar {
+            background: #E8E8E8;
+            color: var(--dark);
+        }
+
+        .btn-cancelar:hover {
+            background: #D8D8D8;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-carregamento {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #E8E8E8;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-            .titulo-principal {
-                font-size: 2em;
+            .ciclo-visual {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .controles {
-                flex-direction: column;
-            }
-
-            .controle-grupo {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            input[type="text"],
-            input[type="color"] {
-                width: 100%;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .tarefas-container {
-                grid-template-columns: 1fr;
+            .header-subtitle {
+                font-size: 0.95em;
             }
         }
     </style>
@@ -334,221 +480,244 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="titulo-principal" onclick="editarTitulo()">Meu Planner</h1>
-            <p class="subtitulo" onclick="editarSubtitulo()">Organize suas tarefas aqui</p>
+            <div class="luna-logo">🌙 LUNA</div>
+            <p class="header-subtitle">Sincronize sua produtividade com seu ciclo natural</p>
         </div>
 
-        <div class="controles">
-            <div class="controle-grupo">
-                <label for="corFundo">Cor de Fundo:</label>
-                <input type="color" id="corFundo" value="#f0f4ff" onchange="atualizarCorFundo()">
+        <!-- Seletor de Fases -->
+        <div class="ciclo-visual">
+            <div class="fase menstruacao ativa" onclick="selecionarFase('menstruacao')">
+                <div class="fase-titulo">🩸 Menstruação</div>
+                <div class="fase-descricao">Repouso & Reflexão</div>
             </div>
-
-            <div class="controle-grupo">
-                <label for="imagemFundo">Imagem de Fundo:</label>
-                <input type="file" id="imagemFundo" accept="image/*" onchange="adicionarImagemFundo()">
+            <div class="fase folicular" onclick="selecionarFase('folicular')">
+                <div class="fase-titulo">🌱 Folicular</div>
+                <div class="fase-descricao">Energia Crescente</div>
             </div>
-
-            <div class="controle-grupo">
-                <label for="corTitulo">Cor do Título:</label>
-                <input type="color" id="corTitulo" value="#333333" onchange="atualizarCorTitulo()">
+            <div class="fase ovulacao" onclick="selecionarFase('ovulacao')">
+                <div class="fase-titulo">💎 Ovulação</div>
+                <div class="fase-descricao">Pico de Energia</div>
             </div>
-
-            <button class="btn-secundario" onclick="limparFundo()">Limpar Fundo</button>
-            <button onclick="adicionarTarefa()">+ Adicionar Tarefa</button>
+            <div class="fase luteal" onclick="selecionarFase('luteal')">
+                <div class="fase-titulo">🍂 Luteal</div>
+                <div class="fase-descricao">Energia Decrescente</div>
+            </div>
         </div>
 
-        <div id="tarefasContainer" class="tarefas-container">
-            <div class="msg-vazia">Nenhuma tarefa ainda. Clique em "+ Adicionar Tarefa" para começar!</div>
+        <!-- Dashboard Principal -->
+        <div class="dashboard">
+            <!-- Painel de Tarefas -->
+            <div class="painel">
+                <div class="painel-titulo">
+                    <span class="emoji">✨</span> Tarefas Sincronizadas
+                </div>
+
+                <div class="info-ciclo">
+                    <div class="info-item">
+                        <div class="info-label">Dia do Ciclo</div>
+                        <div class="info-valor" id="diaCiclo">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fase</div>
+                        <div class="info-valor" id="faseAtual">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Próximo Ciclo</div>
+                        <div class="info-valor" id="proximosCiclo">-</div>
+                    </div>
+                </div>
+
+                <div class="tarefas-por-fase" id="tarefasPorFase"></div>
+
+                <button class="btn-adicionar-fase" onclick="abrirModalTarefa()">+ Adicionar Tarefa</button>
+            </div>
+
+            <!-- Painel Lateral -->
+            <div class="painel">
+                <div class="painel-titulo">
+                    <span class="emoji">⚡</span> Sua Energia
+                </div>
+
+                <div class="energia-tracker">
+                    <div class="energia-bar">
+                        <div class="energia-fill" id="energiaFill" style="width: 70%">70%</div>
+                    </div>
+                </div>
+
+                <div class="dicas" id="dicas"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal para adicionar/editar tarefa -->
+    <!-- Modal de Tarefa -->
     <div id="modalTarefa" class="modal">
         <div class="modal-conteudo">
-            <span class="fechar-modal" onclick="fecharModal()">&times;</span>
-            <div class="modal-header">Nova Tarefa</div>
+            <h2 style="margin-bottom: 20px; color: var(--accent);">Adicionar Tarefa</h2>
             
-            <div class="modal-input">
-                <label>Título:</label>
-                <input type="text" id="inputTituloTarefa" placeholder="Digite o título da tarefa">
+            <div class="form-group">
+                <label>Título da Tarefa *</label>
+                <input type="text" id="inputTituloTarefa" placeholder="Ex: Apresentação importante">
             </div>
 
-            <div class="modal-input">
-                <label>Descrição:</label>
-                <textarea id="inputDescricaoTarefa" placeholder="Digite a descrição (opcional)" rows="4"></textarea>
+            <div class="form-group">
+                <label>Melhor Fase para Essa Tarefa *</label>
+                <select id="inputFaseTarefa">
+                    <option value="">Selecione uma fase...</option>
+                    <option value="menstruacao">🩸 Menstruação - Repouso & Reflexão</option>
+                    <option value="folicular">🌱 Folicular - Energia Crescente</option>
+                    <option value="ovulacao">💎 Ovulação - Pico de Energia</option>
+                    <option value="luteal">🍂 Luteal - Energia Decrescente</option>
+                </select>
             </div>
 
-            <div class="modal-input">
-                <label>Imagem:</label>
-                <input type="file" id="inputImagemTarefa" accept="image/*">
+            <div class="form-group">
+                <label>Descrição (opcional)</label>
+                <textarea id="inputDescricaoTarefa" placeholder="Detalhes da tarefa..." rows="3"></textarea>
             </div>
 
-            <div class="modal-input">
-                <label>Cor da Barra:</label>
-                <input type="color" id="inputCorTarefa" value="#667eea">
+            <div class="form-group">
+                <label>Prioridade</label>
+                <select id="inputPrioridade">
+                    <option value="baixa">Baixa</option>
+                    <option value="media" selected>Média</option>
+                    <option value="alta">Alta</option>
+                </select>
             </div>
 
-            <div class="modal-acoes">
-                <button class="btn-deletar" onclick="fecharModal()">Cancelar</button>
-                <button class="btn-secundario" onclick="salvarTarefa()">Salvar Tarefa</button>
+            <div class="btn-grupo">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarTarefa()">Salvar Tarefa</button>
             </div>
         </div>
     </div>
 
     <script>
-        let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-        let editandoTarefa = null;
-        let imagemTarefaTemp = null;
+        let tarefas = JSON.parse(localStorage.getItem('tarefasLuna')) || [];
+        let dataInicioCiclo = localStorage.getItem('dataInicioCiclo') || new Date(Date.now() - 14*24*60*60*1000).toISOString().split('T')[0];
+        let faseAtiva = 'menstruacao';
 
-        function atualizarCorFundo() {
-            const cor = document.getElementById('corFundo').value;
-            document.body.style.backgroundColor = cor;
-            localStorage.setItem('corFundo', cor);
+        const duracao = {
+            menstruacao: { dias: 5, energia: 40, icone: '🩸', descricao: 'Repouso & Reflexão' },
+            folicular: { dias: 9, energia: 75, icone: '🌱', descricao: 'Energia Crescente' },
+            ovulacao: { dias: 4, energia: 100, icone: '💎', descricao: 'Pico de Energia' },
+            luteal: { dias: 12, energia: 50, icone: '🍂', descricao: 'Energia Decrescente' }
+        };
+
+        const dicas = {
+            menstruacao: '🩸 <strong>Menstruação:</strong> Priorize tarefas introspectivas. Realize reuniões que precisam de reflexão profunda, organize arquivos, planeje. Seu corpo pede descanso.',
+            folicular: '🌱 <strong>Folicular:</strong> Sua criatividade está em alta! Comece projetos novos, colabore com equipe, faça brainstorms. Aproveite essa energia crescente.',
+            ovulacao: '💎 <strong>Ovulação:</strong> PICO DE ENERGIA! Apresentações importantes, negociações, liderança. Você está no seu melhor. Conquiste o mundo!',
+            luteal: '🍂 <strong>Luteal:</strong> Trabalhe em profundidade. Análise de dados, revisão de projetos, tarefas que exigem foco. Que exigem foco e atenção aos detalhes.'
+        };
+
+        function calcularFase() {
+            const inicio = new Date(dataInicioCiclo);
+            const hoje = new Date();
+            const diasDiferenca = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) % 28;
+
+            let faseAtual = 'menstruacao';
+            let diaFase = diasDiferenca;
+
+            if (diasDiferenca < 5) faseAtual = 'menstruacao';
+            else if (diasDiferenca < 14) faseAtual = 'folicular';
+            else if (diasDiferenca < 18) faseAtual = 'ovulacao';
+            else faseAtual = 'luteal';
+
+            return { fase: faseAtual, dia: diaFase };
         }
 
-        function adicionarImagemFundo() {
-            const input = document.getElementById('imagemFundo');
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.body.style.backgroundImage = `url('${e.target.result}')`;
-                document.body.style.backgroundSize = 'cover';
-                document.body.style.backgroundAttachment = 'fixed';
-                localStorage.setItem('imagemFundo', e.target.result);
+        function atualizarDashboard() {
+            const { fase, dia } = calcularFase();
+            const energia = duracao[fase].energia;
+
+            document.getElementById('diaCiclo').textContent = dia + 1;
+            document.getElementById('faseAtual').textContent = duracao[fase].icone;
+            document.getElementById('proximosCiclo').textContent = (28 - dia) + 'd';
+            document.getElementById('energiaFill').style.width = energia + '%';
+            document.getElementById('energiaFill').textContent = energia + '%';
+            document.getElementById('dicas').innerHTML = dicas[fase];
+
+            renderizarTarefas(fase);
+        }
+
+        function renderizarTarefas(faseAtiva) {
+            const container = document.getElementById('tarefasPorFase');
+            const tarefasAgrupadas = {
+                menstruacao: [],
+                folicular: [],
+                ovulacao: [],
+                luteal: []
             };
-            reader.readAsDataURL(input.files[0]);
+
+            tarefas.forEach(t => {
+                if (tarefasAgrupadas[t.fase]) {
+                    tarefasAgrupadas[t.fase].push(t);
+                }
+            });
+
+            container.innerHTML = Object.entries(tarefasAgrupadas).map(([fase, tarefasLista]) => `
+                <div class="fase-tarefas">
+                    <div class="fase-tarefas-titulo ${fase}">
+                        ${duracao[fase].icone} ${fase.charAt(0).toUpperCase() + fase.slice(1)}
+                    </div>
+                    ${tarefasLista.length === 0 ? '<p style="color: #999; font-size: 0.9em;">Nenhuma tarefa</p>' : ''}
+                    ${tarefasLista.map((t, i) => `
+                        <div class="tarefa-item ${t.concluida ? 'concluida' : ''}">
+                            <input type="checkbox" class="tarefa-checkbox" ${t.concluida ? 'checked' : ''} 
+                                   onchange="toggleTarefa(${tarefas.indexOf(t)})">
+                            <div class="tarefa-texto">${t.titulo}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
         }
 
-        function limparFundo() {
-            document.body.style.backgroundImage = 'none';
-            document.getElementById('imagemFundo').value = '';
-            localStorage.removeItem('imagemFundo');
+        function selecionarFase(fase) {
+            document.querySelectorAll('.fase').forEach(f => f.classList.remove('ativa'));
+            document.querySelector(`.fase.${fase}`).classList.add('ativa');
+            faseAtiva = fase;
         }
 
-        function atualizarCorTitulo() {
-            const cor = document.getElementById('corTitulo').value;
-            document.querySelector('.titulo-principal').style.color = cor;
-            document.querySelector('.subtitulo').style.color = cor;
-            localStorage.setItem('corTitulo', cor);
-        }
-
-        function editarTitulo() {
-            const novoTitulo = prompt('Digite o novo título:', document.querySelector('.titulo-principal').textContent);
-            if (novoTitulo) {
-                document.querySelector('.titulo-principal').textContent = novoTitulo;
-                localStorage.setItem('titulo', novoTitulo);
-            }
-        }
-
-        function editarSubtitulo() {
-            const novoSubtitulo = prompt('Digite o novo subtítulo:', document.querySelector('.subtitulo').textContent);
-            if (novoSubtitulo) {
-                document.querySelector('.subtitulo').textContent = novoSubtitulo;
-                localStorage.setItem('subtitulo', novoSubtitulo);
-            }
-        }
-
-        function adicionarTarefa() {
-            editandoTarefa = null;
-            imagemTarefaTemp = null;
-            document.getElementById('inputTituloTarefa').value = '';
-            document.getElementById('inputDescricaoTarefa').value = '';
-            document.getElementById('inputImagemTarefa').value = '';
-            document.getElementById('inputCorTarefa').value = '#667eea';
-            document.querySelector('.modal-header').textContent = 'Nova Tarefa';
+        function abrirModalTarefa() {
             document.getElementById('modalTarefa').style.display = 'block';
         }
 
         function fecharModal() {
             document.getElementById('modalTarefa').style.display = 'none';
-            imagemTarefaTemp = null;
         }
 
         function salvarTarefa() {
             const titulo = document.getElementById('inputTituloTarefa').value.trim();
-            if (!titulo) {
-                alert('Digite um título para a tarefa!');
+            const fase = document.getElementById('inputFaseTarefa').value;
+            const descricao = document.getElementById('inputDescricaoTarefa').value;
+            const prioridade = document.getElementById('inputPrioridade').value;
+
+            if (!titulo || !fase) {
+                alert('Preencha todos os campos obrigatórios!');
                 return;
             }
 
-            const tarefa = {
-                id: editandoTarefa ? editandoTarefa.id : Date.now(),
-                titulo: titulo,
-                descricao: document.getElementById('inputDescricaoTarefa').value,
-                imagem: imagemTarefaTemp || (editandoTarefa ? editandoTarefa.imagem : null),
-                cor: document.getElementById('inputCorTarefa').value,
-                concluida: editandoTarefa ? editandoTarefa.concluida : false
-            };
+            tarefas.push({
+                id: Date.now(),
+                titulo,
+                fase,
+                descricao,
+                prioridade,
+                concluida: false
+            });
 
-            if (editandoTarefa) {
-                const index = tarefas.findIndex(t => t.id === editandoTarefa.id);
-                tarefas[index] = tarefa;
-            } else {
-                tarefas.push(tarefa);
-            }
-
-            localStorage.setItem('tarefas', JSON.stringify(tarefas));
+            localStorage.setItem('tarefasLuna', JSON.stringify(tarefas));
             fecharModal();
-            renderizarTarefas();
+            atualizarDashboard();
+            document.getElementById('inputTituloTarefa').value = '';
+            document.getElementById('inputDescricaoTarefa').value = '';
         }
 
-        function renderizarTarefas() {
-            const container = document.getElementById('tarefasContainer');
-            
-            if (tarefas.length === 0) {
-                container.innerHTML = '<div class="msg-vazia">Nenhuma tarefa ainda. Clique em "+ Adicionar Tarefa" para começar!</div>';
-                return;
-            }
-
-            container.innerHTML = tarefas.map(tarefa => `
-                <div class="tarefa-card ${tarefa.concluida ? 'concluida' : ''}" style="border-left-color: ${tarefa.cor}">
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="tarefa-checkbox" ${tarefa.concluida ? 'checked' : ''} 
-                               onchange="toggleConcluida(${tarefa.id})">
-                        <div class="tarefa-titulo">${tarefa.titulo}</div>
-                    </div>
-                    ${tarefa.imagem ? `<img src="${tarefa.imagem}" class="tarefa-imagem">` : ''}
-                    ${tarefa.descricao ? `<div class="tarefa-descricao">${tarefa.descricao}</div>` : ''}
-                    <div class="tarefa-acoes">
-                        <button class="btn-secundario" onclick="editarTarefa(${tarefa.id})">Editar</button>
-                        <button class="btn-deletar" onclick="deletarTarefa(${tarefa.id})">Deletar</button>
-                    </div>
-                </div>
-            `).join('');
+        function toggleTarefa(index) {
+            tarefas[index].concluida = !tarefas[index].concluida;
+            localStorage.setItem('tarefasLuna', JSON.stringify(tarefas));
+            atualizarDashboard();
         }
-
-        function toggleConcluida(id) {
-            const tarefa = tarefas.find(t => t.id === id);
-            tarefa.concluida = !tarefa.concluida;
-            localStorage.setItem('tarefas', JSON.stringify(tarefas));
-            renderizarTarefas();
-        }
-
-        function editarTarefa(id) {
-            editandoTarefa = tarefas.find(t => t.id === id);
-            imagemTarefaTemp = editandoTarefa.imagem;
-            document.getElementById('inputTituloTarefa').value = editandoTarefa.titulo;
-            document.getElementById('inputDescricaoTarefa').value = editandoTarefa.descricao;
-            document.getElementById('inputCorTarefa').value = editandoTarefa.cor;
-            document.querySelector('.modal-header').textContent = 'Editar Tarefa';
-            document.getElementById('modalTarefa').style.display = 'block';
-        }
-
-        function deletarTarefa(id) {
-            if (confirm('Tem certeza que deseja deletar essa tarefa?')) {
-                tarefas = tarefas.filter(t => t.id !== id);
-                localStorage.setItem('tarefas', JSON.stringify(tarefas));
-                renderizarTarefas();
-            }
-        }
-
-        document.getElementById('inputImagemTarefa').addEventListener('change', function() {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagemTarefaTemp = e.target.result;
-            };
-            reader.readAsDataURL(this.files[0]);
-        });
 
         window.onclick = function(e) {
             const modal = document.getElementById('modalTarefa');
@@ -557,32 +726,9 @@
             }
         };
 
-        // Carregar dados salvos
-        function carregarDados() {
-            const corFundo = localStorage.getItem('corFundo') || '#f0f4ff';
-            const imagemFundo = localStorage.getItem('imagemFundo');
-            const corTitulo = localStorage.getItem('corTitulo') || '#333333';
-            const titulo = localStorage.getItem('titulo') || 'Meu Planner';
-            const subtitulo = localStorage.getItem('subtitulo') || 'Organize suas tarefas aqui';
-
-            document.getElementById('corFundo').value = corFundo;
-            document.getElementById('corTitulo').value = corTitulo;
-            document.body.style.backgroundColor = corFundo;
-            document.querySelector('.titulo-principal').textContent = titulo;
-            document.querySelector('.subtitulo').textContent = subtitulo;
-            document.querySelector('.titulo-principal').style.color = corTitulo;
-            document.querySelector('.subtitulo').style.color = corTitulo;
-
-            if (imagemFundo) {
-                document.body.style.backgroundImage = `url('${imagemFundo}')`;
-                document.body.style.backgroundSize = 'cover';
-                document.body.style.backgroundAttachment = 'fixed';
-            }
-
-            renderizarTarefas();
-        }
-
-        carregarDados();
+        // Inicializar
+        atualizarDashboard();
+        setInterval(atualizarDashboard, 60000);
     </script>
 </body>
 </html>
