@@ -13,302 +13,314 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #F9FAFB 0%, #F3E8FF 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: var(--dark); min-height: 100vh;
         }
+        .auth-container {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .auth-box {
+            background: white; border-radius: 20px; padding: 3rem 2.5rem; width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .auth-logo { text-align: center; margin-bottom: 2rem; }
+        .auth-logo-icon { font-size: 4em; margin-bottom: 0.5rem; }
+        .auth-logo h1 { font-size: 1.8em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .auth-logo p { color: #666; font-size: 0.9em; margin-top: 0.5rem; }
+        .auth-tabs { display: flex; margin-bottom: 2rem; background: var(--gray); border-radius: 10px; padding: 4px; }
+        .auth-tab {
+            flex: 1; padding: 0.8rem; border: none; background: transparent; cursor: pointer;
+            font-weight: 600; border-radius: 8px; transition: all 0.3s; color: #666;
+        }
+        .auth-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark); font-size: 0.9em; }
+        .form-group input {
+            width: 100%; padding: 0.9rem 1rem; border: 2px solid var(--gray); border-radius: 10px;
+            font-size: 1em; transition: all 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(107,70,193,0.1); }
+        .btn-auth {
+            width: 100%; padding: 1rem; border: none; border-radius: 10px; font-weight: 700;
+            font-size: 1em; cursor: pointer; transition: all 0.3s;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
+        }
+        .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(107,70,193,0.35); }
+        .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .auth-error { background: #FEE2E2; color: #DC2626; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9em; display: none; }
+        .auth-success { background: #D1FAE5; color: #059669; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9em; display: none; }
+        .features-list { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--gray); }
+        .features-list h3 { font-size: 0.85em; color: #666; margin-bottom: 1rem; text-align: center; }
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8em; color: #555; }
+        .feature-item span { font-size: 1.2em; }
+
+        /* App Styles */
+        .app-container { display: none; }
+        .app-container.active { display: block; }
         .navbar {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; padding: 1.5rem; position: sticky; top: 0; z-index: 100;
+            color: white; padding: 1rem 1.5rem; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex;
             justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
         }
-        .navbar-title { font-size: 1.8em; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-        .navbar-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .navbar-title { font-size: 1.5em; font-weight: 800; }
+        .navbar-user { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .user-info { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; }
+        .user-avatar { width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); }
         .btn-nav {
             background: rgba(255,255,255,0.2); border: 2px solid white; color: white;
-            padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;
-            font-weight: 600; transition: all 0.3s; font-size: 0.9em;
+            padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s; font-size: 0.85em;
         }
-        .btn-nav:hover { background: white; color: var(--primary); transform: translateY(-2px); }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
-        .welcome-section {
+        .btn-nav:hover { background: white; color: var(--primary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+        .welcome-card {
             background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); animation: slideUp 0.5s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .features-destaque { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-        .feature-box {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; padding: 1.5rem; border-radius: 12px; text-align: center; transition: all 0.3s;
-        }
-        .feature-box:hover { transform: translateY(-5px); }
-        .feature-box-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
-        .feature-box-title { font-weight: 700; font-size: 1em; }
-        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .planner-card {
             background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s ease;
-            cursor: pointer; border-top: 5px solid; animation: fadeIn 0.5s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; border-top: 5px solid;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .planner-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
-        .planner-header { color: white; padding: 2rem; text-align: center; }
-        .planner-icon { font-size: 3em; margin-bottom: 0.5rem; }
-        .planner-title { font-size: 1.3em; font-weight: 700; margin-bottom: 0.3rem; }
-        .planner-desc { font-size: 0.85em; opacity: 0.9; }
+        .planner-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        .planner-header { color: white; padding: 1.5rem; text-align: center; }
+        .planner-icon { font-size: 2.5em; }
+        .planner-title { font-size: 1.1em; font-weight: 700; margin-top: 0.5rem; }
         .planner-body { padding: 1.5rem; }
-        .feature-list { list-style: none; margin-bottom: 1.5rem; }
-        .feature-list li { padding: 0.5rem 0; display: flex; align-items: center; gap: 0.8rem; font-size: 0.9em; }
-        .feature-list li::before { content: '✓'; color: var(--success); font-weight: 700; font-size: 1.2em; }
         .btn-criar {
-            width: 100%; padding: 1rem;
+            width: 100%; padding: 0.8rem;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white; border: none; border-radius: 8px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s; font-size: 1em;
+            cursor: pointer; transition: all 0.3s;
         }
-        .btn-criar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3); }
+        .btn-criar:hover { transform: translateY(-2px); }
         .meus-planners { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .meus-planners h2 { margin-bottom: 1.5rem; font-size: 1.5em; display: flex; align-items: center; gap: 0.5rem; }
-        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+        .meus-planners h2 { margin-bottom: 1.5rem; font-size: 1.3em; }
+        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
         .planner-item {
-            color: white; border-radius: 12px; padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer;
+            color: white; border-radius: 12px; padding: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s;
         }
-        .planner-item:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
-        .planner-item-nome { font-size: 1.2em; font-weight: 700; margin-bottom: 0.5rem; }
-        .planner-item-info { font-size: 0.85em; opacity: 0.9; margin-bottom: 1rem; }
+        .planner-item:hover { transform: translateY(-3px); }
+        .planner-item-nome { font-size: 1.1em; font-weight: 700; margin-bottom: 0.3rem; }
+        .planner-item-info { font-size: 0.8em; opacity: 0.9; margin-bottom: 1rem; }
         .planner-item-acoes { display: flex; gap: 0.5rem; }
         .planner-item-acoes button {
-            flex: 1; padding: 0.6rem; background: rgba(255,255,255,0.2); color: white;
-            border: 1px solid white; border-radius: 6px; cursor: pointer;
-            transition: all 0.2s; font-weight: 600; font-size: 0.85em;
+            flex: 1; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white;
+            border: 1px solid white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em;
         }
         .planner-item-acoes button:hover { background: white; color: var(--dark); }
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease; overflow-y: auto;
-        }
-        .modal-content {
-            background: white; margin: 3% auto; padding: 2rem; border-radius: 16px;
-            width: 90%; max-width: 800px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease;
-        }
-        .modal-header {
-            font-size: 1.8em; font-weight: 700; margin-bottom: 1.5rem;
-            display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;
-        }
-        .close-modal {
-            font-size: 2em; cursor: pointer; color: #999; transition: color 0.2s;
-            background: none; border: none; padding: 0;
-        }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+        .modal-content { background: white; margin: 5% auto; padding: 2rem; border-radius: 16px; width: 90%; max-width: 600px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.4em; }
+        .close-modal { font-size: 1.8em; cursor: pointer; color: #999; background: none; border: none; }
         .close-modal:hover { color: var(--dark); }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark); }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px;
-            font-family: inherit; font-size: 1em; transition: all 0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
-        }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-actions { display: flex; gap: 1rem; margin-top: 2rem; }
-        .btn-primario, .btn-secundario {
-            flex: 1; padding: 0.75rem; border: none; border-radius: 8px;
-            font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 1em;
-        }
-        .btn-primario {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
-        }
-        .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3); }
+        .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .btn-primario, .btn-secundario { flex: 1; padding: 0.75rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-primario { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
         .btn-secundario { background: var(--gray); color: var(--dark); }
-        .btn-secundario:hover { background: #D1D5DB; }
-        .tarefa-item {
-            background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem;
-            display: flex; gap: 1rem; align-items: start; border-left: 4px solid var(--primary); transition: all 0.2s;
-        }
-        .tarefa-item:hover { background: var(--gray); }
-        .tarefa-item.concluida { opacity: 0.6; }
-        .tarefa-item.concluida .tarefa-titulo { text-decoration: line-through; }
-        .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; margin-top: 0.3rem; flex-shrink: 0; accent-color: var(--primary); }
-        .tarefa-conteudo { flex: 1; }
-        .tarefa-titulo { font-weight: 600; margin-bottom: 0.3rem; }
-        .tarefa-descricao { font-size: 0.9em; color: #666; margin-bottom: 0.5rem; }
-        .tarefa-meta { font-size: 0.8em; color: #999; }
-        .tarefa-acoes { display: flex; gap: 0.5rem; }
-        .tarefa-acoes button { padding: 0.4rem 0.8rem; font-size: 0.8em; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
-        .tarefa-acoes .btn-editar { background: var(--accent); color: white; }
-        .tarefa-acoes .btn-deletar { background: var(--danger); color: white; }
-        .tarefa-acoes button:hover { opacity: 0.8; }
-        .contador {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;
-        }
+        .contador { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; }
         .contador-numero { font-size: 2em; font-weight: 700; }
-        .contador-texto { font-size: 0.9em; opacity: 0.9; }
-        .template-section { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
-        .template-titulo { font-weight: 600; margin-bottom: 1rem; }
-        .template-botoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; }
-        .template-btn {
-            padding: 0.8rem; background: white; border: 2px solid var(--primary);
-            color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.9em;
-        }
-        .template-btn:hover { background: var(--primary); color: white; }
+        .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; display: flex; gap: 1rem; align-items: start; border-left: 4px solid var(--primary); }
+        .tarefa-item.concluida { opacity: 0.5; }
+        .tarefa-item.concluida .tarefa-titulo { text-decoration: line-through; }
+        .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
+        .tarefa-conteudo { flex: 1; }
+        .tarefa-titulo { font-weight: 600; }
+        .tarefa-meta { font-size: 0.8em; color: #999; margin-top: 0.3rem; }
+        .btn-deletar { padding: 0.4rem 0.8rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+        .loading { text-align: center; padding: 2rem; color: #666; }
+
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; }
-            .navbar-title { width: 100%; justify-content: center; }
+            .navbar { flex-direction: column; text-align: center; }
             .form-row { grid-template-columns: 1fr; }
-            .modal-content { width: 95%; margin: 10% auto; }
+            .auth-box { padding: 2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-title">✨ Planner Premium ULTRA</div>
-        <div class="navbar-buttons">
-            <button class="btn-nav" onclick="compartilharWhatsApp()">📱 WhatsApp</button>
-            <button class="btn-nav" onclick="compartilharEmail()">📧 Email</button>
-            <button class="btn-nav" onclick="exportarPDF()">📥 PDF</button>
-            <button class="btn-nav" onclick="salvarDispositivo()">💾 Salvar</button>
-        </div>
-    </div>
+    <!-- Auth Container -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">✨</div>
+                <h1>Planner Premium ULTRA</h1>
+                <p>Organize sua vida de forma inteligente</p>
+            </div>
 
-    <div class="container">
-        <div class="welcome-section">
-            <h1 style="margin-bottom: 0.5rem; font-size: 2.2em;">Bem-vindo ao Planner Premium ULTRA! 🎯</h1>
-            <p style="font-size: 1em; color: #666; margin-bottom: 1rem;">Organize sua vida com o sistema mais avançado do mercado.</p>
-            <div class="features-destaque">
-                <div class="feature-box"><div class="feature-box-icon">🔔</div><div class="feature-box-title">Alarmes Inteligentes</div></div>
-                <div class="feature-box"><div class="feature-box-icon">📤</div><div class="feature-box-title">Compartilhe Facilmente</div></div>
-                <div class="feature-box"><div class="feature-box-icon">📱</div><div class="feature-box-title">App Nativo PWA</div></div>
-                <div class="feature-box"><div class="feature-box-icon">📊</div><div class="feature-box-title">Análise de Dados</div></div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
+                <button class="auth-tab" onclick="showTab('signup')">Criar Conta</button>
             </div>
-        </div>
 
-        <h2 style="margin: 2rem 0 1.5rem 0; font-size: 1.8em;">Escolha Seu Planner 📋</h2>
-        
-        <div class="planner-types">
-            <div class="planner-card" style="border-top-color: #10B981;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
-                    <div class="planner-icon">✅</div>
-                    <div class="planner-title">To-Do List Diário</div>
-                    <div class="planner-desc">591 páginas prontas</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Tarefas com prioridade</li>
-                        <li>Planejamento completo</li>
-                        <li>750+ links interativos</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('todo')">Criar Agora</button>
-                </div>
-            </div>
-            <div class="planner-card" style="border-top-color: #3B82F6;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #3B82F6 0%, #1F2937 100%);">
-                    <div class="planner-icon">🏗️</div>
-                    <div class="planner-title">Gerenciador Projetos</div>
-                    <div class="planner-desc">Com timeline visual</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Kanban com drag & drop</li>
-                        <li>Timeline de projetos</li>
-                        <li>Gráficos de progresso</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('projeto')">Criar Agora</button>
-                </div>
-            </div>
-            <div class="planner-card" style="border-top-color: #F59E0B;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
-                    <div class="planner-icon">🔥</div>
-                    <div class="planner-title">Rastreador Hábitos</div>
-                    <div class="planner-desc">Com streaks e badges</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Acompanhe streaks</li>
-                        <li>Badges de conquista</li>
-                        <li>Estatísticas visuais</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('habitos')">Criar Agora</button>
-                </div>
-            </div>
-            <div class="planner-card" style="border-top-color: #8B5CF6;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #8B5CF6 0%, #6B46C1 100%);">
-                    <div class="planner-icon">💰</div>
-                    <div class="planner-title">Gestor Financeiro</div>
-                    <div class="planner-desc">Gráficos e análise</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Registre despesas/receitas</li>
-                        <li>Categorias customizáveis</li>
-                        <li>Gráficos em tempo real</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('financeiro')">Criar Agora</button>
-                </div>
-            </div>
-        </div>
+            <div id="authError" class="auth-error"></div>
+            <div id="authSuccess" class="auth-success"></div>
 
-        <div class="meus-planners" style="margin-top: 3rem;">
-            <h2>📋 Meus Planners</h2>
-            <div class="planners-grid" id="meusPlanners">
-                <p style="color: #999; padding: 2rem 0; grid-column: 1 / -1;">Nenhum planner criado ainda. Clique em "Criar Agora" para começar!</p>
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                </div>
+                <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="signupName" placeholder="Seu nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Senha</label>
+                    <input type="password" id="signupConfirm" placeholder="Repita a senha" required>
+                </div>
+                <button type="submit" class="btn-auth" id="signupBtn">Criar Conta</button>
+            </form>
+
+            <div class="features-list">
+                <h3>✨ RECURSOS PREMIUM</h3>
+                <div class="features-grid">
+                    <div class="feature-item"><span>📋</span> Planners Ilimitados</div>
+                    <div class="feature-item"><span>🔔</span> Alarmes Smart</div>
+                    <div class="feature-item"><span>📊</span> Estatísticas</div>
+                    <div class="feature-item"><span>☁️</span> Sincronização</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Criar Planner -->
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <div class="navbar">
+            <div class="navbar-title">✨ Planner Premium</div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userName">Usuário</span>
+                </div>
+                <button class="btn-nav" onclick="logout()">Sair</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="welcome-card">
+                <h1 style="margin-bottom: 0.5rem;">Olá, <span id="welcomeName">Usuário</span>! 👋</h1>
+                <p style="color: #666;">Seus planners estão sincronizados e seguros na nuvem.</p>
+            </div>
+
+            <h2 style="margin-bottom: 1rem;">Criar Novo Planner</h2>
+            <div class="planner-types">
+                <div class="planner-card" style="border-top-color: #10B981;">
+                    <div class="planner-header" style="background: linear-gradient(135deg, #10B981, #059669);">
+                        <div class="planner-icon">✅</div>
+                        <div class="planner-title">To-Do List</div>
+                    </div>
+                    <div class="planner-body">
+                        <button class="btn-criar" onclick="criarPlanner('todo')">Criar</button>
+                    </div>
+                </div>
+                <div class="planner-card" style="border-top-color: #3B82F6;">
+                    <div class="planner-header" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                        <div class="planner-icon">🏗️</div>
+                        <div class="planner-title">Projetos</div>
+                    </div>
+                    <div class="planner-body">
+                        <button class="btn-criar" onclick="criarPlanner('projeto')">Criar</button>
+                    </div>
+                </div>
+                <div class="planner-card" style="border-top-color: #F59E0B;">
+                    <div class="planner-header" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                        <div class="planner-icon">🔥</div>
+                        <div class="planner-title">Hábitos</div>
+                    </div>
+                    <div class="planner-body">
+                        <button class="btn-criar" onclick="criarPlanner('habitos')">Criar</button>
+                    </div>
+                </div>
+                <div class="planner-card" style="border-top-color: #8B5CF6;">
+                    <div class="planner-header" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9);">
+                        <div class="planner-icon">💰</div>
+                        <div class="planner-title">Financeiro</div>
+                    </div>
+                    <div class="planner-body">
+                        <button class="btn-criar" onclick="criarPlanner('financeiro')">Criar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meus-planners">
+                <h2>📋 Meus Planners</h2>
+                <div class="planners-grid" id="meusPlanners">
+                    <p class="loading">Carregando seus planners...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Criar -->
     <div id="modalCriar" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div><span id="modalIcone"></span> <span id="modalTitulo">Novo Planner</span></div>
-                <button class="close-modal" onclick="fecharModalCriar()">&times;</button>
+                <h2><span id="modalIcone"></span> <span id="modalTitulo">Novo Planner</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalCriar')">&times;</button>
             </div>
             <div class="form-group">
                 <label>Nome do Planner *</label>
-                <input type="text" id="inputNome" placeholder="Ex: Planner Q1 2025">
+                <input type="text" id="inputNome" placeholder="Ex: Metas 2025">
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Cor Tema</label>
+                    <label>Cor</label>
                     <input type="color" id="inputCor" value="#6B46C1">
                 </div>
                 <div class="form-group">
                     <label>Ícone</label>
-                    <input type="text" id="inputIcone" placeholder="Ex: ✨" maxlength="2" value="✨">
+                    <input type="text" id="inputIcone" maxlength="2" value="✨">
                 </div>
             </div>
-            <div class="form-group">
-                <label>Descrição</label>
-                <textarea id="inputDescricao" placeholder="Descreva o objetivo..." rows="3"></textarea>
-            </div>
-            <div id="templateSection" class="template-section">
-                <div class="template-titulo">Usar Template Pronto?</div>
-                <div class="template-botoes" id="templateBotoes"></div>
-            </div>
             <div class="form-actions">
-                <button class="btn-secundario" onclick="fecharModalCriar()">Cancelar</button>
-                <button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button>
+                <button class="btn-secundario" onclick="fecharModal('modalCriar')">Cancelar</button>
+                <button class="btn-primario" onclick="salvarPlanner()">Criar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Ver/Editar Planner -->
+    <!-- Modal Ver -->
     <div id="modalVer" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div><span id="verIcone"></span> <span id="verNome">Planner</span></div>
-                <button class="close-modal" onclick="fecharModalVer()">&times;</button>
+                <h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalVer')">&times;</button>
             </div>
             <div class="contador">
                 <div class="contador-numero" id="contadorTarefas">0</div>
-                <div class="contador-texto">Tarefas Adicionadas</div>
+                <div class="contador-texto">Tarefas</div>
             </div>
             <div class="form-group">
-                <label>Título da Tarefa *</label>
-                <input type="text" id="inputTituloTarefa" placeholder="Digite o título">
+                <label>Nova Tarefa</label>
+                <input type="text" id="inputTituloTarefa" placeholder="Título da tarefa">
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -320,35 +332,185 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Data Meta</label>
+                    <label>Data</label>
                     <input type="date" id="inputDataMeta">
                 </div>
             </div>
-            <div class="form-group">
-                <label>Descrição (opcional)</label>
-                <textarea id="inputDescricaoTarefa" placeholder="Detalhes da tarefa..." rows="2"></textarea>
-            </div>
-            <button class="btn-primario" style="width: 100%; margin-bottom: 1.5rem;" onclick="adicionarTarefa()">+ Adicionar Tarefa</button>
-            <h3 style="margin-bottom: 1rem;">Tarefas do Planner</h3>
+            <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="adicionarTarefa()">+ Adicionar</button>
             <div id="listaTarefas"></div>
-            <div class="form-actions" style="margin-top: 2rem;">
-                <button class="btn-secundario" onclick="fecharModalVer()">Fechar</button>
-                <button class="btn-primario" onclick="exportarPlanner()">📥 Exportar</button>
+            <div class="form-actions">
+                <button class="btn-secundario" onclick="fecharModal('modalVer')">Fechar</button>
             </div>
         </div>
     </div>
 
     <script>
+        let currentUser = null;
         let planners = [];
         let planerAtualAberto = null;
         let tipoAtual = '';
 
         const tiposPlanner = {
-            'todo': { nome: 'To-Do List', icone: '✅', cor: '#10B981', templates: ['Meu Dia', 'Semana', 'Mês'] },
-            'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6', templates: ['Novo Projeto', 'Em Progresso', 'Completo'] },
-            'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B', templates: ['Exercício', 'Leitura', 'Meditação'] },
-            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6', templates: ['Receita', 'Despesa Fixa', 'Despesa Variável'] }
+            'todo': { nome: 'To-Do List', icone: '✅', cor: '#10B981' },
+            'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
+            'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B' },
+            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
+
+        // Auth Functions
+        function showTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelector(`.auth-tab:${tab === 'login' ? 'first' : 'last'}-child`).classList.add('active');
+            document.getElementById(tab === 'login' ? 'loginForm' : 'signupForm').classList.add('active');
+            hideMessages();
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('authError');
+            el.textContent = msg; el.style.display = 'block';
+            document.getElementById('authSuccess').style.display = 'none';
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('authSuccess');
+            el.textContent = msg; el.style.display = 'block';
+            document.getElementById('authError').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('authError').style.display = 'none';
+            document.getElementById('authSuccess').style.display = 'none';
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
+
+            if (password !== confirm) { showError('As senhas não coincidem!'); return; }
+            if (password.length < 6) { showError('A senha deve ter no mínimo 6 caracteres!'); return; }
+
+            document.getElementById('signupBtn').disabled = true;
+            document.getElementById('signupBtn').textContent = 'Criando...';
+
+            try {
+                // Check if user exists
+                const existingUser = await window.storage.get(`user:${email}`, true);
+                if (existingUser) {
+                    showError('Este email já está cadastrado!');
+                    document.getElementById('signupBtn').disabled = false;
+                    document.getElementById('signupBtn').textContent = 'Criar Conta';
+                    return;
+                }
+
+                // Create user
+                const userData = { name, email, password, createdAt: new Date().toISOString() };
+                await window.storage.set(`user:${email}`, JSON.stringify(userData), true);
+                await window.storage.set(`planners:${email}`, JSON.stringify([]), true);
+
+                showSuccess('Conta criada com sucesso! Entrando...');
+                setTimeout(() => loginUser(userData), 1000);
+            } catch (err) {
+                showError('Erro ao criar conta. Tente novamente.');
+                document.getElementById('signupBtn').disabled = false;
+                document.getElementById('signupBtn').textContent = 'Criar Conta';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            document.getElementById('loginBtn').disabled = true;
+            document.getElementById('loginBtn').textContent = 'Entrando...';
+
+            try {
+                const result = await window.storage.get(`user:${email}`, true);
+                if (!result) {
+                    showError('Email não encontrado!');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+
+                const userData = JSON.parse(result.value);
+                if (userData.password !== password) {
+                    showError('Senha incorreta!');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+
+                loginUser(userData);
+            } catch (err) {
+                showError('Erro ao entrar. Tente novamente.');
+                document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').textContent = 'Entrar';
+            }
+        }
+
+        function loginUser(userData) {
+            currentUser = userData;
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            document.getElementById('userName').textContent = userData.name.split(' ')[0];
+            document.getElementById('welcomeName').textContent = userData.name.split(' ')[0];
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
+            loadPlanners();
+        }
+
+        function logout() {
+            currentUser = null;
+            planners = [];
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Entrar';
+            showTab('login');
+        }
+
+        async function loadPlanners() {
+            try {
+                const result = await window.storage.get(`planners:${currentUser.email}`, true);
+                planners = result ? JSON.parse(result.value) : [];
+                renderPlanners();
+            } catch (err) {
+                planners = [];
+                renderPlanners();
+            }
+        }
+
+        async function savePlanners() {
+            try {
+                await window.storage.set(`planners:${currentUser.email}`, JSON.stringify(planners), true);
+            } catch (err) {
+                console.error('Erro ao salvar:', err);
+            }
+        }
+
+        function renderPlanners() {
+            const container = document.getElementById('meusPlanners');
+            if (!planners.length) {
+                container.innerHTML = '<p style="color:#999; grid-column:1/-1;">Nenhum planner ainda. Crie o primeiro!</p>';
+                return;
+            }
+            container.innerHTML = planners.map(p => `
+                <div class="planner-item" style="background: linear-gradient(135deg, ${p.cor}, ${p.cor}dd);">
+                    <div class="planner-item-nome">${p.icone} ${p.nome}</div>
+                    <div class="planner-item-info">${p.tarefas.length} tarefas</div>
+                    <div class="planner-item-acoes">
+                        <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                        <button onclick="deletarPlanner(${p.id})">Deletar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         function criarPlanner(tipo) {
             tipoAtual = tipo;
@@ -358,215 +520,109 @@
             document.getElementById('inputNome').value = '';
             document.getElementById('inputCor').value = config.cor;
             document.getElementById('inputIcone').value = config.icone;
-            document.getElementById('inputDescricao').value = '';
-            
-            const templateBotoes = document.getElementById('templateBotoes');
-            templateBotoes.innerHTML = config.templates.map(t => 
-                `<button class="template-btn" onclick="usarTemplate('${t}')">${t}</button>`
-            ).join('');
-
             document.getElementById('modalCriar').style.display = 'block';
         }
 
-        function usarTemplate(nome) {
-            document.getElementById('inputNome').value = nome;
-        }
-
-        function fecharModalCriar() {
-            document.getElementById('modalCriar').style.display = 'none';
-        }
-
-        function salvarPlanner() {
+        async function salvarPlanner() {
             const nome = document.getElementById('inputNome').value.trim();
-            if (!nome) { alert('Digite um nome para o planner!'); return; }
+            if (!nome) { alert('Digite um nome!'); return; }
 
-            const novoPlanner = {
+            planners.push({
                 id: Date.now(),
                 tipo: tipoAtual,
                 nome: nome,
-                descricao: document.getElementById('inputDescricao').value,
                 icone: document.getElementById('inputIcone').value,
                 cor: document.getElementById('inputCor').value,
-                dataCriacao: new Date().toLocaleDateString('pt-BR'),
                 tarefas: []
-            };
+            });
 
-            planners.push(novoPlanner);
-            fecharModalCriar();
-            atualizarMeusPlanners();
-            alert(`✅ ${tiposPlanner[tipoAtual].nome} "${nome}" criado com sucesso!`);
-        }
-
-        function atualizarMeusPlanners() {
-            const container = document.getElementById('meusPlanners');
-            if (planners.length === 0) {
-                container.innerHTML = '<p style="color: #999; padding: 2rem 0; grid-column: 1 / -1;">Nenhum planner criado. Clique em "Criar Agora" para começar!</p>';
-                return;
-            }
-            container.innerHTML = planners.map(p => `
-                <div class="planner-item" style="background: linear-gradient(135deg, ${p.cor} 0%, ${p.cor}dd 100%);">
-                    <div class="planner-item-nome">${p.icone} ${p.nome}</div>
-                    <div class="planner-item-info">${p.tarefas.length} tarefas • Criado em ${p.dataCriacao}</div>
-                    <div class="planner-item-acoes">
-                        <button onclick="abrirPlanner(${p.id})">Abrir</button>
-                        <button onclick="deletarPlanner(${p.id})">Deletar</button>
-                    </div>
-                </div>
-            `).join('');
+            await savePlanners();
+            fecharModal('modalCriar');
+            renderPlanners();
         }
 
         function abrirPlanner(id) {
             const planner = planners.find(p => p.id === id);
             if (!planner) return;
-
             planerAtualAberto = id;
             document.getElementById('verIcone').textContent = planner.icone;
             document.getElementById('verNome').textContent = planner.nome;
             document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
-            renderizarTarefas(id);
+            renderTarefas();
             document.getElementById('modalVer').style.display = 'block';
         }
 
-        function fecharModalVer() {
-            document.getElementById('modalVer').style.display = 'none';
-            planerAtualAberto = null;
-        }
-
-        function renderizarTarefas(id) {
-            const planner = planners.find(p => p.id === id);
+        function renderTarefas() {
+            const planner = planners.find(p => p.id === planerAtualAberto);
             const container = document.getElementById('listaTarefas');
-
             if (!planner.tarefas.length) {
-                container.innerHTML = '<p style="color: #999; text-align: center; padding: 2rem;">Nenhuma tarefa ainda. Adicione uma acima!</p>';
+                container.innerHTML = '<p style="color:#999; text-align:center; padding:1rem;">Nenhuma tarefa ainda.</p>';
                 return;
             }
-
             container.innerHTML = planner.tarefas.map((t, i) => `
                 <div class="tarefa-item ${t.concluida ? 'concluida' : ''}" style="border-left-color: ${
                     t.prioridade === 'alta' ? '#EF4444' : t.prioridade === 'media' ? '#F59E0B' : '#10B981'
                 }">
-                    <input type="checkbox" class="tarefa-checkbox" ${t.concluida ? 'checked' : ''} 
-                           onchange="toggleTarefa(${id}, ${i})">
+                    <input type="checkbox" class="tarefa-checkbox" ${t.concluida ? 'checked' : ''} onchange="toggleTarefa(${i})">
                     <div class="tarefa-conteudo">
                         <div class="tarefa-titulo">${t.titulo}</div>
-                        ${t.descricao ? `<div class="tarefa-descricao">${t.descricao}</div>` : ''}
-                        <div class="tarefa-meta">${t.dataMeta ? `📅 ${t.dataMeta}` : ''}</div>
+                        <div class="tarefa-meta">${t.dataMeta ? '📅 ' + t.dataMeta : ''}</div>
                     </div>
-                    <div class="tarefa-acoes">
-                        <button class="btn-deletar" onclick="deletarTarefa(${id}, ${i})">Deletar</button>
-                    </div>
+                    <button class="btn-deletar" onclick="deletarTarefa(${i})">✕</button>
                 </div>
             `).join('');
         }
 
-        function adicionarTarefa() {
+        async function adicionarTarefa() {
             const titulo = document.getElementById('inputTituloTarefa').value.trim();
-            if (!titulo) { alert('Digite o título da tarefa!'); return; }
+            if (!titulo) { alert('Digite o título!'); return; }
 
             const planner = planners.find(p => p.id === planerAtualAberto);
             planner.tarefas.push({
                 titulo: titulo,
-                descricao: document.getElementById('inputDescricaoTarefa').value,
                 prioridade: document.getElementById('inputPrioridade').value,
                 dataMeta: document.getElementById('inputDataMeta').value,
                 concluida: false
             });
 
+            await savePlanners();
             document.getElementById('inputTituloTarefa').value = '';
-            document.getElementById('inputDescricaoTarefa').value = '';
             document.getElementById('inputDataMeta').value = '';
-            document.getElementById('inputPrioridade').value = 'media';
             document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
-            renderizarTarefas(planerAtualAberto);
+            renderTarefas();
         }
 
-        function toggleTarefa(id, index) {
-            const planner = planners.find(p => p.id === id);
-            planner.tarefas[index].concluida = !planner.tarefas[index].concluida;
-            renderizarTarefas(id);
-        }
-
-        function deletarTarefa(id, index) {
-            if (confirm('Deletar esta tarefa?')) {
-                const planner = planners.find(p => p.id === id);
-                planner.tarefas.splice(index, 1);
-                document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
-                renderizarTarefas(id);
-            }
-        }
-
-        function deletarPlanner(id) {
-            if (confirm('Tem certeza que deseja deletar este planner?')) {
-                planners = planners.filter(p => p.id !== id);
-                atualizarMeusPlanners();
-            }
-        }
-
-        function exportarPlanner() {
+        async function toggleTarefa(index) {
             const planner = planners.find(p => p.id === planerAtualAberto);
-            if (!planner) return;
-            
-            let conteudo = `PLANNER: ${planner.icone} ${planner.nome}\n`;
-            conteudo += `Criado em: ${planner.dataCriacao}\n\n`;
-            conteudo += `TAREFAS (${planner.tarefas.length}):\n`;
-            planner.tarefas.forEach((t, i) => {
-                conteudo += `${i + 1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}\n`;
-                if (t.descricao) conteudo += `   ${t.descricao}\n`;
-                if (t.dataMeta) conteudo += `   Data: ${t.dataMeta}\n`;
-            });
-
-            const blob = new Blob([conteudo], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `${planner.nome}-${Date.now()}.txt`;
-            a.click();
+            planner.tarefas[index].concluida = !planner.tarefas[index].concluida;
+            await savePlanners();
+            renderTarefas();
         }
 
-        function compartilharWhatsApp() {
-            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
-            let msg = '🎯 *Planner Premium ULTRA*\n\n';
-            planners.forEach(p => { msg += `${p.icone} *${p.nome}* - ${p.tarefas.length} tarefas\n`; });
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        async function deletarTarefa(index) {
+            const planner = planners.find(p => p.id === planerAtualAberto);
+            planner.tarefas.splice(index, 1);
+            await savePlanners();
+            document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
+            renderTarefas();
         }
 
-        function compartilharEmail() {
-            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
-            let body = 'Meus Planners:\n\n';
-            planners.forEach(p => { body += `${p.icone} ${p.nome} - ${p.tarefas.length} tarefas\n`; });
-            window.open(`mailto:?subject=Planner Premium ULTRA&body=${encodeURIComponent(body)}`);
+        async function deletarPlanner(id) {
+            if (!confirm('Deletar este planner?')) return;
+            planners = planners.filter(p => p.id !== id);
+            await savePlanners();
+            renderPlanners();
         }
 
-        function exportarPDF() {
-            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
-            let conteudo = 'PLANNER PREMIUM ULTRA\n\n';
-            planners.forEach(p => {
-                conteudo += `\n${p.icone} ${p.nome}\nTarefas: ${p.tarefas.length}\n`;
-                p.tarefas.forEach((t, i) => { conteudo += `  ${i + 1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}\n`; });
-            });
-            const blob = new Blob([conteudo], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `planners-${Date.now()}.txt`;
-            a.click();
+        function fecharModal(id) {
+            document.getElementById(id).style.display = 'none';
         }
 
-        function salvarDispositivo() {
-            const blob = new Blob([JSON.stringify(planners, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `planner-backup-${Date.now()}.json`;
-            a.click();
-            alert('✅ Backup salvo!');
-        }
-
-        // Fechar modais clicando fora
         window.onclick = function(e) {
-            if (e.target === document.getElementById('modalCriar')) fecharModalCriar();
-            if (e.target === document.getElementById('modalVer')) fecharModalVer();
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
         };
-
-        // Inicializar
-        atualizarMeusPlanners();
     </script>
 </body>
 </html>
