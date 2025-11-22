@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luna - Planner de Ciclo</title>
+    <title>✨ Planner Premium</title>
+    <meta name="theme-color" content="#6B46C1">
+    <meta name="description" content="Sistema de planners premium com alarmes, compartilhamento e sincronização">
+    <link rel="manifest" href="data:application/json,{%22name%22:%22Planner%20Premium%22,%22short_name%22:%22Planner%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%236B46C1%22}">
     <style>
         * {
             margin: 0;
@@ -12,318 +15,251 @@
         }
 
         :root {
-            --fase-menstruacao: #E8B4E6;
-            --fase-folicular: #FFD4A3;
-            --fase-ovulacao: #FFE5B4;
-            --fase-luteal: #B4D4E8;
-            --accent: #9B59B6;
-            --dark: #2C2C2C;
-            --light: #F8F5F0;
+            --primary: #6B46C1;
+            --secondary: #EC4899;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+            --dark: #1F2937;
+            --light: #F9FAFB;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, var(--light) 0%, #F3E8FF 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3E8FF 100%);
             color: var(--dark);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .navbar-title {
+            font-size: 1.8em;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .btn-nav:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem 1rem;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.6s ease;
-        }
-
-        .luna-logo {
-            font-size: 2.5em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        .header-subtitle {
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
-
-        .ciclo-visual {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 40px;
+        .welcome-section {
             background: white;
-            padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            animation: slideUp 0.5s ease;
         }
 
-        .fase {
-            text-align: center;
-            padding: 25px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            border: 3px solid transparent;
-            position: relative;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .planner-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .planner-card {
+            background: white;
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-top: 5px solid var(--primary);
+            animation: fadeIn 0.5s ease;
         }
 
-        .fase::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: shine 3s infinite;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        @keyframes shine {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 20px); }
+        .planner-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
 
-        .fase.menstruacao {
-            background: linear-gradient(135deg, var(--fase-menstruacao) 0%, #F5D9F0 100%);
-            color: #7a3f6f;
-        }
-
-        .fase.folicular {
-            background: linear-gradient(135deg, var(--fase-folicular) 0%, #FFE4C4 100%);
-            color: #8B5A00;
-        }
-
-        .fase.ovulacao {
-            background: linear-gradient(135deg, var(--fase-ovulacao) 0%, #FFF0DB 100%);
-            color: #CC6B00;
-        }
-
-        .fase.luteal {
-            background: linear-gradient(135deg, var(--fase-luteal) 0%, #D4E4F0 100%);
-            color: #2C5282;
-        }
-
-        .fase.ativa {
-            transform: scale(1.08);
-            border-color: var(--accent);
-            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.2);
-        }
-
-        .fase-titulo {
-            font-size: 1.1em;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .fase-descricao {
-            font-size: 0.85em;
-            opacity: 0.85;
-            position: relative;
-            z-index: 1;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .painel {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            animation: fadeInUp 0.6s ease 0.2s both;
-        }
-
-        .painel-titulo {
-            font-size: 1.3em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .emoji {
-            font-size: 1.3em;
-        }
-
-        .info-ciclo {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #F8F5F0;
-            border-radius: 10px;
-        }
-
-        .info-item {
+        .planner-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem;
             text-align: center;
         }
 
-        .info-label {
-            font-size: 0.85em;
-            color: #999;
-            margin-bottom: 5px;
+        .planner-icon {
+            font-size: 3em;
+            margin-bottom: 0.5rem;
         }
 
-        .info-valor {
-            font-size: 1.3em;
+        .planner-title {
+            font-size: 1.5em;
             font-weight: 700;
-            color: var(--accent);
+            margin-bottom: 0.5rem;
         }
 
-        .tarefas-por-fase {
-            margin-bottom: 30px;
+        .planner-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
         }
 
-        .fase-tarefas {
-            margin-bottom: 25px;
+        .planner-body {
+            padding: 1.5rem;
         }
 
-        .fase-tarefas-titulo {
-            font-weight: 600;
-            margin-bottom: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.95em;
+        .feature-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
         }
 
-        .fase-tarefas-titulo.menstruacao {
-            background: var(--fase-menstruacao);
-            color: #7a3f6f;
-        }
-
-        .fase-tarefas-titulo.folicular {
-            background: var(--fase-folicular);
-            color: #8B5A00;
-        }
-
-        .fase-tarefas-titulo.ovulacao {
-            background: var(--fase-ovulacao);
-            color: #CC6B00;
-        }
-
-        .fase-tarefas-titulo.luteal {
-            background: var(--fase-luteal);
-            color: #2C5282;
-        }
-
-        .tarefa-item {
+        .feature-list li {
+            padding: 0.5rem 0;
             display: flex;
-            gap: 12px;
-            margin-bottom: 10px;
-            padding: 12px;
-            background: #F8F5F0;
-            border-radius: 8px;
             align-items: center;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .tarefa-checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--accent);
-            flex-shrink: 0;
-        }
-
-        .tarefa-texto {
-            flex: 1;
+            gap: 0.8rem;
             font-size: 0.95em;
         }
 
-        .tarefa-item.concluida .tarefa-texto {
-            text-decoration: line-through;
-            opacity: 0.6;
+        .feature-list li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.2em;
         }
 
-        .btn-adicionar-fase {
-            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
+        .btn-criar {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
             border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
             transition: all 0.3s;
-            width: 100%;
-            margin-top: 15px;
+            font-size: 1em;
         }
 
-        .btn-adicionar-fase:hover {
+        .btn-criar:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
         }
 
-        .energia-tracker {
-            margin-bottom: 30px;
+        .meus-planners {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .energia-bar {
-            background: #E8E8E8;
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .energia-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #D946EF 0%, #9B59B6 100%);
-            transition: width 0.6s ease;
+        .meus-planners h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5em;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .planners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .planner-item {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .planner-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .planner-item-nome {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .planner-item-tipo {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .planner-item-acoes {
+            display: flex;
+            gap: 0.5rem;
             font-size: 0.9em;
         }
 
-        .dicas {
-            background: linear-gradient(135deg, #F3E8FF 0%, #FCE7F3 100%);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+        .planner-item-acoes button {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
         }
 
-        .dica-titulo {
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--accent);
-        }
-
-        .dica-texto {
-            font-size: 0.95em;
-            color: #555;
-            line-height: 1.6;
+        .planner-item-acoes button:hover {
+            background: white;
+            color: var(--primary);
         }
 
         .modal {
@@ -334,44 +270,37 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
+            background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-conteudo {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
             border-radius: 16px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
         }
 
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .modal-header {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--dark);
         }
@@ -380,8 +309,8 @@
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #E8E8E8;
+            padding: 0.75rem;
+            border: 2px solid #E5E7EB;
             border-radius: 8px;
             font-family: inherit;
             font-size: 1em;
@@ -392,343 +321,444 @@
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
         }
 
-        .btn-grupo {
+        .form-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 25px;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
-        .btn-grupo button {
+        .btn-primario, .btn-secundario {
             flex: 1;
-            padding: 12px;
+            padding: 0.75rem;
             border: none;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            font-size: 1em;
         }
 
-        .btn-salvar {
-            background: linear-gradient(135deg, #D946EF 0%, #9B59B6 100%);
+        .btn-primario {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
         }
 
-        .btn-salvar:hover {
+        .btn-primario:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
         }
 
-        .btn-cancelar {
-            background: #E8E8E8;
+        .btn-secundario {
+            background: #E5E7EB;
             color: var(--dark);
         }
 
-        .btn-cancelar:hover {
-            background: #D8D8D8;
+        .btn-secundario:hover {
+            background: #D1D5DB;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .close-modal {
+            float: right;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .close-modal:hover {
+            color: var(--dark);
         }
 
-        .logo-carregamento {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 4px solid #E8E8E8;
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .features-destaque {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .feature-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-box-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-box-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-box-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
         }
 
         @media (max-width: 768px) {
-            .ciclo-visual {
-                grid-template-columns: repeat(2, 1fr);
+            .navbar {
+                flex-direction: column;
             }
 
-            .header-subtitle {
-                font-size: 0.95em;
+            .navbar-title {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .planner-types {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
             }
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="navbar-title">✨ Planner Premium</div>
+        <div class="navbar-buttons">
+            <button class="btn-nav" onclick="compartilharPorWhatsApp()">📱 WhatsApp</button>
+            <button class="btn-nav" onclick="compartilharPorEmail()">📧 Email</button>
+            <button class="btn-nav" onclick="salvarNoDispositivo()">💾 Salvar</button>
+            <button class="btn-nav" onclick="abrirInstalacao()">⬇️ Instalar</button>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <div class="luna-logo">🌙 LUNA</div>
-            <p class="header-subtitle">Sincronize sua produtividade com seu ciclo natural</p>
+        <div class="welcome-section">
+            <h1 style="margin-bottom: 0.5rem; font-size: 2.2em;">Bem-vindo ao Planner Premium! 🎯</h1>
+            <p style="font-size: 1.1em; color: #666; margin-bottom: 1rem;">Escolha o tipo de planner que melhor se adequa às suas necessidades e comece a ser produtivo agora.</p>
+            
+            <div class="features-destaque">
+                <div class="feature-box">
+                    <div class="feature-box-icon">🔔</div>
+                    <div class="feature-box-title">Alarmes Personalizados</div>
+                    <div class="feature-box-desc">Receba notificações no horário certo</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-box-icon">📤</div>
+                    <div class="feature-box-title">Compartilhe Facilmente</div>
+                    <div class="feature-box-desc">WhatsApp, Email, Google Drive</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-box-icon">📱</div>
+                    <div class="feature-box-title">Sincronizado</div>
+                    <div class="feature-box-desc">Acesse em qualquer dispositivo</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-box-icon">🎨</div>
+                    <div class="feature-box-title">100% Personalizável</div>
+                    <div class="feature-box-desc">Cores, temas e layouts</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Seletor de Fases -->
-        <div class="ciclo-visual">
-            <div class="fase menstruacao ativa" onclick="selecionarFase('menstruacao')">
-                <div class="fase-titulo">🩸 Menstruação</div>
-                <div class="fase-descricao">Repouso & Reflexão</div>
+        <h2 style="margin: 2rem 0 1.5rem 0; font-size: 1.8em;">Escolha Seu Tipo de Planner 📋</h2>
+        
+        <div class="planner-types">
+            <!-- 1. Planner de Tarefas Diárias -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">✅</div>
+                    <div class="planner-title">To-Do List</div>
+                    <div class="planner-desc">Tarefas do Dia-a-Dia</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Adicione tarefas rápidas</li>
+                        <li>Marque como concluído</li>
+                        <li>Defina prioridades</li>
+                        <li>Alarmes por tarefa</li>
+                        <li>Exportar relatório diário</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('todo')">Criar Planner</button>
+                </div>
             </div>
-            <div class="fase folicular" onclick="selecionarFase('folicular')">
-                <div class="fase-titulo">🌱 Folicular</div>
-                <div class="fase-descricao">Energia Crescente</div>
+
+            <!-- 2. Planner de Projetos -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">🏗️</div>
+                    <div class="planner-title">Gerenciador de Projetos</div>
+                    <div class="planner-desc">Projetos Complexos</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Crie sub-tarefas</li>
+                        <li>Timeline visual</li>
+                        <li>Atribua responsáveis</li>
+                        <li>Progresso em %</li>
+                        <li>Gráficos de desempenho</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('projeto')">Criar Planner</button>
+                </div>
             </div>
-            <div class="fase ovulacao" onclick="selecionarFase('ovulacao')">
-                <div class="fase-titulo">💎 Ovulação</div>
-                <div class="fase-descricao">Pico de Energia</div>
+
+            <!-- 3. Planner de Hábitos -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">🔥</div>
+                    <div class="planner-title">Rastreador de Hábitos</div>
+                    <div class="planner-desc">Construa Rotinas</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Acompanhe streaks</li>
+                        <li>Recordes pessoais</li>
+                        <li>Lembretes diários</li>
+                        <li>Estatísticas visuais</li>
+                        <li>Badges de conquista</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('habitos')">Criar Planner</button>
+                </div>
             </div>
-            <div class="fase luteal" onclick="selecionarFase('luteal')">
-                <div class="fase-titulo">🍂 Luteal</div>
-                <div class="fase-descricao">Energia Decrescente</div>
+
+            <!-- 4. Planner Financeiro -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">💰</div>
+                    <div class="planner-title">Gestor Financeiro</div>
+                    <div class="planner-desc">Gerencie Suas Finanças</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Registre despesas</li>
+                        <li>Categorize gastos</li>
+                        <li>Gráficos de gastos</li>
+                        <li>Metas de economia</li>
+                        <li>Relatórios mensais</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('financeiro')">Criar Planner</button>
+                </div>
+            </div>
+
+            <!-- 5. Planner de Saúde & Fitness -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">💪</div>
+                    <div class="planner-title">Saúde & Fitness</div>
+                    <div class="planner-desc">Cuide de Si Mesma</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Registro de exercícios</li>
+                        <li>Nutrição monitorada</li>
+                        <li>Peso e medidas</li>
+                        <li>Alarmes de água</li>
+                        <li>Histórico de progresso</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('saude')">Criar Planner</button>
+                </div>
+            </div>
+
+            <!-- 6. Planner de Estudos -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">📚</div>
+                    <div class="planner-title">Plano de Estudos</div>
+                    <div class="planner-desc">Organize Seus Estudos</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Cronograma de provas</li>
+                        <li>Pomodoro timer</li>
+                        <li>Resumos e notas</li>
+                        <li>Metas de aprendizado</li>
+                        <li>Calendário acadêmico</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('estudos')">Criar Planner</button>
+                </div>
+            </div>
+
+            <!-- 7. Kanban Board -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">📊</div>
+                    <div class="planner-title">Kanban Board</div>
+                    <div class="planner-desc">Fluxo Visual</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>A Fazer / Fazendo / Pronto</li>
+                        <li>Drag & Drop</li>
+                        <li>Customizar colunas</li>
+                        <li>Cards detalhados</li>
+                        <li>Filtrar por tag</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('kanban')">Criar Planner</button>
+                </div>
+            </div>
+
+            <!-- 8. Planner de Eventos -->
+            <div class="planner-card">
+                <div class="planner-header">
+                    <div class="planner-icon">🎉</div>
+                    <div class="planner-title">Planejador de Eventos</div>
+                    <div class="planner-desc">Organize Eventos</div>
+                </div>
+                <div class="planner-body">
+                    <ul class="feature-list">
+                        <li>Checklist de tarefas</li>
+                        <li>Timeline do evento</li>
+                        <li>Convidados e RSVP</li>
+                        <li>Orçamento estimado</li>
+                        <li>Galeria de fotos</li>
+                    </ul>
+                    <button class="btn-criar" onclick="criarPlanner('eventos')">Criar Planner</button>
+                </div>
             </div>
         </div>
 
-        <!-- Dashboard Principal -->
-        <div class="dashboard">
-            <!-- Painel de Tarefas -->
-            <div class="painel">
-                <div class="painel-titulo">
-                    <span class="emoji">✨</span> Tarefas Sincronizadas
-                </div>
-
-                <div class="info-ciclo">
-                    <div class="info-item">
-                        <div class="info-label">Dia do Ciclo</div>
-                        <div class="info-valor" id="diaCiclo">-</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Fase</div>
-                        <div class="info-valor" id="faseAtual">-</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Próximo Ciclo</div>
-                        <div class="info-valor" id="proximosCiclo">-</div>
-                    </div>
-                </div>
-
-                <div class="tarefas-por-fase" id="tarefasPorFase"></div>
-
-                <button class="btn-adicionar-fase" onclick="abrirModalTarefa()">+ Adicionar Tarefa</button>
-            </div>
-
-            <!-- Painel Lateral -->
-            <div class="painel">
-                <div class="painel-titulo">
-                    <span class="emoji">⚡</span> Sua Energia
-                </div>
-
-                <div class="energia-tracker">
-                    <div class="energia-bar">
-                        <div class="energia-fill" id="energiaFill" style="width: 70%">70%</div>
-                    </div>
-                </div>
-
-                <div class="dicas" id="dicas"></div>
+        <div class="meus-planners" style="margin-top: 3rem;">
+            <h2>📋 Meus Planners</h2>
+            <div class="planners-grid" id="meusPlanners">
+                <p style="color: #999; padding: 2rem 0;">Nenhum planner criado ainda. Comece criando um acima!</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Tarefa -->
-    <div id="modalTarefa" class="modal">
-        <div class="modal-conteudo">
-            <h2 style="margin-bottom: 20px; color: var(--accent);">Adicionar Tarefa</h2>
+    <!-- Modal para Criar Planner -->
+    <div id="modalCriar" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <div class="modal-header" id="modalTitulo">✨ Novo Planner</div>
             
             <div class="form-group">
-                <label>Título da Tarefa *</label>
-                <input type="text" id="inputTituloTarefa" placeholder="Ex: Apresentação importante">
+                <label>Nome do Planner *</label>
+                <input type="text" id="inputNome" placeholder="Ex: Meu Projeto Q4">
             </div>
 
             <div class="form-group">
-                <label>Melhor Fase para Essa Tarefa *</label>
-                <select id="inputFaseTarefa">
-                    <option value="">Selecione uma fase...</option>
-                    <option value="menstruacao">🩸 Menstruação - Repouso & Reflexão</option>
-                    <option value="folicular">🌱 Folicular - Energia Crescente</option>
-                    <option value="ovulacao">💎 Ovulação - Pico de Energia</option>
-                    <option value="luteal">🍂 Luteal - Energia Decrescente</option>
+                <label>Descrição</label>
+                <textarea id="inputDescricao" placeholder="Descrição opcional..." rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Ativar Alarmes?</label>
+                <select id="inputAlarmes">
+                    <option value="nao">Não</option>
+                    <option value="diario">Diário</option>
+                    <option value="personalizado">Personalizado</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Descrição (opcional)</label>
-                <textarea id="inputDescricaoTarefa" placeholder="Detalhes da tarefa..." rows="3"></textarea>
+            <div class="form-group" id="horarioAlarme" style="display:none;">
+                <label>Horário do Alarme</label>
+                <input type="time" id="inputHorario" value="09:00">
             </div>
 
-            <div class="form-group">
-                <label>Prioridade</label>
-                <select id="inputPrioridade">
-                    <option value="baixa">Baixa</option>
-                    <option value="media" selected>Média</option>
-                    <option value="alta">Alta</option>
-                </select>
-            </div>
-
-            <div class="btn-grupo">
-                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-                <button class="btn-salvar" onclick="salvarTarefa()">Salvar Tarefa</button>
+            <div class="form-actions">
+                <button class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-primario" onclick="confirmarCriacaoPlanner()">Criar</button>
             </div>
         </div>
     </div>
 
     <script>
-        let tarefas = JSON.parse(localStorage.getItem('tarefasLuna')) || [];
-        let dataInicioCiclo = localStorage.getItem('dataInicioCiclo') || new Date(Date.now() - 14*24*60*60*1000).toISOString().split('T')[0];
-        let faseAtiva = 'menstruacao';
+        let tipoAtuaL = '';
+        let planners = JSON.parse(localStorage.getItem('plannersPremium')) || [];
 
-        const duracao = {
-            menstruacao: { dias: 5, energia: 40, icone: '🩸', descricao: 'Repouso & Reflexão' },
-            folicular: { dias: 9, energia: 75, icone: '🌱', descricao: 'Energia Crescente' },
-            ovulacao: { dias: 4, energia: 100, icone: '💎', descricao: 'Pico de Energia' },
-            luteal: { dias: 12, energia: 50, icone: '🍂', descricao: 'Energia Decrescente' }
+        const tiposPlanner = {
+            'todo': { nome: '✅ To-Do List', icone: '✅', cor: '#10B981' },
+            'projeto': { nome: '🏗️ Projeto', icone: '🏗️', cor: '#3B82F6' },
+            'habitos': { nome: '🔥 Hábitos', icone: '🔥', cor: '#F59E0B' },
+            'financeiro': { nome: '💰 Financeiro', icone: '💰', cor: '#8B5CF6' },
+            'saude': { nome: '💪 Saúde', icone: '💪', cor: '#EC4899' },
+            'estudos': { nome: '📚 Estudos', icone: '📚', cor: '#6B46C1' },
+            'kanban': { nome: '📊 Kanban', icone: '📊', cor: '#14B8A6' },
+            'eventos': { nome: '🎉 Eventos', icone: '🎉', cor: '#F97316' }
         };
 
-        const dicas = {
-            menstruacao: '🩸 <strong>Menstruação:</strong> Priorize tarefas introspectivas. Realize reuniões que precisam de reflexão profunda, organize arquivos, planeje. Seu corpo pede descanso.',
-            folicular: '🌱 <strong>Folicular:</strong> Sua criatividade está em alta! Comece projetos novos, colabore com equipe, faça brainstorms. Aproveite essa energia crescente.',
-            ovulacao: '💎 <strong>Ovulação:</strong> PICO DE ENERGIA! Apresentações importantes, negociações, liderança. Você está no seu melhor. Conquiste o mundo!',
-            luteal: '🍂 <strong>Luteal:</strong> Trabalhe em profundidade. Análise de dados, revisão de projetos, tarefas que exigem foco. Que exigem foco e atenção aos detalhes.'
-        };
-
-        function calcularFase() {
-            const inicio = new Date(dataInicioCiclo);
-            const hoje = new Date();
-            const diasDiferenca = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) % 28;
-
-            let faseAtual = 'menstruacao';
-            let diaFase = diasDiferenca;
-
-            if (diasDiferenca < 5) faseAtual = 'menstruacao';
-            else if (diasDiferenca < 14) faseAtual = 'folicular';
-            else if (diasDiferenca < 18) faseAtual = 'ovulacao';
-            else faseAtual = 'luteal';
-
-            return { fase: faseAtual, dia: diaFase };
+        function criarPlanner(tipo) {
+            tipoAtuaL = tipo;
+            document.getElementById('modalTitulo').innerHTML = `${tiposPlanner[tipo].icone} Novo ${tiposPlanner[tipo].nome}`;
+            document.getElementById('inputNome').value = '';
+            document.getElementById('inputDescricao').value = '';
+            document.getElementById('inputAlarmes').value = 'nao';
+            document.getElementById('modalCriar').style.display = 'block';
         }
 
-        function atualizarDashboard() {
-            const { fase, dia } = calcularFase();
-            const energia = duracao[fase].energia;
-
-            document.getElementById('diaCiclo').textContent = dia + 1;
-            document.getElementById('faseAtual').textContent = duracao[fase].icone;
-            document.getElementById('proximosCiclo').textContent = (28 - dia) + 'd';
-            document.getElementById('energiaFill').style.width = energia + '%';
-            document.getElementById('energiaFill').textContent = energia + '%';
-            document.getElementById('dicas').innerHTML = dicas[fase];
-
-            renderizarTarefas(fase);
+        function fecharModal() {
+            document.getElementById('modalCriar').style.display = 'none';
         }
 
-        function renderizarTarefas(faseAtiva) {
-            const container = document.getElementById('tarefasPorFase');
-            const tarefasAgrupadas = {
-                menstruacao: [],
-                folicular: [],
-                ovulacao: [],
-                luteal: []
+        document.getElementById('inputAlarmes').addEventListener('change', function() {
+            document.getElementById('horarioAlarme').style.display = this.value === 'nao' ? 'none' : 'block';
+        });
+
+        function confirmarCriacaoPlanner() {
+            const nome = document.getElementById('inputNome').value.trim();
+            if (!nome) {
+                alert('Digite um nome para o planner!');
+                return;
+            }
+
+            const novoPlanner = {
+                id: Date.now(),
+                tipo: tipoAtuaL,
+                nome: nome,
+                descricao: document.getElementById('inputDescricao').value,
+                alarmes: document.getElementById('inputAlarmes').value,
+                horario: document.getElementById('inputHorario').value,
+                dataCriacao: new Date().toLocaleDateString('pt-BR'),
+                tarefas: [],
+                compartilhado: false
             };
 
-            tarefas.forEach(t => {
-                if (tarefasAgrupadas[t.fase]) {
-                    tarefasAgrupadas[t.fase].push(t);
-                }
-            });
+            planners.push(novoPlanner);
+            localStorage.setItem('plannersPremium', JSON.stringify(planners));
+            fecharModal();
+            atualizarMeusPlanners();
+            
+            setTimeout(() => {
+                alert(`✅ ${tiposPlanner[tipoAtuaL].nome} "${nome}" criado com sucesso!`);
+            }, 300);
+        }
 
-            container.innerHTML = Object.entries(tarefasAgrupadas).map(([fase, tarefasLista]) => `
-                <div class="fase-tarefas">
-                    <div class="fase-tarefas-titulo ${fase}">
-                        ${duracao[fase].icone} ${fase.charAt(0).toUpperCase() + fase.slice(1)}
+        function atualizarMeusPlanners() {
+            const container = document.getElementById('meusPlanners');
+            
+            if (planners.length === 0) {
+                container.innerHTML = '<p style="color: #999; padding: 2rem 0;">Nenhum planner criado ainda. Comece criando um acima!</p>';
+                return;
+            }
+
+            container.innerHTML = planners.map(p => `
+                <div class="planner-item" style="background: linear-gradient(135deg, ${tiposPlanner[p.tipo].cor} 0%, ${tiposPlanner[p.tipo].cor}dd 100%);">
+                    <div class="planner-item-nome">${tiposPlanner[p.tipo].icone} ${p.nome}</div>
+                    <div class="planner-item-tipo">Criado em ${p.dataCriacao}</div>
+                    <div class="planner-item-acoes">
+                        <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                        <button onclick="deletarPlanner(${p.id})">Deletar</button>
                     </div>
-                    ${tarefasLista.length === 0 ? '<p style="color: #999; font-size: 0.9em;">Nenhuma tarefa</p>' : ''}
-                    ${tarefasLista.map((t, i) => `
-                        <div class="tarefa-item ${t.concluida ? 'concluida' : ''}">
-                            <input type="checkbox" class="tarefa-checkbox" ${t.concluida ? 'checked' : ''} 
-                                   onchange="toggleTarefa(${tarefas.indexOf(t)})">
-                            <div class="tarefa-texto">${t.titulo}</div>
-                        </div>
-                    `).join('')}
                 </div>
             `).join('');
         }
 
-        function selecionarFase(fase) {
-            document.querySelectorAll('.fase').forEach(f => f.classList.remove('ativa'));
-            document.querySelector(`.fase.${fase}`).classList.add('ativa');
-            faseAtiva = fase;
+        function abrirPlanner(id) {
+            const planner = planners.find(p => p.id === id);
+            alert(`Você abriria o planner: ${planner.nome}\n\n(Interface completa em breve!)`);
         }
 
-        function abrirModalTarefa() {
-            document.getElementById('modalTarefa').style.display = 'block';
-        }
-
-        function fecharModal() {
-            document.getElementById('modalTarefa').style.display = 'none';
-        }
-
-        function salvarTarefa() {
-            const titulo = document.getElementById('inputTituloTarefa').value.trim();
-            const fase = document.getElementById('inputFaseTarefa').value;
-            const descricao = document.getElementById('inputDescricaoTarefa').value;
-            const prioridade = document.getElementById('inputPrioridade').value;
-
-            if (!titulo || !fase) {
-                alert('Preencha todos os campos obrigatórios!');
-                return;
+        function deletarPlanner(id) {
+            if (confirm('Tem certeza que deseja deletar este planner?')) {
+                planners = planners.filter(p => p.id !== id);
+                localStorage.setItem('plannersPremium', JSON.stringify(planners));
+                atualizarMeusPlanners();
             }
-
-            tarefas.push({
-                id: Date.now(),
-                titulo,
-                fase,
-                descricao,
-                prioridade,
-                concluida: false
-            });
-
-            localStorage.setItem('tarefasLuna', JSON.stringify(tarefas));
-            fecharModal();
-            atualizarDashboard();
-            document.getElementById('inputTituloTarefa').value = '';
-            document.getElementById('inputDescricaoTarefa').value = '';
         }
 
-        function toggleTarefa(index) {
-            tarefas[index].concluida = !tarefas[index].concluida;
-            localStorage.setItem('tarefasLuna', JSON.stringify(tarefas));
-            atualizarDashboard();
-        }
-
-        window.onclick = function(e) {
-            const modal = document.getElementById('modalTarefa');
-            if (e.target === modal) {
-                fecharModal();
-            }
-        };
-
-        // Inicializar
-        atualizarDashboard();
-        setInterval(atualizarDashboard, 60000);
-    </script>
-</body>
-</html>
+        function compartilharPorWhatsApp() {
+            const mensagem = encodeURIComponent(`🎯 Veja meu Planner Premium!\n\nEst
