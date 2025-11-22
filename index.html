@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Planner Premium ULTRA</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary: #6B46C1; --secondary: #EC4899; --success: #10B981; --danger: #EF4444; --dark: #1F2937; --light: #F9FAFB; --gray: #E5E7EB; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); color: var(--dark); min-height: 100vh; }
+        
         .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
         .auth-box { background: white; border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
         .auth-logo { text-align: center; margin-bottom: 1.5rem; }
@@ -26,12 +28,11 @@
         .color-row input[type="color"] { width: 50px; height: 40px; border: none; border-radius: 6px; cursor: pointer; }
         .color-preview { flex: 1; height: 40px; border-radius: 6px; border: 2px solid var(--gray); }
         .btn-auth { width: 100%; padding: 0.9rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1em; }
-        .btn-auth:disabled { opacity: 0.6; }
+        .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-msg { padding: 0.7rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85em; display: none; }
         .auth-error { background: #FEE2E2; color: #DC2626; }
         .auth-success { background: #D1FAE5; color: #059669; }
-        .forgot-link { text-align: center; margin-top: 1rem; }
-        .forgot-link a { color: var(--primary); font-size: 0.85em; cursor: pointer; text-decoration: underline; }
+        
         .app-container { display: none; background: linear-gradient(135deg, #F9FAFB, #F3E8FF); min-height: 100vh; }
         .app-container.active { display: block; }
         .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
@@ -89,7 +90,7 @@
 <body>
     <div class="loading" id="loadingScreen">
         <div class="spinner"></div>
-        <p>Carregando...</p>
+        <p>Conectando ao servidor...</p>
     </div>
 
     <div class="auth-container" id="authContainer" style="display:none;">
@@ -146,19 +147,19 @@
             <div class="planner-types">
                 <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
                     <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
                 </div>
                 <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
                     <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
                 </div>
                 <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
                     <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
                 </div>
                 <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
                     <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
                 </div>
             </div>
             <div class="meus-planners">
@@ -171,41 +172,50 @@
     <div id="modalCriar" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2><span id="modalIcone"></span> <span id="modalTitulo">Novo</span></h2><button class="close-modal" onclick="fecharModal('modalCriar')">&times;</button></div>
-            <div class="form-group"><label>Nome *</label><input type="text" id="inputNome"></div>
-            <div class="form-group"><label>Cor</label><div class="color-row"><input type="color" id="inputCor" value="#6B46C1" oninput="document.getElementById('colorPrev').style.background=this.value"><div class="color-preview" id="colorPrev" style="background:#6B46C1"></div></div></div>
+            <div class="form-group"><label>Nome do Planner *</label><input type="text" id="inputNome" placeholder="Ex: Metas de Janeiro"></div>
+            <div class="form-group"><label>Cor do Planner</label><div class="color-row"><input type="color" id="inputCor" value="#6B46C1" oninput="document.getElementById('colorPrev').style.background=this.value"><div class="color-preview" id="colorPrev" style="background:#6B46C1"></div></div></div>
             <div class="form-row">
-                <div class="form-group"><label>Ícone</label><input type="text" id="inputIcone" maxlength="2" value="✨"></div>
+                <div class="form-group"><label>Ícone</label><input type="text" id="inputIcone" maxlength="2" value="✨" placeholder="📋"></div>
                 <div class="form-group"><label>Alarme</label><input type="time" id="inputAlarme" value="09:00"></div>
             </div>
-            <div class="form-group"><label>Data Início</label><input type="date" id="inputData"></div>
-            <div class="form-actions"><button class="btn-secundario" onclick="fecharModal('modalCriar')">Cancelar</button><button class="btn-primario" onclick="salvarPlanner()">Criar</button></div>
+            <div class="form-group"><label>Data de Início</label><input type="date" id="inputData"></div>
+            <div class="form-actions"><button class="btn-secundario" onclick="fecharModal('modalCriar')">Cancelar</button><button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button></div>
         </div>
     </div>
 
     <div id="modalVer" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2><button class="close-modal" onclick="fecharModal('modalVer')">&times;</button></div>
-            <div class="contador"><div class="contador-numero" id="contadorTarefas">0</div><div style="font-size:0.8em;">Tarefas</div></div>
-            <div id="alarmeBox" style="background:#FEF3C7; padding:0.6rem; border-radius:6px; margin-bottom:1rem; font-size:0.8em; display:none;">🔔 Alarme: <b id="alarmeHora"></b></div>
-            <div class="form-group"><label>Nova Tarefa</label><input type="text" id="inputTarefa" placeholder="Título"></div>
+            <div class="contador"><div class="contador-numero" id="contadorTarefas">0</div><div style="font-size:0.8em;">Tarefas Adicionadas</div></div>
+            <div id="alarmeBox" style="background:#FEF3C7; padding:0.6rem; border-radius:6px; margin-bottom:1rem; font-size:0.8em; display:none;">🔔 Alarme configurado para: <b id="alarmeHora"></b></div>
+            <div class="form-group"><label>Nova Tarefa</label><input type="text" id="inputTarefa" placeholder="Digite o título da tarefa"></div>
             <div class="form-row">
                 <div class="form-group"><label>Prioridade</label><select id="inputPrio"><option value="baixa">🟢 Baixa</option><option value="media" selected>🟡 Média</option><option value="alta">🔴 Alta</option></select></div>
                 <div class="form-group"><label>Data</label><input type="date" id="inputDataT"></div>
             </div>
-            <div class="form-group"><label>Hora Lembrete</label><input type="time" id="inputHoraT"></div>
-            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="addTarefa()">+ Adicionar</button>
+            <div class="form-group"><label>Hora do Lembrete</label><input type="time" id="inputHoraT"></div>
+            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="addTarefa()">+ Adicionar Tarefa</button>
             <div id="listaTarefas"></div>
             <div class="form-actions" style="margin-top:1rem;">
-                <button class="btn-secundario" onclick="shareWpp()">📱</button>
-                <button class="btn-secundario" onclick="shareEmail()">📧</button>
-                <button class="btn-primario" onclick="downloadTxt()">📥</button>
+                <button class="btn-secundario" onclick="shareWpp()">📱 WhatsApp</button>
+                <button class="btn-secundario" onclick="shareEmail()">📧 Email</button>
+                <button class="btn-primario" onclick="downloadTxt()">📥 Baixar</button>
             </div>
             <button class="btn-secundario" style="width:100%; margin-top:0.5rem;" onclick="fecharModal('modalVer')">Fechar</button>
         </div>
     </div>
 
     <script>
-        let currentUser = null, planners = [], plannerAberto = null, tipoAtual = '';
+        // 🔐 CREDENCIAIS SUPABASE (PRIVADAS - NÃO COMPARTILHAR)
+        const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
+        const SUPABASE_KEY = sb_publishable_U-4oHhdUgJGSg7fwsWQhSQ_H8lFEsTF;
+        
+        let supabase = null;
+        let currentUser = null;
+        let planners = [];
+        let plannerAberto = null;
+        let tipoAtual = '';
+        
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
             'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
@@ -213,21 +223,17 @@
             'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
 
-        // Storage helpers
-        async function getStorage(key) {
-            try { const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; } 
-            catch { return null; }
-        }
-        async function setStorage(key, val) {
-            try { await window.storage.set(key, JSON.stringify(val), true); return true; } 
-            catch { return false; }
-        }
-
-        // Init
+        // Inicialização
         async function init() {
             document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('authContainer').style.display = 'flex';
+            
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('authContainer').style.display = 'flex';
+            } catch (err) {
+                document.getElementById('loadingScreen').innerHTML = '<p style="color:#DC2626;">❌ Erro ao conectar com o servidor</p>';
+            }
         }
         init();
 
@@ -239,9 +245,23 @@
             document.getElementById('recoverForm').classList.toggle('active', t==='recover');
             hideMsg();
         }
-        function showError(m) { document.getElementById('authError').textContent=m; document.getElementById('authError').style.display='block'; document.getElementById('authSuccess').style.display='none'; }
-        function showSuccess(m) { document.getElementById('authSuccess').textContent=m; document.getElementById('authSuccess').style.display='block'; document.getElementById('authError').style.display='none'; }
-        function hideMsg() { document.getElementById('authError').style.display='none'; document.getElementById('authSuccess').style.display='none'; }
+        
+        function showError(m) { 
+            document.getElementById('authError').textContent=m; 
+            document.getElementById('authError').style.display='block'; 
+            document.getElementById('authSuccess').style.display='none'; 
+        }
+        
+        function showSuccess(m) { 
+            document.getElementById('authSuccess').textContent=m; 
+            document.getElementById('authSuccess').style.display='block'; 
+            document.getElementById('authError').style.display='none'; 
+        }
+        
+        function hideMsg() { 
+            document.getElementById('authError').style.display='none'; 
+            document.getElementById('authSuccess').style.display='none'; 
+        }
 
         // Signup
         async function handleSignup(e) {
@@ -250,21 +270,44 @@
             const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const pass = document.getElementById('signupPassword').value;
             const conf = document.getElementById('signupConfirm').value;
-            if (pass !== conf) { showError('Senhas não coincidem!'); return; }
-            if (pass.length < 6) { showError('Senha mínimo 6 caracteres!'); return; }
+            
+            if (pass !== conf) { showError('❌ Senhas não coincidem!'); return; }
+            if (pass.length < 6) { showError('❌ Senha deve ter no mínimo 6 caracteres!'); return; }
             
             document.getElementById('signupBtn').disabled = true;
-            document.getElementById('signupBtn').textContent = 'Criando...';
+            document.getElementById('signupBtn').textContent = 'Criando conta...';
             
-            const existing = await getStorage('user_' + email);
-            if (existing) { showError('Email já cadastrado!'); document.getElementById('signupBtn').disabled=false; document.getElementById('signupBtn').textContent='Criar Conta'; return; }
-            
-            const user = { name, email, password: pass, created: new Date().toISOString() };
-            await setStorage('user_' + email, user);
-            await setStorage('planners_' + email, []);
-            
-            showSuccess('Conta criada! Entrando...');
-            setTimeout(() => loginUser(user), 1000);
+            try {
+                const { data: existing } = await supabase
+                    .from('users')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
+                
+                if (existing) {
+                    showError('❌ Email já cadastrado!');
+                    document.getElementById('signupBtn').disabled = false;
+                    document.getElementById('signupBtn').textContent = 'Criar Conta';
+                    return;
+                }
+                
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .insert([{ email, name, password: pass }])
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                showSuccess('✅ Conta criada! Entrando...');
+                setTimeout(() => loginUser(user), 1000);
+                
+            } catch (err) {
+                console.error('Erro signup:', err);
+                showError('❌ Erro ao criar conta');
+                document.getElementById('signupBtn').disabled = false;
+                document.getElementById('signupBtn').textContent = 'Criar Conta';
+            }
         }
 
         // Login
@@ -276,14 +319,38 @@
             document.getElementById('loginBtn').disabled = true;
             document.getElementById('loginBtn').textContent = 'Entrando...';
             
-            const user = await getStorage('user_' + email);
-            if (!user) { showError('Email não encontrado! Crie uma conta.'); document.getElementById('loginBtn').disabled=false; document.getElementById('loginBtn').textContent='Entrar'; return; }
-            if (user.password !== pass) { showError('Senha incorreta!'); document.getElementById('loginBtn').disabled=false; document.getElementById('loginBtn').textContent='Entrar'; return; }
-            
-            loginUser(user);
+            try {
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+                
+                if (error || !user) {
+                    showError('❌ Email não encontrado! Crie uma conta.');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+                
+                if (user.password !== pass) {
+                    showError('❌ Senha incorreta!');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+                
+                loginUser(user);
+                
+            } catch (err) {
+                console.error('Erro login:', err);
+                showError('❌ Erro ao fazer login');
+                document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').textContent = 'Entrar';
+            }
         }
 
-        // Recover
+        // Recuperar senha
         async function handleRecover(e) {
             e.preventDefault();
             const email = document.getElementById('recoverEmail').value.trim().toLowerCase();
@@ -291,63 +358,106 @@
             document.getElementById('recoverBtn').disabled = true;
             document.getElementById('recoverBtn').textContent = 'Enviando...';
             
-            const user = await getStorage('user_' + email);
-            if (!user) { 
-                showError('Email não encontrado!'); 
-                document.getElementById('recoverBtn').disabled=false; 
-                document.getElementById('recoverBtn').textContent='Enviar Nova Senha'; 
-                return; 
+            try {
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+                
+                if (error || !user) {
+                    showError('❌ Email não encontrado!');
+                    document.getElementById('recoverBtn').disabled = false;
+                    document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
+                    return;
+                }
+                
+                const newPass = Math.random().toString(36).slice(-8);
+                
+                await supabase
+                    .from('users')
+                    .update({ password: newPass })
+                    .eq('email', email);
+                
+                const subject = 'Sua nova senha - Planner Premium ULTRA';
+                const body = `Olá ${user.name}!\n\nSua nova senha é: ${newPass}\n\nAcesse o Planner e faça login com esta senha.\n\nEquipe Planner Premium ULTRA`;
+                window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+                showSuccess(`✅ Nova senha gerada! Abrindo seu email...`);
+                document.getElementById('recoverBtn').disabled = false;
+                document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
+                
+            } catch (err) {
+                console.error('Erro recover:', err);
+                showError('❌ Erro ao recuperar senha');
+                document.getElementById('recoverBtn').disabled = false;
+                document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
             }
-            
-            // Gera nova senha
-            const newPass = Math.random().toString(36).slice(-8);
-            user.password = newPass;
-            await setStorage('user_' + email, user);
-            
-            // Abre email com a nova senha
-            const subject = 'Sua nova senha - Planner Premium ULTRA';
-            const body = `Olá ${user.name}!\n\nSua nova senha é: ${newPass}\n\nAcesse o Planner e faça login com esta senha.\n\nEquipe Planner Premium ULTRA`;
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            showSuccess(`Nova senha gerada! Abrindo email para: ${email}`);
-            document.getElementById('recoverBtn').disabled=false; 
-            document.getElementById('recoverBtn').textContent='Enviar Nova Senha';
         }
 
         async function loginUser(user) {
             currentUser = user;
-            planners = await getStorage('planners_' + user.email) || [];
+            
+            const { data: userPlanners } = await supabase
+                .from('planners')
+                .select('*')
+                .eq('user_email', user.email);
+            
+            planners = userPlanners || [];
+            
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').classList.add('active');
             document.getElementById('userName').textContent = user.name.split(' ')[0];
             document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+            
             renderPlanners();
-            if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+            
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
         }
 
         function logout() {
-            currentUser = null; planners = [];
+            currentUser = null;
+            planners = [];
             document.getElementById('appContainer').classList.remove('active');
             document.getElementById('authContainer').style.display = 'flex';
-            document.getElementById('loginBtn').disabled=false; document.getElementById('loginBtn').textContent='Entrar';
-            document.getElementById('signupBtn').disabled=false; document.getElementById('signupBtn').textContent='Criar Conta';
-            showTab('login'); hideMsg();
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Entrar';
+            document.getElementById('signupBtn').disabled = false;
+            document.getElementById('signupBtn').textContent = 'Criar Conta';
+            showTab('login');
+            hideMsg();
         }
 
-        async function savePlanners() { await setStorage('planners_' + currentUser.email, planners); }
-
-        function renderPlanners() {
+        async function renderPlanners() {
             const c = document.getElementById('meusPlanners');
-            if (!planners.length) { c.innerHTML = '<p class="empty-msg">Nenhum planner. Crie o primeiro!</p>'; return; }
-            c.innerHTML = planners.map(p => `
-                <div class="planner-item" style="background:linear-gradient(135deg,${p.cor},${p.cor}dd);">
-                    <div class="planner-item-nome">${p.icone} ${p.nome}</div>
-                    <div class="planner-item-info">${p.tarefas.length} tarefas ${p.alarme?'🔔'+p.alarme:''}</div>
-                    <div class="planner-item-acoes">
-                        <button onclick="abrirPlanner(${p.id})">Abrir</button>
-                        <button onclick="deletarPlanner(${p.id})">Deletar</button>
+            if (!planners.length) {
+                c.innerHTML = '<p class="empty-msg">Nenhum planner criado ainda. Crie seu primeiro!</p>';
+                return;
+            }
+            
+            const plannersHtml = await Promise.all(planners.map(async p => {
+                const { data: tarefas } = await supabase
+                    .from('tarefas')
+                    .select('*')
+                    .eq('planner_id', p.id);
+                
+                const numTarefas = tarefas ? tarefas.length : 0;
+                
+                return `
+                    <div class="planner-item" style="background:linear-gradient(135deg,${p.cor},${p.cor}dd);">
+                        <div class="planner-item-nome">${p.icone} ${p.nome}</div>
+                        <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''} ${p.alarme ? '🔔'+p.alarme : ''}</div>
+                        <div class="planner-item-acoes">
+                            <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                            <button onclick="deletarPlanner(${p.id})">Deletar</button>
+                        </div>
                     </div>
-                </div>`).join('');
+                `;
+            }));
+            
+            c.innerHTML = plannersHtml.join('');
         }
 
         function criarPlanner(tipo) {
@@ -359,133 +469,260 @@
             document.getElementById('inputCor').value = t.cor;
             document.getElementById('colorPrev').style.background = t.cor;
             document.getElementById('inputIcone').value = t.icone;
+            document.getElementById('inputAlarme').value = '09:00';
             document.getElementById('modalCriar').style.display = 'block';
         }
 
         async function salvarPlanner() {
             const nome = document.getElementById('inputNome').value.trim();
-            if (!nome) { alert('Digite um nome!'); return; }
-            planners.push({
-                id: Date.now(),
-                tipo: tipoAtual,
-                nome: nome,
-                icone: document.getElementById('inputIcone').value || '📋',
-                cor: document.getElementById('inputCor').value,
-                alarme: document.getElementById('inputAlarme').value,
-                data: document.getElementById('inputData').value,
-                tarefas: []
-            });
-            await savePlanners();
-            fecharModal('modalCriar');
-            renderPlanners();
+            if (!nome) {
+                alert('❌ Digite um nome para o planner!');
+                return;
+            }
+            
+            try {
+                const { data: newPlanner, error } = await supabase
+                    .from('planners')
+                    .insert([{
+                        user_email: currentUser.email,
+                        tipo: tipoAtual,
+                        nome: nome,
+                        icone: document.getElementById('inputIcone').value || '📋',
+                        cor: document.getElementById('inputCor').value,
+                        alarme: document.getElementById('inputAlarme').value
+                    }])
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                planners.push(newPlanner);
+                fecharModal('modalCriar');
+                renderPlanners();
+                
+            } catch (err) {
+                console.error('Erro ao criar planner:', err);
+                alert('❌ Erro ao criar planner');
+            }
         }
 
-        function abrirPlanner(id) {
+        async function abrirPlanner(id) {
             const p = planners.find(x => x.id === id);
             if (!p) return;
+            
             plannerAberto = id;
             document.getElementById('verIcone').textContent = p.icone;
             document.getElementById('verNome').textContent = p.nome;
-            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
+            
+            const { data: tarefas } = await supabase
+                .from('tarefas')
+                .select('*')
+                .eq('planner_id', id)
+                .order('id', { ascending: true });
+            
+            const numTarefas = tarefas ? tarefas.length : 0;
+            document.getElementById('contadorTarefas').textContent = numTarefas;
+            
             if (p.alarme) {
                 document.getElementById('alarmeBox').style.display = 'block';
                 document.getElementById('alarmeHora').textContent = p.alarme;
             } else {
                 document.getElementById('alarmeBox').style.display = 'none';
             }
-            renderTarefas();
+            
+            renderTarefas(tarefas || []);
             document.getElementById('modalVer').style.display = 'block';
         }
 
-        function renderTarefas() {
-            const p = planners.find(x => x.id === plannerAberto);
+        function renderTarefas(tarefas) {
             const c = document.getElementById('listaTarefas');
-            if (!p.tarefas.length) { c.innerHTML = '<p class="empty-msg">Nenhuma tarefa.</p>'; return; }
-            c.innerHTML = p.tarefas.map((t, i) => `
-                <div class="tarefa-item ${t.done ? 'concluida' : ''}" style="border-left-color:${t.prio==='alta'?'#EF4444':t.prio==='media'?'#F59E0B':'#10B981'};">
-                    <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleT(${i})">
+            if (!tarefas.length) {
+                c.innerHTML = '<p class="empty-msg">Nenhuma tarefa adicionada ainda.</p>';
+                return;
+            }
+            
+            c.innerHTML = tarefas.map((t, i) => `
+                <div class="tarefa-item ${t.done ? 'concluida' : ''}" style="border-left-color:${t.prioridade==='alta'?'#EF4444':t.prioridade==='media'?'#F59E0B':'#10B981'};">
+                    <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
                     <div class="tarefa-conteudo">
                         <div class="tarefa-titulo">${t.titulo}</div>
                         <div class="tarefa-meta">${t.data ? '📅'+t.data : ''} ${t.hora ? '⏰'+t.hora : ''}</div>
                     </div>
-                    <button class="btn-del" onclick="delT(${i})">✕</button>
-                </div>`).join('');
+                    <button class="btn-del" onclick="deletarTarefa(${t.id})">✕</button>
+                </div>
+            `).join('');
         }
 
         async function addTarefa() {
             const titulo = document.getElementById('inputTarefa').value.trim();
-            if (!titulo) { alert('Digite o título!'); return; }
-            const p = planners.find(x => x.id === plannerAberto);
-            p.tarefas.push({
-                titulo: titulo,
-                prio: document.getElementById('inputPrio').value,
-                data: document.getElementById('inputDataT').value,
-                hora: document.getElementById('inputHoraT').value,
-                done: false
-            });
-            await savePlanners();
-            document.getElementById('inputTarefa').value = '';
-            document.getElementById('inputDataT').value = '';
-            document.getElementById('inputHoraT').value = '';
-            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
-            renderTarefas();
+            if (!titulo) {
+                alert('❌ Digite o título da tarefa!');
+                return;
+            }
+            
+            try {
+                const { data: newTarefa, error } = await supabase
+                    .from('tarefas')
+                    .insert([{
+                        planner_id: plannerAberto,
+                        titulo: titulo,
+                        prioridade: document.getElementById('inputPrio').value,
+                        data: document.getElementById('inputDataT').value,
+                        hora: document.getElementById('inputHoraT').value,
+                        done: false
+                    }])
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                document.getElementById('inputTarefa').value = '';
+                document.getElementById('inputDataT').value = '';
+                document.getElementById('inputHoraT').value = '';
+                
+                abrirPlanner(plannerAberto);
+                
+            } catch (err) {
+                console.error('Erro ao adicionar tarefa:', err);
+                alert('❌ Erro ao adicionar tarefa');
+            }
         }
 
-        async function toggleT(i) {
-            const p = planners.find(x => x.id === plannerAberto);
-            p.tarefas[i].done = !p.tarefas[i].done;
-            await savePlanners();
-            renderTarefas();
+        async function toggleTarefa(tarefaId) {
+            try {
+                const { data: tarefa } = await supabase
+                    .from('tarefas')
+                    .select('done')
+                    .eq('id', tarefaId)
+                    .single();
+                
+                await supabase
+                    .from('tarefas')
+                    .update({ done: !tarefa.done })
+                    .eq('id', tarefaId);
+                
+                abrirPlanner(plannerAberto);
+                
+            } catch (err) {
+                console.error('Erro ao marcar tarefa:', err);
+            }
         }
 
-        async function delT(i) {
-            const p = planners.find(x => x.id === plannerAberto);
-            p.tarefas.splice(i, 1);
-            await savePlanners();
-            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
-            renderTarefas();
+        async function deletarTarefa(tarefaId) {
+            if (!confirm('❌ Deletar esta tarefa?')) return;
+            
+            try {
+                await supabase
+                    .from('tarefas')
+                    .delete()
+                    .eq('id', tarefaId);
+                
+                abrirPlanner(plannerAberto);
+                
+            } catch (err) {
+                console.error('Erro ao deletar tarefa:', err);
+                alert('❌ Erro ao deletar tarefa');
+            }
         }
 
         async function deletarPlanner(id) {
-            if (!confirm('Deletar?')) return;
-            planners = planners.filter(x => x.id !== id);
-            await savePlanners();
-            renderPlanners();
+            if (!confirm('❌ Deletar este planner e todas as suas tarefas?')) return;
+            
+            try {
+                await supabase
+                    .from('tarefas')
+                    .delete()
+                    .eq('planner_id', id);
+                
+                await supabase
+                    .from('planners')
+                    .delete()
+                    .eq('id', id);
+                
+                planners = planners.filter(x => x.id !== id);
+                renderPlanners();
+                
+            } catch (err) {
+                console.error('Erro ao deletar planner:', err);
+                alert('❌ Erro ao deletar planner');
+            }
         }
 
-        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+        function fecharModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
 
-        function shareWpp() {
+        async function shareWpp() {
             const p = planners.find(x => x.id === plannerAberto);
-            let m = `✨ *${p.icone} ${p.nome}*\n\n📋 Tarefas:\n`;
-            p.tarefas.forEach(t => m += `${t.done?'✅':'⬜'} ${t.titulo}${t.data?' ('+t.data+')':''}\n`);
+            const { data: tarefas } = await supabase
+                .from('tarefas')
+                .select('*')
+                .eq('planner_id', plannerAberto);
+            
+            let m = `✨ *${p.icone} ${p.nome}*\n\n📋 Tarefas (${tarefas.length}):\n`;
+            tarefas.forEach(t => {
+                m += `${t.done?'✅':'⬜'} ${t.titulo}`;
+                if (t.data) m += ` (${t.data})`;
+                m += '\n';
+            });
             if (p.alarme) m += `\n🔔 Alarme: ${p.alarme}`;
+            
             window.open('https://wa.me/?text=' + encodeURIComponent(m), '_blank');
         }
 
-        function shareEmail() {
+        async function shareEmail() {
             const p = planners.find(x => x.id === plannerAberto);
-            let b = `${p.icone} ${p.nome}\n\nTAREFAS:\n`;
-            p.tarefas.forEach((t,i) => b += `${i+1}. [${t.done?'X':' '}] ${t.titulo}${t.data?' - '+t.data:''}${t.hora?' às '+t.hora:''}\n`);
-            if (p.alarme) b += `\nAlarme: ${p.alarme}`;
-            window.location.href = `mailto:?subject=${encodeURIComponent(p.nome+' - Planner')}&body=${encodeURIComponent(b)}`;
+            const { data: tarefas } = await supabase
+                .from('tarefas')
+                .select('*')
+                .eq('planner_id', plannerAberto);
+            
+            let b = `${p.icone} ${p.nome}\n\nTAREFAS (${tarefas.length}):\n\n`;
+            tarefas.forEach((t,i) => {
+                b += `${i+1}. [${t.done?'X':' '}] ${t.titulo}`;
+                if (t.data) b += ` - ${t.data}`;
+                if (t.hora) b += ` às ${t.hora}`;
+                b += '\n';
+            });
+            if (p.alarme) b += `\nAlarme configurado para: ${p.alarme}`;
+            
+            window.location.href = `mailto:?subject=${encodeURIComponent(p.nome+' - Planner Premium ULTRA')}&body=${encodeURIComponent(b)}`;
         }
 
-        function downloadTxt() {
+        async function downloadTxt() {
             const p = planners.find(x => x.id === plannerAberto);
+            const { data: tarefas } = await supabase
+                .from('tarefas')
+                .select('*')
+                .eq('planner_id', plannerAberto);
+            
             let t = `═══════════════════════════════\n   ${p.icone} ${p.nome.toUpperCase()}\n═══════════════════════════════\n\n`;
             if (p.alarme) t += `🔔 Alarme: ${p.alarme}\n`;
-            t += `\nTAREFAS (${p.tarefas.length}):\n─────────────────────────────\n`;
-            p.tarefas.forEach((x,i) => t += `${x.done?'✅':'⬜'} ${x.titulo}${x.data?' | '+x.data:''}${x.hora?' | '+x.hora:''}\n`);
-            t += `\n═══════════════════════════════\n   Planner Premium ULTRA ✨\n═══════════════════════════════`;
+            t += `\nTAREFAS (${tarefas.length}):\n─────────────────────────────\n\n`;
+            tarefas.forEach((x,i) => {
+                t += `${i+1}. ${x.done?'✅':'⬜'} ${x.titulo}\n`;
+                if (x.prioridade === 'alta') t += '   🔴 Prioridade Alta\n';
+                else if (x.prioridade === 'media') t += '   🟡 Prioridade Média\n';
+                else t += '   🟢 Prioridade Baixa\n';
+                if (x.data) t += `   📅 ${x.data}`;
+                if (x.hora) t += ` às ${x.hora}`;
+                if (x.data || x.hora) t += '\n';
+                t += '\n';
+            });
+            t += `\n═══════════════════════════════\n   Planner Premium ULTRA ✨\n   Criado em ${new Date().toLocaleDateString('pt-BR')}\n═══════════════════════════════`;
+            
             const blob = new Blob([t], {type:'text/plain;charset=utf-8'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = p.nome.replace(/\s/g,'_') + '.txt';
+            a.download = p.nome.replace(/\s/g,'_') + '_' + new Date().toISOString().split('T')[0] + '.txt';
             a.click();
         }
 
-        window.onclick = e => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
+        window.onclick = e => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
