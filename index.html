@@ -4,566 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Planner Premium ULTRA</title>
-    <meta name="theme-color" content="#6B46C1">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>✨</text></svg>">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #6B46C1;
-            --secondary: #EC4899;
-            --accent: #F59E0B;
-            --success: #10B981;
-            --danger: #EF4444;
-            --dark: #1F2937;
-            --light: #F9FAFB;
-            --gray: #E5E7EB;
+            --primary: #6B46C1; --secondary: #EC4899; --accent: #F59E0B;
+            --success: #10B981; --danger: #EF4444; --dark: #1F2937;
+            --light: #F9FAFB; --gray: #E5E7EB;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #F9FAFB 0%, #F3E8FF 100%);
-            color: var(--dark);
-            min-height: 100vh;
+            color: var(--dark); min-height: 100vh;
         }
-
         .navbar {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 1.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+            color: white; padding: 1.5rem; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex;
+            justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
         }
-
-        .navbar-title {
-            font-size: 1.8em;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .navbar-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
+        .navbar-title { font-size: 1.8em; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+        .navbar-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .btn-nav {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 0.9em;
+            background: rgba(255,255,255,0.2); border: 2px solid white; color: white;
+            padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s; font-size: 0.9em;
         }
-
-        .btn-nav:hover {
-            background: white;
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
+        .btn-nav:hover { background: white; color: var(--primary); transform: translateY(-2px); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
         .welcome-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            animation: slideUp 0.5s ease;
+            background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); animation: slideUp 0.5s ease;
         }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .features-destaque {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .features-destaque { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
         .feature-box {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s;
+            color: white; padding: 1.5rem; border-radius: 12px; text-align: center; transition: all 0.3s;
         }
-
-        .feature-box:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-box-icon {
-            font-size: 2.5em;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-box-title {
-            font-weight: 700;
-            font-size: 1em;
-        }
-
-        .planner-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
+        .feature-box:hover { transform: translateY(-5px); }
+        .feature-box-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
+        .feature-box-title { font-weight: 700; font-size: 1em; }
+        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
         .planner-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border-top: 5px solid;
-            animation: fadeIn 0.5s ease;
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s ease;
+            cursor: pointer; border-top: 5px solid; animation: fadeIn 0.5s ease;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .planner-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
-
-        .planner-header {
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .planner-icon {
-            font-size: 3em;
-            margin-bottom: 0.5rem;
-        }
-
-        .planner-title {
-            font-size: 1.3em;
-            font-weight: 700;
-            margin-bottom: 0.3rem;
-        }
-
-        .planner-desc {
-            font-size: 0.85em;
-            opacity: 0.9;
-        }
-
-        .planner-body {
-            padding: 1.5rem;
-        }
-
-        .feature-list {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-list li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.9em;
-        }
-
-        .feature-list li::before {
-            content: '✓';
-            color: var(--success);
-            font-weight: 700;
-            font-size: 1.2em;
-        }
-
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .planner-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        .planner-header { color: white; padding: 2rem; text-align: center; }
+        .planner-icon { font-size: 3em; margin-bottom: 0.5rem; }
+        .planner-title { font-size: 1.3em; font-weight: 700; margin-bottom: 0.3rem; }
+        .planner-desc { font-size: 0.85em; opacity: 0.9; }
+        .planner-body { padding: 1.5rem; }
+        .feature-list { list-style: none; margin-bottom: 1.5rem; }
+        .feature-list li { padding: 0.5rem 0; display: flex; align-items: center; gap: 0.8rem; font-size: 0.9em; }
+        .feature-list li::before { content: '✓'; color: var(--success); font-weight: 700; font-size: 1.2em; }
         .btn-criar {
-            width: 100%;
-            padding: 1rem;
+            width: 100%; padding: 1rem;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1em;
+            color: white; border: none; border-radius: 8px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s; font-size: 1em;
         }
-
-        .btn-criar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
-        }
-
-        .meus-planners {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .meus-planners h2 {
-            margin-bottom: 1.5rem;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .planners-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
+        .btn-criar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3); }
+        .meus-planners { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .meus-planners h2 { margin-bottom: 1.5rem; font-size: 1.5em; display: flex; align-items: center; gap: 0.5rem; }
+        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
         .planner-item {
-            color: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            cursor: pointer;
+            color: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer;
         }
-
-        .planner-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        .planner-item-nome {
-            font-size: 1.2em;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .planner-item-info {
-            font-size: 0.85em;
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-
-        .planner-item-acoes {
-            display: flex;
-            gap: 0.5rem;
-        }
-
+        .planner-item:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .planner-item-nome { font-size: 1.2em; font-weight: 700; margin-bottom: 0.5rem; }
+        .planner-item-info { font-size: 0.85em; opacity: 0.9; margin-bottom: 1rem; }
+        .planner-item-acoes { display: flex; gap: 0.5rem; }
         .planner-item-acoes button {
-            flex: 1;
-            padding: 0.6rem;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-            font-size: 0.85em;
+            flex: 1; padding: 0.6rem; background: rgba(255,255,255,0.2); color: white;
+            border: 1px solid white; border-radius: 6px; cursor: pointer;
+            transition: all 0.2s; font-weight: 600; font-size: 0.85em;
         }
-
-        .planner-item-acoes button:hover {
-            background: white;
-            color: var(--dark);
-        }
-
+        .planner-item-acoes button:hover { background: white; color: var(--dark); }
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
-            overflow-y: auto;
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease; overflow-y: auto;
         }
-
         .modal-content {
-            background: white;
-            margin: 3% auto;
-            padding: 2rem;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: white; margin: 3% auto; padding: 2rem; border-radius: 16px;
+            width: 90%; max-width: 800px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideUp 0.3s ease;
         }
-
         .modal-header {
-            font-size: 1.8em;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: space-between;
+            font-size: 1.8em; font-weight: 700; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;
         }
-
         .close-modal {
-            font-size: 2em;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.2s;
-            background: none;
-            border: none;
-            padding: 0;
+            font-size: 2em; cursor: pointer; color: #999; transition: color 0.2s;
+            background: none; border: none; padding: 0;
         }
-
-        .close-modal:hover {
-            color: var(--dark);
+        .close-modal:hover { color: var(--dark); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark); }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px;
+            font-family: inherit; font-size: 1em; transition: all 0.2s;
         }
-
-        .form-group {
-            margin-bottom: 1.5rem;
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--gray);
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1em;
-            transition: all 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-actions { display: flex; gap: 1rem; margin-top: 2rem; }
         .btn-primario, .btn-secundario {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1em;
+            flex: 1; padding: 0.75rem; border: none; border-radius: 8px;
+            font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 1em;
         }
-
         .btn-primario {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
         }
-
-        .btn-primario:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
-        }
-
-        .btn-secundario {
-            background: var(--gray);
-            color: var(--dark);
-        }
-
-        .btn-secundario:hover {
-            background: #D1D5DB;
-        }
-
+        .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3); }
+        .btn-secundario { background: var(--gray); color: var(--dark); }
+        .btn-secundario:hover { background: #D1D5DB; }
         .tarefa-item {
-            background: var(--light);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-            display: flex;
-            gap: 1rem;
-            align-items: start;
-            border-left: 4px solid var(--primary);
-            transition: all 0.2s;
+            background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem;
+            display: flex; gap: 1rem; align-items: start; border-left: 4px solid var(--primary); transition: all 0.2s;
         }
-
-        .tarefa-item:hover {
-            background: var(--gray);
-        }
-
-        .tarefa-item.concluida {
-            opacity: 0.6;
-        }
-
-        .tarefa-item.concluida .tarefa-titulo {
-            text-decoration: line-through;
-        }
-
-        .tarefa-checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            margin-top: 0.3rem;
-            flex-shrink: 0;
-            accent-color: var(--primary);
-        }
-
-        .tarefa-conteudo {
-            flex: 1;
-        }
-
-        .tarefa-titulo {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .tarefa-descricao {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        .tarefa-meta {
-            font-size: 0.8em;
-            color: #999;
-        }
-
-        .tarefa-acoes {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .tarefa-acoes button {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8em;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tarefa-acoes .btn-editar {
-            background: var(--accent);
-            color: white;
-        }
-
-        .tarefa-acoes .btn-deletar {
-            background: var(--danger);
-            color: white;
-        }
-
-        .tarefa-acoes button:hover {
-            opacity: 0.8;
-        }
-
+        .tarefa-item:hover { background: var(--gray); }
+        .tarefa-item.concluida { opacity: 0.6; }
+        .tarefa-item.concluida .tarefa-titulo { text-decoration: line-through; }
+        .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; margin-top: 0.3rem; flex-shrink: 0; accent-color: var(--primary); }
+        .tarefa-conteudo { flex: 1; }
+        .tarefa-titulo { font-weight: 600; margin-bottom: 0.3rem; }
+        .tarefa-descricao { font-size: 0.9em; color: #666; margin-bottom: 0.5rem; }
+        .tarefa-meta { font-size: 0.8em; color: #999; }
+        .tarefa-acoes { display: flex; gap: 0.5rem; }
+        .tarefa-acoes button { padding: 0.4rem 0.8rem; font-size: 0.8em; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .tarefa-acoes .btn-editar { background: var(--accent); color: white; }
+        .tarefa-acoes .btn-deletar { background: var(--danger); color: white; }
+        .tarefa-acoes button:hover { opacity: 0.8; }
         .contador {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%));
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;
         }
-
-        .contador-numero {
-            font-size: 2em;
-            font-weight: 700;
-        }
-
-        .contador-texto {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .template-section {
-            background: var(--light);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .template-titulo {
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .template-botoes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.8rem;
-        }
-
+        .contador-numero { font-size: 2em; font-weight: 700; }
+        .contador-texto { font-size: 0.9em; opacity: 0.9; }
+        .template-section { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .template-titulo { font-weight: 600; margin-bottom: 1rem; }
+        .template-botoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; }
         .template-btn {
-            padding: 0.8rem;
-            background: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            font-size: 0.9em;
+            padding: 0.8rem; background: white; border: 2px solid var(--primary);
+            color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.9em;
         }
-
-        .template-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
+        .template-btn:hover { background: var(--primary); color: white; }
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-            }
-
-            .navbar-title {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 20% auto;
-            }
+            .navbar { flex-direction: column; }
+            .navbar-title { width: 100%; justify-content: center; }
+            .form-row { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; margin: 10% auto; }
         }
     </style>
 </head>
@@ -581,25 +177,12 @@
     <div class="container">
         <div class="welcome-section">
             <h1 style="margin-bottom: 0.5rem; font-size: 2.2em;">Bem-vindo ao Planner Premium ULTRA! 🎯</h1>
-            <p style="font-size: 1em; color: #666; margin-bottom: 1rem;">Organize sua vida com o sistema mais avançado do mercado. 591+ páginas, 750+ links interativos, alarmes, integração com calendário e muito mais!</p>
-            
+            <p style="font-size: 1em; color: #666; margin-bottom: 1rem;">Organize sua vida com o sistema mais avançado do mercado.</p>
             <div class="features-destaque">
-                <div class="feature-box">
-                    <div class="feature-box-icon">🔔</div>
-                    <div class="feature-box-title">Alarmes Inteligentes</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-box-icon">📤</div>
-                    <div class="feature-box-title">Compartilhe Facilmente</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-box-icon">📱</div>
-                    <div class="feature-box-title">App Nativo PWA</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-box-icon">📊</div>
-                    <div class="feature-box-title">Análise de Dados</div>
-                </div>
+                <div class="feature-box"><div class="feature-box-icon">🔔</div><div class="feature-box-title">Alarmes Inteligentes</div></div>
+                <div class="feature-box"><div class="feature-box-icon">📤</div><div class="feature-box-title">Compartilhe Facilmente</div></div>
+                <div class="feature-box"><div class="feature-box-icon">📱</div><div class="feature-box-title">App Nativo PWA</div></div>
+                <div class="feature-box"><div class="feature-box-icon">📊</div><div class="feature-box-title">Análise de Dados</div></div>
             </div>
         </div>
 
@@ -615,15 +198,12 @@
                 <div class="planner-body">
                     <ul class="feature-list">
                         <li>Tarefas com prioridade</li>
-                        <li>Planejamento anual/mensal/semanal/diário</li>
+                        <li>Planejamento completo</li>
                         <li>750+ links interativos</li>
-                        <li>Alarmes personalizados</li>
-                        <li>Integração Google Calendar</li>
                     </ul>
                     <button class="btn-criar" onclick="criarPlanner('todo')">Criar Agora</button>
                 </div>
             </div>
-
             <div class="planner-card" style="border-top-color: #3B82F6;">
                 <div class="planner-header" style="background: linear-gradient(135deg, #3B82F6 0%, #1F2937 100%);">
                     <div class="planner-icon">🏗️</div>
@@ -635,13 +215,10 @@
                         <li>Kanban com drag & drop</li>
                         <li>Timeline de projetos</li>
                         <li>Gráficos de progresso</li>
-                        <li>Sub-tarefas ilimitadas</li>
-                        <li>Histórico completo</li>
                     </ul>
                     <button class="btn-criar" onclick="criarPlanner('projeto')">Criar Agora</button>
                 </div>
             </div>
-
             <div class="planner-card" style="border-top-color: #F59E0B;">
                 <div class="planner-header" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
                     <div class="planner-icon">🔥</div>
@@ -651,15 +228,12 @@
                 <div class="planner-body">
                     <ul class="feature-list">
                         <li>Acompanhe streaks</li>
-                        <li>Recordes pessoais</li>
                         <li>Badges de conquista</li>
                         <li>Estatísticas visuais</li>
-                        <li>Lembretes diários</li>
                     </ul>
                     <button class="btn-criar" onclick="criarPlanner('habitos')">Criar Agora</button>
                 </div>
             </div>
-
             <div class="planner-card" style="border-top-color: #8B5CF6;">
                 <div class="planner-header" style="background: linear-gradient(135deg, #8B5CF6 0%, #6B46C1 100%);">
                     <div class="planner-icon">💰</div>
@@ -671,82 +245,8 @@
                         <li>Registre despesas/receitas</li>
                         <li>Categorias customizáveis</li>
                         <li>Gráficos em tempo real</li>
-                        <li>Metas de economia</li>
-                        <li>Relatórios mensais</li>
                     </ul>
                     <button class="btn-criar" onclick="criarPlanner('financeiro')">Criar Agora</button>
-                </div>
-            </div>
-
-            <div class="planner-card" style="border-top-color: #EC4899;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);">
-                    <div class="planner-icon">💪</div>
-                    <div class="planner-title">Saúde & Fitness</div>
-                    <div class="planner-desc">Monitore seu progresso</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Registro de exercícios</li>
-                        <li>Nutrição monitorada</li>
-                        <li>Peso e medidas</li>
-                        <li>Alarmes de hidratação</li>
-                        <li>Gráfico de evolução</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('saude')">Criar Agora</button>
-                </div>
-            </div>
-
-            <div class="planner-card" style="border-top-color: #6B46C1;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #6B46C1 0%, #4C1D95 100%);">
-                    <div class="planner-icon">📚</div>
-                    <div class="planner-title">Plano de Estudos</div>
-                    <div class="planner-desc">591 páginas acadêmicas</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Cronograma de provas</li>
-                        <li>Timer Pomodoro integrado</li>
-                        <li>Notas e resumos</li>
-                        <li>Metas de aprendizado</li>
-                        <li>Calendário acadêmico</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('estudos')">Criar Agora</button>
-                </div>
-            </div>
-
-            <div class="planner-card" style="border-top-color: #14B8A6;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);">
-                    <div class="planner-icon">📊</div>
-                    <div class="planner-title">Kanban Pro</div>
-                    <div class="planner-desc">Drag & drop avançado</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Colunas customizáveis</li>
-                        <li>Drag & drop fluido</li>
-                        <li>Filtros avançados</li>
-                        <li>Cards com anexos</li>
-                        <li>Histórico de movimentos</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('kanban')">Criar Agora</button>
-                </div>
-            </div>
-
-            <div class="planner-card" style="border-top-color: #F97316;">
-                <div class="planner-header" style="background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);">
-                    <div class="planner-icon">🎉</div>
-                    <div class="planner-title">Planejador Eventos</div>
-                    <div class="planner-desc">Organize tudo</div>
-                </div>
-                <div class="planner-body">
-                    <ul class="feature-list">
-                        <li>Checklist detalhado</li>
-                        <li>Timeline do evento</li>
-                        <li>Convidados e RSVP</li>
-                        <li>Orçamento em tempo real</li>
-                        <li>Fotos e memórias</li>
-                    </ul>
-                    <button class="btn-criar" onclick="criarPlanner('eventos')">Criar Agora</button>
                 </div>
             </div>
         </div>
@@ -759,27 +259,57 @@
         </div>
     </div>
 
-    <!-- Modal Criar/Editar Planner -->
-    <div id="modalPlanner" class="modal">
+    <!-- Modal Criar Planner -->
+    <div id="modalCriar" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div>
-                    <span id="verIcone"></span>
-                    <span id="verNome">Planner</span>
+                <div><span id="modalIcone"></span> <span id="modalTitulo">Novo Planner</span></div>
+                <button class="close-modal" onclick="fecharModalCriar()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Nome do Planner *</label>
+                <input type="text" id="inputNome" placeholder="Ex: Planner Q1 2025">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Cor Tema</label>
+                    <input type="color" id="inputCor" value="#6B46C1">
                 </div>
+                <div class="form-group">
+                    <label>Ícone</label>
+                    <input type="text" id="inputIcone" placeholder="Ex: ✨" maxlength="2" value="✨">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="inputDescricao" placeholder="Descreva o objetivo..." rows="3"></textarea>
+            </div>
+            <div id="templateSection" class="template-section">
+                <div class="template-titulo">Usar Template Pronto?</div>
+                <div class="template-botoes" id="templateBotoes"></div>
+            </div>
+            <div class="form-actions">
+                <button class="btn-secundario" onclick="fecharModalCriar()">Cancelar</button>
+                <button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver/Editar Planner -->
+    <div id="modalVer" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><span id="verIcone"></span> <span id="verNome">Planner</span></div>
                 <button class="close-modal" onclick="fecharModalVer()">&times;</button>
             </div>
-
             <div class="contador">
                 <div class="contador-numero" id="contadorTarefas">0</div>
                 <div class="contador-texto">Tarefas Adicionadas</div>
             </div>
-
             <div class="form-group">
                 <label>Título da Tarefa *</label>
                 <input type="text" id="inputTituloTarefa" placeholder="Digite o título">
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label>Prioridade</label>
@@ -794,81 +324,61 @@
                     <input type="date" id="inputDataMeta">
                 </div>
             </div>
-
             <div class="form-group">
                 <label>Descrição (opcional)</label>
                 <textarea id="inputDescricaoTarefa" placeholder="Detalhes da tarefa..." rows="2"></textarea>
             </div>
-
-            <div class="form-group">
-                <label>Horário Lembrança</label>
-                <input type="time" id="inputHorarioTarefa">
-            </div>
-
             <button class="btn-primario" style="width: 100%; margin-bottom: 1.5rem;" onclick="adicionarTarefa()">+ Adicionar Tarefa</button>
-
             <h3 style="margin-bottom: 1rem;">Tarefas do Planner</h3>
             <div id="listaTarefas"></div>
-
             <div class="form-actions" style="margin-top: 2rem;">
                 <button class="btn-secundario" onclick="fecharModalVer()">Fechar</button>
-                <button class="btn-primario" onclick="exportarPlanner()">📥 Exportar PDF</button>
+                <button class="btn-primario" onclick="exportarPlanner()">📥 Exportar</button>
             </div>
         </div>
     </div>
 
     <script>
-        let planners = JSON.parse(localStorage.getItem('plannersPremium')) || [];
+        let planners = [];
         let planerAtualAberto = null;
         let tipoAtual = '';
 
         const tiposPlanner = {
-            'todo': { nome: 'To-Do List', icone: '✅', templates: ['Meu Dia', 'Semana', 'Mês'] },
-            'projeto': { nome: 'Projeto', icone: '🏗️', templates: ['Novo Projeto', 'Em Progresso', 'Completo'] },
-            'habitos': { nome: 'Hábitos', icone: '🔥', templates: ['Exercício', 'Leitura', 'Meditação', 'Água'] },
-            'financeiro': { nome: 'Financeiro', icone: '💰', templates: ['Receita', 'Despesa Fixa', 'Despesa Variável'] },
-            'saude': { nome: 'Saúde', icone: '💪', templates: ['Exercício', 'Nutrição', 'Sono'] },
-            'estudos': { nome: 'Estudos', icone: '📚', templates: ['Prova', 'Projeto', 'Tarefa'] },
-            'kanban': { nome: 'Kanban', icone: '📊', templates: ['À Fazer', 'Em Progresso', 'Completo'] },
-            'eventos': { nome: 'Eventos', icone: '🎉', templates: ['Planejamento', 'Compras', 'Convites'] }
+            'todo': { nome: 'To-Do List', icone: '✅', cor: '#10B981', templates: ['Meu Dia', 'Semana', 'Mês'] },
+            'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6', templates: ['Novo Projeto', 'Em Progresso', 'Completo'] },
+            'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B', templates: ['Exercício', 'Leitura', 'Meditação'] },
+            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6', templates: ['Receita', 'Despesa Fixa', 'Despesa Variável'] }
         };
 
         function criarPlanner(tipo) {
             tipoAtual = tipo;
-            document.getElementById('modalIcone').textContent = tiposPlanner[tipo].icone;
-            document.getElementById('modalTitulo').textContent = 'Novo ' + tiposPlanner[tipo].nome;
+            const config = tiposPlanner[tipo];
+            document.getElementById('modalIcone').textContent = config.icone;
+            document.getElementById('modalTitulo').textContent = 'Novo ' + config.nome;
             document.getElementById('inputNome').value = '';
-            document.getElementById('inputCor').value = '#6B46C1';
-            document.getElementById('inputIcone').value = tiposPlanner[tipo].icone;
+            document.getElementById('inputCor').value = config.cor;
+            document.getElementById('inputIcone').value = config.icone;
             document.getElementById('inputDescricao').value = '';
-            document.getElementById('inputAlarmes').value = 'nao';
-            document.getElementById('horarioAlarmeDiv').style.display = 'none';
             
-            // Mostrar templates
-            document.getElementById('templateSection').style.display = 'block';
             const templateBotoes = document.getElementById('templateBotoes');
-            templateBotoes.innerHTML = tiposPlanner[tipo].templates.map(t => 
+            templateBotoes.innerHTML = config.templates.map(t => 
                 `<button class="template-btn" onclick="usarTemplate('${t}')">${t}</button>`
             ).join('');
 
-            document.getElementById('modalPlanner').style.display = 'block';
-        }
-
-        function toggleHorarioAlarme() {
-            const valor = document.getElementById('inputAlarmes').value;
-            document.getElementById('horarioAlarmeDiv').style.display = valor === 'nao' ? 'none' : 'block';
+            document.getElementById('modalCriar').style.display = 'block';
         }
 
         function usarTemplate(nome) {
             document.getElementById('inputNome').value = nome;
         }
 
+        function fecharModalCriar() {
+            document.getElementById('modalCriar').style.display = 'none';
+        }
+
         function salvarPlanner() {
             const nome = document.getElementById('inputNome').value.trim();
-            if (!nome) {
-                alert('Digite um nome para o planner!');
-                return;
-            }
+            if (!nome) { alert('Digite um nome para o planner!'); return; }
 
             const novoPlanner = {
                 id: Date.now(),
@@ -877,44 +387,28 @@
                 descricao: document.getElementById('inputDescricao').value,
                 icone: document.getElementById('inputIcone').value,
                 cor: document.getElementById('inputCor').value,
-                alarmes: document.getElementById('inputAlarmes').value,
-                horario: document.getElementById('inputHorario').value,
                 dataCriacao: new Date().toLocaleDateString('pt-BR'),
-                tarefas: [],
-                paginas: 591
+                tarefas: []
             };
 
             planners.push(novoPlanner);
-            localStorage.setItem('plannersPremium', JSON.stringify(planners));
-            fecharModalPlanner();
+            fecharModalCriar();
             atualizarMeusPlanners();
-            
-            setTimeout(() => {
-                alert(`✅ ${tiposPlanner[tipoAtual].nome} "${nome}" criado com ${novoPlanner.paginas} páginas!`);
-            }, 300);
-        }
-
-        function fecharModalPlanner() {
-            document.getElementById('modalPlanner').style.display = 'none';
+            alert(`✅ ${tiposPlanner[tipoAtual].nome} "${nome}" criado com sucesso!`);
         }
 
         function atualizarMeusPlanners() {
             const container = document.getElementById('meusPlanners');
-            
             if (planners.length === 0) {
                 container.innerHTML = '<p style="color: #999; padding: 2rem 0; grid-column: 1 / -1;">Nenhum planner criado. Clique em "Criar Agora" para começar!</p>';
                 return;
             }
-
             container.innerHTML = planners.map(p => `
                 <div class="planner-item" style="background: linear-gradient(135deg, ${p.cor} 0%, ${p.cor}dd 100%);">
                     <div class="planner-item-nome">${p.icone} ${p.nome}</div>
-                    <div class="planner-item-info">
-                        ${p.tarefas.length} tarefas • Criado em ${p.dataCriacao}
-                    </div>
+                    <div class="planner-item-info">${p.tarefas.length} tarefas • Criado em ${p.dataCriacao}</div>
                     <div class="planner-item-acoes">
                         <button onclick="abrirPlanner(${p.id})">Abrir</button>
-                        <button onclick="editarPlanner(${p.id})">Editar</button>
                         <button onclick="deletarPlanner(${p.id})">Deletar</button>
                     </div>
                 </div>
@@ -929,9 +423,13 @@
             document.getElementById('verIcone').textContent = planner.icone;
             document.getElementById('verNome').textContent = planner.nome;
             document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
-            
             renderizarTarefas(id);
             document.getElementById('modalVer').style.display = 'block';
+        }
+
+        function fecharModalVer() {
+            document.getElementById('modalVer').style.display = 'none';
+            planerAtualAberto = null;
         }
 
         function renderizarTarefas(id) {
@@ -952,13 +450,9 @@
                     <div class="tarefa-conteudo">
                         <div class="tarefa-titulo">${t.titulo}</div>
                         ${t.descricao ? `<div class="tarefa-descricao">${t.descricao}</div>` : ''}
-                        <div class="tarefa-meta">
-                            ${t.dataMeta ? `📅 ${t.dataMeta}` : ''} 
-                            ${t.horario ? `⏰ ${t.horario}` : ''}
-                        </div>
+                        <div class="tarefa-meta">${t.dataMeta ? `📅 ${t.dataMeta}` : ''}</div>
                     </div>
                     <div class="tarefa-acoes">
-                        <button class="btn-editar" onclick="editarTarefa(${id}, ${i})">Editar</button>
                         <button class="btn-deletar" onclick="deletarTarefa(${id}, ${i})">Deletar</button>
                     </div>
                 </div>
@@ -967,10 +461,7 @@
 
         function adicionarTarefa() {
             const titulo = document.getElementById('inputTituloTarefa').value.trim();
-            if (!titulo) {
-                alert('Digite o título da tarefa!');
-                return;
-            }
+            if (!titulo) { alert('Digite o título da tarefa!'); return; }
 
             const planner = planners.find(p => p.id === planerAtualAberto);
             planner.tarefas.push({
@@ -978,34 +469,20 @@
                 descricao: document.getElementById('inputDescricaoTarefa').value,
                 prioridade: document.getElementById('inputPrioridade').value,
                 dataMeta: document.getElementById('inputDataMeta').value,
-                horario: document.getElementById('inputHorarioTarefa').value,
-                concluida: false,
-                dataCriacao: new Date().toLocaleString('pt-BR')
+                concluida: false
             });
 
-            localStorage.setItem('plannersPremium', JSON.stringify(planners));
             document.getElementById('inputTituloTarefa').value = '';
             document.getElementById('inputDescricaoTarefa').value = '';
             document.getElementById('inputDataMeta').value = '';
-            document.getElementById('inputHorarioTarefa').value = '';
             document.getElementById('inputPrioridade').value = 'media';
-
             document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
             renderizarTarefas(planerAtualAberto);
-            
-            // Trigger notificação
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('✅ Tarefa Adicionada!', {
-                    body: titulo,
-                    icon: '✨'
-                });
-            }
         }
 
         function toggleTarefa(id, index) {
             const planner = planners.find(p => p.id === id);
             planner.tarefas[index].concluida = !planner.tarefas[index].concluida;
-            localStorage.setItem('plannersPremium', JSON.stringify(planners));
             renderizarTarefas(id);
         }
 
@@ -1013,7 +490,6 @@
             if (confirm('Deletar esta tarefa?')) {
                 const planner = planners.find(p => p.id === id);
                 planner.tarefas.splice(index, 1);
-                localStorage.setItem('plannersPremium', JSON.stringify(planners));
                 document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
                 renderizarTarefas(id);
             }
@@ -1022,185 +498,75 @@
         function deletarPlanner(id) {
             if (confirm('Tem certeza que deseja deletar este planner?')) {
                 planners = planners.filter(p => p.id !== id);
-                localStorage.setItem('plannersPremium', JSON.stringify(planners));
                 atualizarMeusPlanners();
             }
         }
 
-        function fecharModalVer() {
-            document.getElementById('modalVer').style.display = 'none';
-        }
-
-        function compartilharWhatsApp() {
-            if (planners.length === 0) {
-                alert('Crie um planner primeiro!');
-                return;
-            }
+        function exportarPlanner() {
+            const planner = planners.find(p => p.id === planerAtualAberto);
+            if (!planner) return;
             
-            let mensagem = '🎯 *Planner Premium ULTRA* 📋\n\n';
-            planners.forEach(p => {
-                mensagem += `${p.icone} *${p.nome}*\n${p.tarefas.length} tarefas\n\n`;
-            });
-            mensagem += '✨ 591 páginas • 750+ links • Alarmes • Google Calendar\n';
-            mensagem += '🚀 Crie o seu: https://planner-premium-ultra.vercel.app';
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
-        }
-
-        function compartilharEmail() {
-            if (planners.length === 0) {
-                alert('Crie um planner primeiro!');
-                return;
-            }
-
-            let corpoEmail = '<h2>🎯 Planner Premium ULTRA</h2>';
-            corpoEmail += '<p><strong>591 Páginas | 750+ Links | Alarmes | Google Calendar</strong></p>';
-            corpoEmail += '<h3>Meus Planners:</h3><ul>';
-            
-            planners.forEach(p => {
-                corpoEmail += `<li><strong>${p.icone} ${p.nome}</strong><br/>Tarefas: ${p.tarefas.length}<br/>Criado em: ${p.dataCriacao}</li>`;
-            });
-            
-            corpoEmail += '</ul><p><a href="https://planner-premium-ultra.vercel.app">Acesse o Planner</a></p>';
-            
-            window.open(`mailto:?subject=Planner Premium ULTRA&body=${encodeURIComponent(corpoEmail.replace(/<[^>]*>/g, ''))}`);
-        }
-
-        function exportarPDF() {
-            if (planners.length === 0) {
-                alert('Crie um planner primeiro!');
-                return;
-            }
-
-            let conteudo = 'PLANNER PREMIUM ULTRA - RELATÓRIO\n\n';
-            conteudo += `Data: ${new Date().toLocaleDateString('pt-BR')}\n\n`;
-            
-            planners.forEach(p => {
-                conteudo += `\n${'='.repeat(50)}\n`;
-                conteudo += `${p.icone} ${p.nome}\n`;
-                conteudo += `${'='.repeat(50)}\n`;
-                conteudo += `Descrição: ${p.descricao}\n`;
-                conteudo += `Tarefas: ${p.tarefas.length}\n`;
-                conteudo += `Criado em: ${p.dataCriacao}\n\n`;
-                
-                if (p.tarefas.length > 0) {
-                    conteudo += 'TAREFAS:\n';
-                    p.tarefas.forEach((t, i) => {
-                        conteudo += `${i + 1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}\n`;
-                        if (t.descricao) conteudo += `   Descrição: ${t.descricao}\n`;
-                        if (t.dataMeta) conteudo += `   Data: ${t.dataMeta}\n`;
-                        conteudo += '\n';
-                    });
-                }
+            let conteudo = `PLANNER: ${planner.icone} ${planner.nome}\n`;
+            conteudo += `Criado em: ${planner.dataCriacao}\n\n`;
+            conteudo += `TAREFAS (${planner.tarefas.length}):\n`;
+            planner.tarefas.forEach((t, i) => {
+                conteudo += `${i + 1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}\n`;
+                if (t.descricao) conteudo += `   ${t.descricao}\n`;
+                if (t.dataMeta) conteudo += `   Data: ${t.dataMeta}\n`;
             });
 
             const blob = new Blob([conteudo], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `planner-${Date.now()}.txt`;
+            a.href = URL.createObjectURL(blob);
+            a.download = `${planner.nome}-${Date.now()}.txt`;
             a.click();
+        }
 
-            alert('✅ Planner exportado com sucesso!');
+        function compartilharWhatsApp() {
+            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
+            let msg = '🎯 *Planner Premium ULTRA*\n\n';
+            planners.forEach(p => { msg += `${p.icone} *${p.nome}* - ${p.tarefas.length} tarefas\n`; });
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function compartilharEmail() {
+            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
+            let body = 'Meus Planners:\n\n';
+            planners.forEach(p => { body += `${p.icone} ${p.nome} - ${p.tarefas.length} tarefas\n`; });
+            window.open(`mailto:?subject=Planner Premium ULTRA&body=${encodeURIComponent(body)}`);
+        }
+
+        function exportarPDF() {
+            if (planners.length === 0) { alert('Crie um planner primeiro!'); return; }
+            let conteudo = 'PLANNER PREMIUM ULTRA\n\n';
+            planners.forEach(p => {
+                conteudo += `\n${p.icone} ${p.nome}\nTarefas: ${p.tarefas.length}\n`;
+                p.tarefas.forEach((t, i) => { conteudo += `  ${i + 1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}\n`; });
+            });
+            const blob = new Blob([conteudo], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `planners-${Date.now()}.txt`;
+            a.click();
         }
 
         function salvarDispositivo() {
-            const dados = {
-                planners: planners,
-                dataSalvamento: new Date().toLocaleString('pt-BR')
-            };
-
-            const json = JSON.stringify(dados, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `planner-backup-${Date.now()}.json`;
-            link.click();
-            
-            alert('✅ Planners salvos no seu dispositivo!');
+            const blob = new Blob([JSON.stringify(planners, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `planner-backup-${Date.now()}.json`;
+            a.click();
+            alert('✅ Backup salvo!');
         }
 
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-        }
+        // Fechar modais clicando fora
+        window.onclick = function(e) {
+            if (e.target === document.getElementById('modalCriar')) fecharModalCriar();
+            if (e.target === document.getElementById('modalVer')) fecharModalVer();
+        };
 
         // Inicializar
         atualizarMeusPlanners();
-        requestNotificationPermission();
-
-        window.onclick = function(e) {
-            if (e.target === document.getElementById('modalPlanner')) {
-                fecharModalPlanner();
-            }
-            if (e.target === document.getElementById('modalVer')) {
-                fecharModalVer();
-            }
-        };
-
-        // Auto-save a cada 30 segundos
-        setInterval(() => {
-            localStorage.setItem('plannersPremium', JSON.stringify(planners));
-        }, 30000);
     </script>
 </body>
-</html><span id="modalIcone"></span>
-                    <span id="modalTitulo">Novo Planner</span>
-                </div>
-                <button class="close-modal" onclick="fecharModalPlanner()">&times;</button>
-            </div>
-            
-            <div class="form-group">
-                <label>Nome do Planner *</label>
-                <input type="text" id="inputNome" placeholder="Ex: Planner Q1 2025">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Cor Tema</label>
-                    <input type="color" id="inputCor" value="#6B46C1">
-                </div>
-                <div class="form-group">
-                    <label>Ícone Personalizável</label>
-                    <input type="text" id="inputIcone" placeholder="Ex: ✨" maxlength="2" value="✨">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Descrição</label>
-                <textarea id="inputDescricao" placeholder="Descreva o objetivo deste planner..." rows="3"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Ativar Alarmes?</label>
-                <select id="inputAlarmes" onchange="toggleHorarioAlarme()">
-                    <option value="nao">Não</option>
-                    <option value="diario">Diário</option>
-                    <option value="customizado">Personalizado</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="horarioAlarmeDiv" style="display:none;">
-                <label>Horário do Alarme</label>
-                <input type="time" id="inputHorario" value="09:00">
-            </div>
-
-            <div id="templateSection" class="template-section" style="display:none;">
-                <div class="template-titulo">Usar Template Pronto?</div>
-                <div class="template-botoes" id="templateBotoes"></div>
-            </div>
-
-            <div class="form-actions">
-                <button class="btn-secundario" onclick="fecharModalPlanner()">Cancelar</button>
-                <button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Ver Planner -->
-    <div id="modalVer" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div>
+</html>
