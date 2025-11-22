@@ -11,161 +11,107 @@
             --success: #10B981; --danger: #EF4444; --dark: #1F2937;
             --light: #F9FAFB; --gray: #E5E7EB;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--dark); min-height: 100vh;
-        }
-        .auth-container {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;
-        }
-        .auth-box {
-            background: white; border-radius: 20px; padding: 3rem 2.5rem; width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25); animation: slideUp 0.5s ease;
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .auth-logo { text-align: center; margin-bottom: 2rem; }
-        .auth-logo-icon { font-size: 4em; margin-bottom: 0.5rem; }
-        .auth-logo h1 { font-size: 1.8em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .auth-logo p { color: #666; font-size: 0.9em; margin-top: 0.5rem; }
-        .auth-tabs { display: flex; margin-bottom: 2rem; background: var(--gray); border-radius: 10px; padding: 4px; }
-        .auth-tab {
-            flex: 1; padding: 0.8rem; border: none; background: transparent; cursor: pointer;
-            font-weight: 600; border-radius: 8px; transition: all 0.3s; color: #666;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--dark); min-height: 100vh; }
+        
+        /* Auth Styles */
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .auth-box { background: white; border-radius: 20px; padding: 2.5rem 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+        .auth-logo { text-align: center; margin-bottom: 1.5rem; }
+        .auth-logo-icon { font-size: 3.5em; }
+        .auth-logo h1 { font-size: 1.5em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .auth-tabs { display: flex; margin-bottom: 1.5rem; background: var(--gray); border-radius: 10px; padding: 4px; }
+        .auth-tab { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 8px; transition: all 0.3s; color: #666; }
         .auth-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .auth-form { display: none; }
         .auth-form.active { display: block; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark); font-size: 0.9em; }
-        .form-group input {
-            width: 100%; padding: 0.9rem 1rem; border: 2px solid var(--gray); border-radius: 10px;
-            font-size: 1em; transition: all 0.2s;
-        }
-        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(107,70,193,0.1); }
-        .btn-auth {
-            width: 100%; padding: 1rem; border: none; border-radius: 10px; font-weight: 700;
-            font-size: 1em; cursor: pointer; transition: all 0.3s;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
-        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: var(--dark); font-size: 0.85em; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem; border: 2px solid var(--gray); border-radius: 10px; font-size: 1em; transition: all 0.2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .color-picker { display: flex; align-items: center; gap: 1rem; }
+        .color-picker input[type="color"] { width: 60px; height: 45px; border: none; border-radius: 8px; cursor: pointer; }
+        .color-preview { flex: 1; height: 45px; border-radius: 8px; border: 2px solid var(--gray); }
+        .btn-auth { width: 100%; padding: 1rem; border: none; border-radius: 10px; font-weight: 700; font-size: 1em; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; transition: all 0.3s; }
         .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(107,70,193,0.35); }
-        .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .auth-error { background: #FEE2E2; color: #DC2626; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9em; display: none; }
-        .auth-success { background: #D1FAE5; color: #059669; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9em; display: none; }
-        .features-list { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--gray); }
-        .features-list h3 { font-size: 0.85em; color: #666; margin-bottom: 1rem; text-align: center; }
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-        .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8em; color: #555; }
-        .feature-item span { font-size: 1.2em; }
+        .auth-msg { padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9em; display: none; }
+        .auth-error { background: #FEE2E2; color: #DC2626; }
+        .auth-success { background: #D1FAE5; color: #059669; }
 
         /* App Styles */
         .app-container { display: none; }
-        .app-container.active { display: block; }
-        .navbar {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; padding: 1rem 1.5rem; position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex;
-            justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
-        }
-        .navbar-title { font-size: 1.5em; font-weight: 800; }
-        .navbar-user { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .user-info { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; }
-        .user-avatar { width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); }
-        .btn-nav {
-            background: rgba(255,255,255,0.2); border: 2px solid white; color: white;
-            padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;
-            font-weight: 600; transition: all 0.3s; font-size: 0.85em;
-        }
+        .app-container.active { display: block; background: linear-gradient(135deg, #F9FAFB 0%, #F3E8FF 100%); min-height: 100vh; }
+        .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .navbar-title { font-size: 1.4em; font-weight: 800; }
+        .navbar-user { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+        .user-info { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.9em; }
+        .btn-nav { background: rgba(255,255,255,0.2); border: 2px solid white; color: white; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8em; transition: all 0.3s; }
         .btn-nav:hover { background: white; color: var(--primary); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-        .welcome-card {
-            background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .planner-card {
-            background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; border-top: 5px solid;
-        }
-        .planner-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
-        .planner-header { color: white; padding: 1.5rem; text-align: center; }
-        .planner-icon { font-size: 2.5em; }
-        .planner-title { font-size: 1.1em; font-weight: 700; margin-top: 0.5rem; }
-        .planner-body { padding: 1.5rem; }
-        .btn-criar {
-            width: 100%; padding: 0.8rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white; border: none; border-radius: 8px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+        .welcome-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .planner-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s; border-top: 4px solid; }
+        .planner-card:hover { transform: translateY(-5px); }
+        .planner-header { color: white; padding: 1.2rem; text-align: center; }
+        .planner-icon { font-size: 2em; }
+        .planner-title { font-size: 1em; font-weight: 700; margin-top: 0.3rem; }
+        .planner-body { padding: 1rem; }
+        .btn-criar { width: 100%; padding: 0.7rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
         .btn-criar:hover { transform: translateY(-2px); }
-        .meus-planners { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .meus-planners h2 { margin-bottom: 1.5rem; font-size: 1.3em; }
-        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-        .planner-item {
-            color: white; border-radius: 12px; padding: 1.2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s;
-        }
-        .planner-item:hover { transform: translateY(-3px); }
+        .meus-planners { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .meus-planners h2 { margin-bottom: 1rem; font-size: 1.2em; }
+        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+        .planner-item { color: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .planner-item-nome { font-size: 1.1em; font-weight: 700; margin-bottom: 0.3rem; }
-        .planner-item-info { font-size: 0.8em; opacity: 0.9; margin-bottom: 1rem; }
-        .planner-item-acoes { display: flex; gap: 0.5rem; }
-        .planner-item-acoes button {
-            flex: 1; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white;
-            border: 1px solid white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em;
-        }
+        .planner-item-info { font-size: 0.8em; opacity: 0.9; margin-bottom: 0.8rem; }
+        .planner-item-acoes { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .planner-item-acoes button { flex: 1; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.75em; min-width: 60px; }
         .planner-item-acoes button:hover { background: white; color: var(--dark); }
 
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-        .modal-content { background: white; margin: 5% auto; padding: 2rem; border-radius: 16px; width: 90%; max-width: 600px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-header h2 { font-size: 1.4em; }
-        .close-modal { font-size: 1.8em; cursor: pointer; color: #999; background: none; border: none; }
-        .close-modal:hover { color: var(--dark); }
+        .modal-content { background: white; margin: 3% auto; padding: 1.5rem; border-radius: 16px; width: 92%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-header h2 { font-size: 1.3em; }
+        .close-modal { font-size: 1.8em; cursor: pointer; color: #999; background: none; border: none; line-height: 1; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
-        .btn-primario, .btn-secundario { flex: 1; padding: 0.75rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-primario { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
+        .form-actions { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .btn-primario, .btn-secundario { flex: 1; padding: 0.7rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.95em; }
+        .btn-primario { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         .btn-secundario { background: var(--gray); color: var(--dark); }
-        .contador { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; }
-        .contador-numero { font-size: 2em; font-weight: 700; }
-        .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; display: flex; gap: 1rem; align-items: start; border-left: 4px solid var(--primary); }
+        .contador { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1rem; }
+        .contador-numero { font-size: 1.8em; font-weight: 700; }
+        .tarefa-item { background: var(--light); padding: 0.8rem; border-radius: 8px; margin-bottom: 0.6rem; display: flex; gap: 0.8rem; align-items: center; border-left: 4px solid var(--primary); }
         .tarefa-item.concluida { opacity: 0.5; }
         .tarefa-item.concluida .tarefa-titulo { text-decoration: line-through; }
         .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
         .tarefa-conteudo { flex: 1; }
-        .tarefa-titulo { font-weight: 600; }
-        .tarefa-meta { font-size: 0.8em; color: #999; margin-top: 0.3rem; }
-        .btn-deletar { padding: 0.4rem 0.8rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
-        .loading { text-align: center; padding: 2rem; color: #666; }
+        .tarefa-titulo { font-weight: 600; font-size: 0.95em; }
+        .tarefa-meta { font-size: 0.75em; color: #666; margin-top: 0.2rem; }
+        .btn-del { padding: 0.3rem 0.6rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+        .empty-msg { color: #999; text-align: center; padding: 1.5rem; font-size: 0.9em; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .navbar { flex-direction: column; text-align: center; }
             .form-row { grid-template-columns: 1fr; }
-            .auth-box { padding: 2rem 1.5rem; }
+            .modal-content { margin: 5% auto; padding: 1.2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Auth Container -->
+    <!-- Auth -->
     <div class="auth-container" id="authContainer">
         <div class="auth-box">
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
                 <h1>Planner Premium ULTRA</h1>
-                <p>Organize sua vida de forma inteligente</p>
             </div>
-
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
                 <button class="auth-tab" onclick="showTab('signup')">Criar Conta</button>
             </div>
+            <div id="authError" class="auth-msg auth-error"></div>
+            <div id="authSuccess" class="auth-msg auth-success"></div>
 
-            <div id="authError" class="auth-error"></div>
-            <div id="authSuccess" class="auth-success"></div>
-
-            <!-- Login Form -->
             <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
@@ -175,10 +121,9 @@
                     <label>Senha</label>
                     <input type="password" id="loginPassword" placeholder="Sua senha" required>
                 </div>
-                <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
+                <button type="submit" class="btn-auth">Entrar</button>
             </form>
 
-            <!-- Signup Form -->
             <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
                 <div class="form-group">
                     <label>Nome Completo</label>
@@ -189,92 +134,56 @@
                     <input type="email" id="signupEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                    <label>Senha (mín. 6 caracteres)</label>
+                    <input type="password" id="signupPassword" placeholder="Sua senha" minlength="6" required>
                 </div>
                 <div class="form-group">
                     <label>Confirmar Senha</label>
                     <input type="password" id="signupConfirm" placeholder="Repita a senha" required>
                 </div>
-                <button type="submit" class="btn-auth" id="signupBtn">Criar Conta</button>
+                <button type="submit" class="btn-auth">Criar Conta</button>
             </form>
-
-            <div class="features-list">
-                <h3>✨ RECURSOS PREMIUM</h3>
-                <div class="features-grid">
-                    <div class="feature-item"><span>📋</span> Planners Ilimitados</div>
-                    <div class="feature-item"><span>🔔</span> Alarmes Smart</div>
-                    <div class="feature-item"><span>📊</span> Estatísticas</div>
-                    <div class="feature-item"><span>☁️</span> Sincronização</div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- App Container -->
+    <!-- App -->
     <div class="app-container" id="appContainer">
         <div class="navbar">
             <div class="navbar-title">✨ Planner Premium</div>
             <div class="navbar-user">
-                <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <span id="userName">Usuário</span>
-                </div>
+                <div class="user-info">👤 <span id="userName">Usuário</span></div>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
-
         <div class="container">
             <div class="welcome-card">
-                <h1 style="margin-bottom: 0.5rem;">Olá, <span id="welcomeName">Usuário</span>! 👋</h1>
-                <p style="color: #666;">Seus planners estão sincronizados e seguros na nuvem.</p>
+                <h1 style="font-size:1.5em; margin-bottom:0.3rem;">Olá, <span id="welcomeName">Usuário</span>! 👋</h1>
+                <p style="color:#666; font-size:0.9em;">Crie e organize seus planners.</p>
             </div>
 
-            <h2 style="margin-bottom: 1rem;">Criar Novo Planner</h2>
+            <h2 style="margin-bottom:1rem; font-size:1.1em;">Criar Novo Planner</h2>
             <div class="planner-types">
-                <div class="planner-card" style="border-top-color: #10B981;">
-                    <div class="planner-header" style="background: linear-gradient(135deg, #10B981, #059669);">
-                        <div class="planner-icon">✅</div>
-                        <div class="planner-title">To-Do List</div>
-                    </div>
-                    <div class="planner-body">
-                        <button class="btn-criar" onclick="criarPlanner('todo')">Criar</button>
-                    </div>
+                <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
+                    <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do List</div></div>
+                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
                 </div>
-                <div class="planner-card" style="border-top-color: #3B82F6;">
-                    <div class="planner-header" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
-                        <div class="planner-icon">🏗️</div>
-                        <div class="planner-title">Projetos</div>
-                    </div>
-                    <div class="planner-body">
-                        <button class="btn-criar" onclick="criarPlanner('projeto')">Criar</button>
-                    </div>
+                <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
+                    <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
+                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
                 </div>
-                <div class="planner-card" style="border-top-color: #F59E0B;">
-                    <div class="planner-header" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
-                        <div class="planner-icon">🔥</div>
-                        <div class="planner-title">Hábitos</div>
-                    </div>
-                    <div class="planner-body">
-                        <button class="btn-criar" onclick="criarPlanner('habitos')">Criar</button>
-                    </div>
+                <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
+                    <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
+                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
                 </div>
-                <div class="planner-card" style="border-top-color: #8B5CF6;">
-                    <div class="planner-header" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9);">
-                        <div class="planner-icon">💰</div>
-                        <div class="planner-title">Financeiro</div>
-                    </div>
-                    <div class="planner-body">
-                        <button class="btn-criar" onclick="criarPlanner('financeiro')">Criar</button>
-                    </div>
+                <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
+                    <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
+                    <div class="planner-body"><button class="btn-criar">Criar</button></div>
                 </div>
             </div>
 
             <div class="meus-planners">
                 <h2>📋 Meus Planners</h2>
-                <div class="planners-grid" id="meusPlanners">
-                    <p class="loading">Carregando seus planners...</p>
-                </div>
+                <div class="planners-grid" id="meusPlanners"><p class="empty-msg">Nenhum planner ainda.</p></div>
             </div>
         </div>
     </div>
@@ -290,19 +199,30 @@
                 <label>Nome do Planner *</label>
                 <input type="text" id="inputNome" placeholder="Ex: Metas 2025">
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Cor</label>
-                    <input type="color" id="inputCor" value="#6B46C1">
+            <div class="form-group">
+                <label>Cor do Planner</label>
+                <div class="color-picker">
+                    <input type="color" id="inputCor" value="#6B46C1" onchange="updateColorPreview()">
+                    <div class="color-preview" id="colorPreview" style="background:#6B46C1;"></div>
                 </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group">
                     <label>Ícone</label>
                     <input type="text" id="inputIcone" maxlength="2" value="✨">
                 </div>
+                <div class="form-group">
+                    <label>Horário do Alarme</label>
+                    <input type="time" id="inputAlarme" value="09:00">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Data de Início</label>
+                <input type="date" id="inputDataInicio">
             </div>
             <div class="form-actions">
                 <button class="btn-secundario" onclick="fecharModal('modalCriar')">Cancelar</button>
-                <button class="btn-primario" onclick="salvarPlanner()">Criar</button>
+                <button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button>
             </div>
         </div>
     </div>
@@ -318,8 +238,11 @@
                 <div class="contador-numero" id="contadorTarefas">0</div>
                 <div class="contador-texto">Tarefas</div>
             </div>
+            <div id="alarmeInfo" style="background:#FEF3C7; padding:0.8rem; border-radius:8px; margin-bottom:1rem; font-size:0.85em; display:none;">
+                🔔 Alarme: <strong id="alarmeHora">09:00</strong>
+            </div>
             <div class="form-group">
-                <label>Nova Tarefa</label>
+                <label>Nova Tarefa *</label>
                 <input type="text" id="inputTituloTarefa" placeholder="Título da tarefa">
             </div>
             <div class="form-row">
@@ -336,15 +259,24 @@
                     <input type="date" id="inputDataMeta">
                 </div>
             </div>
-            <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="adicionarTarefa()">+ Adicionar</button>
-            <div id="listaTarefas"></div>
-            <div class="form-actions">
-                <button class="btn-secundario" onclick="fecharModal('modalVer')">Fechar</button>
+            <div class="form-group">
+                <label>Horário Lembrete</label>
+                <input type="time" id="inputHoraTarefa">
             </div>
+            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="adicionarTarefa()">+ Adicionar Tarefa</button>
+            <div id="listaTarefas"></div>
+            <div class="form-actions" style="margin-top:1rem;">
+                <button class="btn-secundario" onclick="compartilharWhatsApp()">📱 WhatsApp</button>
+                <button class="btn-secundario" onclick="enviarEmail()">📧 Email</button>
+                <button class="btn-primario" onclick="baixarPDF()">📥 Baixar</button>
+            </div>
+            <button class="btn-secundario" style="width:100%; margin-top:0.8rem;" onclick="fecharModal('modalVer')">Fechar</button>
         </div>
     </div>
 
     <script>
+        // Database em memória (simulando persistência)
+        const db = { users: {}, planners: {} };
         let currentUser = null;
         let planners = [];
         let planerAtualAberto = null;
@@ -357,110 +289,70 @@
             'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
 
-        // Auth Functions
+        // Auth
         function showTab(tab) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            document.querySelector(`.auth-tab:${tab === 'login' ? 'first' : 'last'}-child`).classList.add('active');
-            document.getElementById(tab === 'login' ? 'loginForm' : 'signupForm').classList.add('active');
-            hideMessages();
+            document.querySelectorAll('.auth-tab').forEach((t,i) => {
+                t.classList.toggle('active', (tab==='login' && i===0) || (tab==='signup' && i===1));
+            });
+            document.getElementById('loginForm').classList.toggle('active', tab==='login');
+            document.getElementById('signupForm').classList.toggle('active', tab==='signup');
+            hideMsg();
         }
 
-        function showError(msg) {
-            const el = document.getElementById('authError');
-            el.textContent = msg; el.style.display = 'block';
-            document.getElementById('authSuccess').style.display = 'none';
+        function showError(msg) { 
+            const el = document.getElementById('authError'); 
+            el.textContent = msg; 
+            el.style.display = 'block'; 
+            document.getElementById('authSuccess').style.display = 'none'; 
+        }
+        function showSuccess(msg) { 
+            const el = document.getElementById('authSuccess'); 
+            el.textContent = msg; 
+            el.style.display = 'block'; 
+            document.getElementById('authError').style.display = 'none'; 
+        }
+        function hideMsg() { 
+            document.getElementById('authError').style.display = 'none'; 
+            document.getElementById('authSuccess').style.display = 'none'; 
         }
 
-        function showSuccess(msg) {
-            const el = document.getElementById('authSuccess');
-            el.textContent = msg; el.style.display = 'block';
-            document.getElementById('authError').style.display = 'none';
-        }
-
-        function hideMessages() {
-            document.getElementById('authError').style.display = 'none';
-            document.getElementById('authSuccess').style.display = 'none';
-        }
-
-        async function handleSignup(e) {
+        function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-            const password = document.getElementById('signupPassword').value;
+            const pass = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            if (password !== confirm) { showError('As senhas não coincidem!'); return; }
-            if (password.length < 6) { showError('A senha deve ter no mínimo 6 caracteres!'); return; }
+            if (pass !== confirm) { showError('As senhas não coincidem!'); return; }
+            if (pass.length < 6) { showError('Senha deve ter mínimo 6 caracteres!'); return; }
+            if (db.users[email]) { showError('Este email já está cadastrado!'); return; }
 
-            document.getElementById('signupBtn').disabled = true;
-            document.getElementById('signupBtn').textContent = 'Criando...';
-
-            try {
-                // Check if user exists
-                const existingUser = await window.storage.get(`user:${email}`, true);
-                if (existingUser) {
-                    showError('Este email já está cadastrado!');
-                    document.getElementById('signupBtn').disabled = false;
-                    document.getElementById('signupBtn').textContent = 'Criar Conta';
-                    return;
-                }
-
-                // Create user
-                const userData = { name, email, password, createdAt: new Date().toISOString() };
-                await window.storage.set(`user:${email}`, JSON.stringify(userData), true);
-                await window.storage.set(`planners:${email}`, JSON.stringify([]), true);
-
-                showSuccess('Conta criada com sucesso! Entrando...');
-                setTimeout(() => loginUser(userData), 1000);
-            } catch (err) {
-                showError('Erro ao criar conta. Tente novamente.');
-                document.getElementById('signupBtn').disabled = false;
-                document.getElementById('signupBtn').textContent = 'Criar Conta';
-            }
+            db.users[email] = { name, email, password: pass };
+            db.planners[email] = [];
+            showSuccess('Conta criada! Entrando...');
+            setTimeout(() => loginUser(db.users[email]), 800);
         }
 
-        async function handleLogin(e) {
+        function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
+            const pass = document.getElementById('loginPassword').value;
 
-            document.getElementById('loginBtn').disabled = true;
-            document.getElementById('loginBtn').textContent = 'Entrando...';
+            if (!db.users[email]) { showError('Email não encontrado!'); return; }
+            if (db.users[email].password !== pass) { showError('Senha incorreta!'); return; }
 
-            try {
-                const result = await window.storage.get(`user:${email}`, true);
-                if (!result) {
-                    showError('Email não encontrado!');
-                    document.getElementById('loginBtn').disabled = false;
-                    document.getElementById('loginBtn').textContent = 'Entrar';
-                    return;
-                }
-
-                const userData = JSON.parse(result.value);
-                if (userData.password !== password) {
-                    showError('Senha incorreta!');
-                    document.getElementById('loginBtn').disabled = false;
-                    document.getElementById('loginBtn').textContent = 'Entrar';
-                    return;
-                }
-
-                loginUser(userData);
-            } catch (err) {
-                showError('Erro ao entrar. Tente novamente.');
-                document.getElementById('loginBtn').disabled = false;
-                document.getElementById('loginBtn').textContent = 'Entrar';
-            }
+            loginUser(db.users[email]);
         }
 
-        function loginUser(userData) {
-            currentUser = userData;
+        function loginUser(user) {
+            currentUser = user;
+            planners = db.planners[user.email] || [];
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').classList.add('active');
-            document.getElementById('userName').textContent = userData.name.split(' ')[0];
-            document.getElementById('welcomeName').textContent = userData.name.split(' ')[0];
-            document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
-            loadPlanners();
+            document.getElementById('userName').textContent = user.name.split(' ')[0];
+            document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+            renderPlanners();
+            requestNotificationPermission();
         }
 
         function logout() {
@@ -470,40 +362,17 @@
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
-            document.getElementById('loginBtn').disabled = false;
-            document.getElementById('loginBtn').textContent = 'Entrar';
+            hideMsg();
             showTab('login');
         }
 
-        async function loadPlanners() {
-            try {
-                const result = await window.storage.get(`planners:${currentUser.email}`, true);
-                planners = result ? JSON.parse(result.value) : [];
-                renderPlanners();
-            } catch (err) {
-                planners = [];
-                renderPlanners();
-            }
-        }
-
-        async function savePlanners() {
-            try {
-                await window.storage.set(`planners:${currentUser.email}`, JSON.stringify(planners), true);
-            } catch (err) {
-                console.error('Erro ao salvar:', err);
-            }
-        }
-
         function renderPlanners() {
-            const container = document.getElementById('meusPlanners');
-            if (!planners.length) {
-                container.innerHTML = '<p style="color:#999; grid-column:1/-1;">Nenhum planner ainda. Crie o primeiro!</p>';
-                return;
-            }
-            container.innerHTML = planners.map(p => `
-                <div class="planner-item" style="background: linear-gradient(135deg, ${p.cor}, ${p.cor}dd);">
+            const c = document.getElementById('meusPlanners');
+            if (!planners.length) { c.innerHTML = '<p class="empty-msg">Nenhum planner ainda. Crie o primeiro!</p>'; return; }
+            c.innerHTML = planners.map(p => `
+                <div class="planner-item" style="background:linear-gradient(135deg,${p.cor},${p.cor}dd);">
                     <div class="planner-item-nome">${p.icone} ${p.nome}</div>
-                    <div class="planner-item-info">${p.tarefas.length} tarefas</div>
+                    <div class="planner-item-info">${p.tarefas.length} tarefas ${p.alarme ? '• 🔔 '+p.alarme : ''}</div>
                     <div class="planner-item-acoes">
                         <button onclick="abrirPlanner(${p.id})">Abrir</button>
                         <button onclick="deletarPlanner(${p.id})">Deletar</button>
@@ -512,117 +381,256 @@
             `).join('');
         }
 
+        function updateColorPreview() {
+            document.getElementById('colorPreview').style.background = document.getElementById('inputCor').value;
+        }
+
         function criarPlanner(tipo) {
             tipoAtual = tipo;
-            const config = tiposPlanner[tipo];
-            document.getElementById('modalIcone').textContent = config.icone;
-            document.getElementById('modalTitulo').textContent = 'Novo ' + config.nome;
+            const cfg = tiposPlanner[tipo];
+            document.getElementById('modalIcone').textContent = cfg.icone;
+            document.getElementById('modalTitulo').textContent = 'Novo ' + cfg.nome;
             document.getElementById('inputNome').value = '';
-            document.getElementById('inputCor').value = config.cor;
-            document.getElementById('inputIcone').value = config.icone;
+            document.getElementById('inputCor').value = cfg.cor;
+            document.getElementById('colorPreview').style.background = cfg.cor;
+            document.getElementById('inputIcone').value = cfg.icone;
+            document.getElementById('inputAlarme').value = '09:00';
+            document.getElementById('inputDataInicio').value = new Date().toISOString().split('T')[0];
             document.getElementById('modalCriar').style.display = 'block';
         }
 
-        async function salvarPlanner() {
+        function salvarPlanner() {
             const nome = document.getElementById('inputNome').value.trim();
             if (!nome) { alert('Digite um nome!'); return; }
 
-            planners.push({
+            const novoPlanner = {
                 id: Date.now(),
                 tipo: tipoAtual,
                 nome: nome,
-                icone: document.getElementById('inputIcone').value,
+                icone: document.getElementById('inputIcone').value || '📋',
                 cor: document.getElementById('inputCor').value,
+                alarme: document.getElementById('inputAlarme').value,
+                dataInicio: document.getElementById('inputDataInicio').value,
                 tarefas: []
-            });
+            };
 
-            await savePlanners();
+            planners.push(novoPlanner);
+            db.planners[currentUser.email] = planners;
             fecharModal('modalCriar');
             renderPlanners();
+
+            // Configurar alarme
+            if (novoPlanner.alarme) {
+                agendarAlarme(novoPlanner);
+            }
         }
 
         function abrirPlanner(id) {
-            const planner = planners.find(p => p.id === id);
-            if (!planner) return;
+            const p = planners.find(x => x.id === id);
+            if (!p) return;
             planerAtualAberto = id;
-            document.getElementById('verIcone').textContent = planner.icone;
-            document.getElementById('verNome').textContent = planner.nome;
-            document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
+            document.getElementById('verIcone').textContent = p.icone;
+            document.getElementById('verNome').textContent = p.nome;
+            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
+            
+            if (p.alarme) {
+                document.getElementById('alarmeInfo').style.display = 'block';
+                document.getElementById('alarmeHora').textContent = p.alarme;
+            } else {
+                document.getElementById('alarmeInfo').style.display = 'none';
+            }
+            
             renderTarefas();
             document.getElementById('modalVer').style.display = 'block';
         }
 
         function renderTarefas() {
-            const planner = planners.find(p => p.id === planerAtualAberto);
-            const container = document.getElementById('listaTarefas');
-            if (!planner.tarefas.length) {
-                container.innerHTML = '<p style="color:#999; text-align:center; padding:1rem;">Nenhuma tarefa ainda.</p>';
-                return;
-            }
-            container.innerHTML = planner.tarefas.map((t, i) => `
-                <div class="tarefa-item ${t.concluida ? 'concluida' : ''}" style="border-left-color: ${
-                    t.prioridade === 'alta' ? '#EF4444' : t.prioridade === 'media' ? '#F59E0B' : '#10B981'
-                }">
+            const p = planners.find(x => x.id === planerAtualAberto);
+            const c = document.getElementById('listaTarefas');
+            if (!p.tarefas.length) { c.innerHTML = '<p class="empty-msg">Nenhuma tarefa ainda.</p>'; return; }
+            c.innerHTML = p.tarefas.map((t, i) => `
+                <div class="tarefa-item ${t.concluida ? 'concluida' : ''}" style="border-left-color:${t.prioridade==='alta'?'#EF4444':t.prioridade==='media'?'#F59E0B':'#10B981'};">
                     <input type="checkbox" class="tarefa-checkbox" ${t.concluida ? 'checked' : ''} onchange="toggleTarefa(${i})">
                     <div class="tarefa-conteudo">
                         <div class="tarefa-titulo">${t.titulo}</div>
-                        <div class="tarefa-meta">${t.dataMeta ? '📅 ' + t.dataMeta : ''}</div>
+                        <div class="tarefa-meta">${t.data ? '📅 '+t.data : ''} ${t.hora ? '⏰ '+t.hora : ''}</div>
                     </div>
-                    <button class="btn-deletar" onclick="deletarTarefa(${i})">✕</button>
+                    <button class="btn-del" onclick="deletarTarefa(${i})">✕</button>
                 </div>
             `).join('');
         }
 
-        async function adicionarTarefa() {
+        function adicionarTarefa() {
             const titulo = document.getElementById('inputTituloTarefa').value.trim();
             if (!titulo) { alert('Digite o título!'); return; }
-
-            const planner = planners.find(p => p.id === planerAtualAberto);
-            planner.tarefas.push({
+            const p = planners.find(x => x.id === planerAtualAberto);
+            const novaTarefa = {
                 titulo: titulo,
                 prioridade: document.getElementById('inputPrioridade').value,
-                dataMeta: document.getElementById('inputDataMeta').value,
+                data: document.getElementById('inputDataMeta').value,
+                hora: document.getElementById('inputHoraTarefa').value,
                 concluida: false
-            });
-
-            await savePlanners();
+            };
+            p.tarefas.push(novaTarefa);
+            db.planners[currentUser.email] = planners;
+            
+            // Agendar lembrete se tiver hora
+            if (novaTarefa.hora && novaTarefa.data) {
+                agendarLembreteTarefa(novaTarefa, p.nome);
+            }
+            
             document.getElementById('inputTituloTarefa').value = '';
             document.getElementById('inputDataMeta').value = '';
-            document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
+            document.getElementById('inputHoraTarefa').value = '';
+            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
             renderTarefas();
         }
 
-        async function toggleTarefa(index) {
-            const planner = planners.find(p => p.id === planerAtualAberto);
-            planner.tarefas[index].concluida = !planner.tarefas[index].concluida;
-            await savePlanners();
+        function toggleTarefa(i) {
+            const p = planners.find(x => x.id === planerAtualAberto);
+            p.tarefas[i].concluida = !p.tarefas[i].concluida;
+            db.planners[currentUser.email] = planners;
             renderTarefas();
         }
 
-        async function deletarTarefa(index) {
-            const planner = planners.find(p => p.id === planerAtualAberto);
-            planner.tarefas.splice(index, 1);
-            await savePlanners();
-            document.getElementById('contadorTarefas').textContent = planner.tarefas.length;
+        function deletarTarefa(i) {
+            const p = planners.find(x => x.id === planerAtualAberto);
+            p.tarefas.splice(i, 1);
+            db.planners[currentUser.email] = planners;
+            document.getElementById('contadorTarefas').textContent = p.tarefas.length;
             renderTarefas();
         }
 
-        async function deletarPlanner(id) {
+        function deletarPlanner(id) {
             if (!confirm('Deletar este planner?')) return;
-            planners = planners.filter(p => p.id !== id);
-            await savePlanners();
+            planners = planners.filter(x => x.id !== id);
+            db.planners[currentUser.email] = planners;
             renderPlanners();
         }
 
-        function fecharModal(id) {
-            document.getElementById(id).style.display = 'none';
+        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Compartilhar WhatsApp
+        function compartilharWhatsApp() {
+            const p = planners.find(x => x.id === planerAtualAberto);
+            if (!p) return;
+            let msg = `✨ *${p.icone} ${p.nome}*\n\n`;
+            msg += `📋 *Tarefas (${p.tarefas.length}):*\n`;
+            p.tarefas.forEach((t, i) => {
+                msg += `${t.concluida ? '✅' : '⬜'} ${t.titulo}`;
+                if (t.data) msg += ` (${t.data})`;
+                msg += '\n';
+            });
+            if (p.alarme) msg += `\n🔔 Alarme: ${p.alarme}`;
+            msg += '\n\n_Criado com Planner Premium ULTRA_';
+            window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
         }
 
-        window.onclick = function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
+        // Enviar Email
+        function enviarEmail() {
+            const p = planners.find(x => x.id === planerAtualAberto);
+            if (!p) return;
+            let subject = `${p.icone} ${p.nome} - Planner Premium`;
+            let body = `${p.icone} ${p.nome}\n\n`;
+            body += `TAREFAS (${p.tarefas.length}):\n\n`;
+            p.tarefas.forEach((t, i) => {
+                body += `${i+1}. [${t.concluida ? 'X' : ' '}] ${t.titulo}`;
+                if (t.data) body += ` - Data: ${t.data}`;
+                if (t.hora) body += ` às ${t.hora}`;
+                body += '\n';
+            });
+            if (p.alarme) body += `\nAlarme configurado: ${p.alarme}`;
+            body += '\n\n---\nCriado com Planner Premium ULTRA';
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        // Baixar PDF (TXT)
+        function baixarPDF() {
+            const p = planners.find(x => x.id === planerAtualAberto);
+            if (!p) return;
+            let txt = `════════════════════════════════════════\n`;
+            txt += `   ${p.icone} ${p.nome.toUpperCase()}\n`;
+            txt += `════════════════════════════════════════\n\n`;
+            if (p.alarme) txt += `🔔 Alarme: ${p.alarme}\n`;
+            if (p.dataInicio) txt += `📅 Início: ${p.dataInicio}\n`;
+            txt += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            txt += `   TAREFAS (${p.tarefas.length})\n`;
+            txt += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            p.tarefas.forEach((t, i) => {
+                const status = t.concluida ? '✅' : '⬜';
+                const prio = t.prioridade === 'alta' ? '🔴' : t.prioridade === 'media' ? '🟡' : '🟢';
+                txt += `${status} ${prio} ${t.titulo}\n`;
+                if (t.data || t.hora) {
+                    txt += `   📅 ${t.data || '-'} ⏰ ${t.hora || '-'}\n`;
+                }
+                txt += '\n';
+            });
+            txt += `\n════════════════════════════════════════\n`;
+            txt += `   Criado com Planner Premium ULTRA ✨\n`;
+            txt += `════════════════════════════════════════\n`;
+            
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${p.nome.replace(/\s+/g, '_')}_planner.txt`;
+            a.click();
+        }
+
+        // Notificações e Alarmes
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
             }
+        }
+
+        function agendarAlarme(planner) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            
+            const [h, m] = planner.alarme.split(':').map(Number);
+            const agora = new Date();
+            const alarmeHoje = new Date();
+            alarmeHoje.setHours(h, m, 0, 0);
+            
+            let diff = alarmeHoje - agora;
+            if (diff < 0) diff += 24 * 60 * 60 * 1000; // Próximo dia
+            
+            setTimeout(() => {
+                new Notification(`🔔 ${planner.icone} ${planner.nome}`, {
+                    body: `Hora de verificar seu planner! ${planner.tarefas.length} tarefas.`,
+                    icon: '✨',
+                    requireInteraction: true
+                });
+                // Tentar vibrar (mobile)
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+            }, diff);
+        }
+
+        function agendarLembreteTarefa(tarefa, plannerNome) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            
+            const [h, m] = tarefa.hora.split(':').map(Number);
+            const dataAlvo = new Date(tarefa.data + 'T' + tarefa.hora);
+            const agora = new Date();
+            
+            let diff = dataAlvo - agora;
+            if (diff > 0) {
+                setTimeout(() => {
+                    new Notification(`⏰ Lembrete: ${tarefa.titulo}`, {
+                        body: `Tarefa do planner "${plannerNome}"`,
+                        requireInteraction: true
+                    });
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }, diff);
+            }
+        }
+
+        // Fechar modal clicando fora
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) e.target.style.display = 'none';
         };
+
+        // Inicialização
+        document.getElementById('inputDataInicio').value = new Date().toISOString().split('T')[0];
     </script>
 </body>
 </html>
