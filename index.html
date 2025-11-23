@@ -1210,41 +1210,37 @@
     const email = document.getElementById('signupEmail').value.trim().toLowerCase();
     const pass = document.getElementById('signupPassword').value;
     
+    if (!name) {
+        showError('❌ Digite seu nome!');
+        return;
+    }
+    
     if (pass.length < 6) { 
         showError('❌ Senha deve ter no mínimo 6 caracteres!'); 
         return; 
     }
     
-    document.getElementById('signupBtn').disabled = true;
-    document.getElementById('signupBtn').textContent = 'Criando...';
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Criando...';
     
     try {
-        // Verificar se email já existe (pode retornar erro se não existir, então tratamos)
-        try {
-            const { data: existing } = await supabase.from('users').select('email').eq('email', email).single();
-            if (existing) {
-                showError('❌ Email já cadastrado!');
-                document.getElementById('signupBtn').disabled = false;
-                document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
-                return;
-            }
-        } catch (checkErr) {
-            // Email não existe, tudo ok, pode continuar
-            console.log('Email disponível');
+        const { data: existing } = await supabase.from('users').select('email').eq('email', email).maybeSingle();
+        
+        if (existing) {
+            showError('❌ Email já cadastrado!');
+            btn.disabled = false;
+            btn.textContent = '🎁 Começar Trial Grátis';
+            return;
         }
         
-        // Hash da senha
-        const hashedPassword = await bcrypt.hash(pass, 10);
-        
-        // Data de fim do trial
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
         
-        // Dados do usuário
         const userData = {
-            email,
-            name,
-            password: hashedPassword,
+            email: email,
+            name: name,
+            password: pass,
             trial_end: trialEndDate.toISOString().split('T')[0],
             subscription_status: 'trial',
             xp: 0,
@@ -1255,26 +1251,18 @@
             achievements: []
         };
         
-        // Inserir usuário
         const { data: newUser, error } = await supabase.from('users').insert([userData]).select().single();
         
-        if (error) {
-            console.error('Erro ao inserir:', error);
-            throw new Error(error.message || 'Erro ao criar conta');
-        }
+        if (error) throw error;
         
-        showSuccess('✅ Conta criada! 14 dias grátis ativados!');
-        
-        // Fazer login automático após 1.5s
-        setTimeout(() => {
-            loginUser(newUser || userData);
-        }, 1500);
+        showSuccess('✅ Conta criada! Entrando...');
+        setTimeout(() => loginUser(newUser), 1000);
         
     } catch (err) {
-        console.error('Erro signup:', err);
-        showError('❌ Erro ao criar conta: ' + (err.message || 'Tente novamente'));
-        document.getElementById('signupBtn').disabled = false;
-        document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
+        console.error('Erro:', err);
+        showError('❌ ' + (err.message || 'Erro ao criar conta'));
+        btn.disabled = false;
+        btn.textContent = '🎁 Começar Trial Grátis';
     }
 }
 
