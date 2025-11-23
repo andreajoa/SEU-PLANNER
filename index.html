@@ -8,10 +8,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Planner ULTRA">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Planner ULTRA">
+    <meta name="msapplication-TileColor" content="#6B46C1">
+    <meta name="msapplication-TileImage" content="/icon-144.png">
     <title>✨ Planner Premium ULTRA - Cutting Edge</title>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
     
     <!-- Ícones para iOS -->
     <link rel="apple-touch-icon" href="/icon-152.png">
@@ -227,6 +231,10 @@
         
         .notification-permission { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
         
+        .install-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998; box-shadow: 0 -4px 20px rgba(0,0,0,0.2); }
+        .install-banner button { background: white; color: #10B981; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-left: 1rem; }
+        .install-banner button:hover { opacity: 0.9; }
+        
         @media (max-width: 768px) {
             .modal-content { width: 98%; padding: 1rem; }
             .form-row, .form-row-half { grid-template-columns: 1fr; }
@@ -235,6 +243,19 @@
     </style>
 </head>
 <body>
+    <!-- Banner de Instalação PWA -->
+    <div class="install-banner" id="installBanner">
+        <span>📱 Instale o app na sua tela inicial para acesso rápido!</span>
+        <button onclick="installPWA()">Instalar Agora</button>
+        <button onclick="dismissInstallBanner()" style="background:transparent; color:white; border:1px solid white;">Agora Não</button>
+    </div>
+
+    <!-- Banner iOS específico -->
+    <div class="install-banner" id="iosBanner" style="display:none;">
+        <span>📱 Para instalar: toque em <strong>Compartilhar</strong> 📤 e depois em <strong>"Adicionar à Tela de Início"</strong></span>
+        <button onclick="dismissIOSBanner()" style="background:white; color:#10B981;">Entendi</button>
+    </div>
+
     <div class="loading" id="loadingScreen">
         <div class="spinner"></div>
         <p>Inicializando sistema avançado...</p>
@@ -611,6 +632,10 @@
         let tempSubtarefas = [];
         let tempAnexos = [];
         
+        // PWA Variables
+        let deferredPrompt;
+        let isInstalled = false;
+        
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
             'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
@@ -639,11 +664,110 @@
                 
                 setupTagInput();
                 checkNotificationSupport();
+                registerServiceWorker();
+                setupPWAInstall();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
             }
         }
+        
+        // ========== PWA FUNCTIONS ==========
+        
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ Service Worker registrado:', registration);
+                    
+                    // Verificar se já está instalado
+                    if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+                        isInstalled = true;
+                        console.log('📱 App já instalado');
+                    }
+                    
+                    // Suporte a notificações
+                    if ('PushManager' in window) {
+                        console.log('✅ Push notifications suportadas');
+                    }
+                } catch (err) {
+                    console.error('❌ Erro ao registrar Service Worker:', err);
+                }
+            }
+        }
+        
+        function setupPWAInstall() {
+            // Detectar iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+            
+            // Se for iOS e NÃO estiver instalado, mostrar banner específico
+            if (isIOS && !isInStandaloneMode) {
+                setTimeout(() => {
+                    const dismissed = localStorage.getItem('iosBannerDismissed');
+                    if (!dismissed) {
+                        document.getElementById('iosBanner').style.display = 'flex';
+                    }
+                }, 2000);
+                return; // iOS não suporta beforeinstallprompt
+            }
+            
+            // Capturar evento beforeinstallprompt (Android/Desktop)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Mostrar banner após 3 segundos se não estiver instalado
+                if (!isInstalled) {
+                    setTimeout(() => {
+                        const dismissed = localStorage.getItem('installBannerDismissed');
+                        if (!dismissed) {
+                            document.getElementById('installBanner').style.display = 'flex';
+                        }
+                    }, 3000);
+                }
+            });
+            
+            // Detectar quando app é instalado
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 PWA instalado com sucesso!');
+                isInstalled = true;
+                document.getElementById('installBanner').style.display = 'none';
+                document.getElementById('iosBanner').style.display = 'none';
+                showNotification('🎉 App Instalado!', 'Planner Premium ULTRA está pronto para uso!');
+            });
+        }
+        
+        async function installPWA() {
+            if (!deferredPrompt) {
+                alert('Instalação não disponível. Use a opção do navegador: Menu → Instalar app');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('✅ Usuário aceitou instalação');
+                document.getElementById('installBanner').style.display = 'none';
+            } else {
+                console.log('❌ Usuário recusou instalação');
+            }
+            
+            deferredPrompt = null;
+        }
+        
+        function dismissInstallBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('installBannerDismissed', 'true');
+        }
+        
+        function dismissIOSBanner() {
+            document.getElementById('iosBanner').style.display = 'none';
+            localStorage.setItem('iosBannerDismissed', 'true');
+        }
+        
+        // ========== END PWA FUNCTIONS ==========
         
         init();
 
