@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Planner Premium ULTRA</title>
+    <title>✨ Planner Premium ULTRA - Cutting Edge</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -54,8 +54,9 @@
         .auth-form.active { display: block; }
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.85em; }
-        .form-group input, .form-group select { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group textarea { min-height: 100px; resize: vertical; }
         .btn-auth { width: 100%; padding: 0.9rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1em; }
         .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-msg { padding: 0.7rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85em; display: none; }
@@ -87,14 +88,14 @@
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
         
-        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 600px; }
-        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; }
+        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 800px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; white-space: nowrap; }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 1rem; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
         .stat-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
@@ -130,28 +131,90 @@
         .planner-item-acoes button { flex: 1; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: 600; }
         
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-        .modal-content { background: white; margin: 2% auto; padding: 1.5rem; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-content { background: white; margin: 2% auto; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray); padding-bottom: 1rem; }
         .close-modal { font-size: 1.5em; cursor: pointer; background: none; border: none; color: #999; }
         
-        .tarefa-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; gap: 0.6rem; align-items: center; border-left: 3px solid var(--primary); }
-        .tarefa-checkbox { width: 18px; height: 18px; cursor: pointer; }
-        .tarefa-conteudo { flex: 1; }
-        .tarefa-titulo { font-weight: 600; font-size: 0.9em; }
-        .btn-del { padding: 0.2rem 0.5rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75em; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .form-row-half { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
         
-        .btn-primario { padding: 0.8rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-secundario { padding: 0.8rem; background: var(--gray); color: var(--dark); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .tags-input { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; border: 2px solid var(--gray); border-radius: 8px; min-height: 45px; }
+        .tag { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.85em; display: flex; align-items: center; gap: 0.3rem; }
+        .tag-remove { cursor: pointer; font-weight: bold; }
+        .tag-input-field { border: none; outline: none; flex: 1; min-width: 100px; }
+        
+        .subtask-list { margin-top: 1rem; }
+        .subtask-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; gap: 0.6rem; align-items: center; }
+        .subtask-checkbox { width: 18px; height: 18px; cursor: pointer; }
+        .subtask-text { flex: 1; }
+        
+        .reminder-list { margin-top: 1rem; }
+        .reminder-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .anexo-list { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .anexo-item { background: var(--light); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.85em; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .ai-suggestion { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
+        .ai-suggestion-icon { font-size: 1.2em; margin-right: 0.5rem; }
+        
+        .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; border-left: 4px solid var(--primary); cursor: pointer; transition: all 0.2s; }
+        .tarefa-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .tarefa-header { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 0.5rem; }
+        .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; margin-top: 0.2rem; }
+        .tarefa-conteudo { flex: 1; }
+        .tarefa-titulo { font-weight: 700; font-size: 1em; margin-bottom: 0.3rem; }
+        .tarefa-descricao { font-size: 0.85em; color: #666; margin-bottom: 0.5rem; }
+        .tarefa-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75em; color: #666; }
+        .tarefa-meta-item { background: white; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .tarefa-actions { display: flex; gap: 0.5rem; }
+        .btn-icon { padding: 0.3rem 0.6rem; background: var(--gray); border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .btn-icon:hover { background: var(--primary); color: white; }
+        .btn-del { background: var(--danger); color: white; }
+        
+        .view-switcher { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem; }
+        .view-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.85em; }
+        .view-btn.active { background: var(--primary); color: white; }
+        
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .kanban-column { background: white; border-radius: 12px; padding: 1rem; }
+        .kanban-header { font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray); }
+        .kanban-card { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; cursor: move; }
+        
+        .calendar-view { background: white; border-radius: 12px; padding: 1.5rem; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
+        .calendar-day-header { text-align: center; font-weight: 700; padding: 0.5rem; font-size: 0.85em; }
+        .calendar-day { border: 1px solid var(--gray); border-radius: 8px; padding: 0.5rem; min-height: 100px; font-size: 0.85em; }
+        .calendar-day-number { font-weight: 700; margin-bottom: 0.3rem; }
+        .calendar-task { background: var(--primary); color: white; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.7em; margin-bottom: 0.2rem; cursor: pointer; }
+        
+        .timeline-view { background: white; border-radius: 12px; padding: 1.5rem; }
+        .timeline-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .timeline-date { min-width: 100px; font-weight: 700; color: var(--primary); }
+        .timeline-content { flex: 1; border-left: 3px solid var(--primary); padding-left: 1rem; }
+        
+        .btn-primario { padding: 0.8rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-primario:hover { opacity: 0.9; }
+        .btn-secundario { padding: 0.8rem 1.5rem; background: var(--gray); color: var(--dark); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-secundario:hover { background: #d1d5db; }
         
         .loading { text-align: center; padding: 2rem; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--gray); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .notification-permission { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        @media (max-width: 768px) {
+            .modal-content { width: 98%; padding: 1rem; }
+            .form-row, .form-row-half { grid-template-columns: 1fr; }
+            .kanban-board { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="loading" id="loadingScreen">
         <div class="spinner"></div>
-        <p>Inicializando...</p>
+        <p>Inicializando sistema avançado...</p>
     </div>
 
     <div class="auth-container" id="authContainer" style="display:none;">
@@ -172,7 +235,6 @@
                 <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
                 <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" required></div>
                 <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
-                <button type="button" onclick="debugLogin()" style="width:100%; margin-top:0.5rem; padding:0.5rem; background:#666; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.8em;">🔍 Debug Login</button>
             </form>
 
             <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
@@ -208,7 +270,7 @@
 
     <div class="app-container" id="appContainer">
         <div class="navbar">
-            <div class="navbar-title">✨ Planner Premium</div>
+            <div class="navbar-title">✨ Planner Premium ULTRA</div>
             <div class="navbar-user">
                 <span class="level-badge" onclick="openTab('stats')" id="levelBadge">⭐ Nível 1</span>
                 <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
@@ -218,10 +280,16 @@
         </div>
 
         <div class="container">
+            <div id="notificationBanner" class="notification-permission" style="display:none;">
+                <span>🔔 Ative notificações para receber lembretes das suas tarefas!</span>
+                <button class="btn-nav" onclick="requestNotificationPermission()">Ativar</button>
+            </div>
+
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="openTab('planners')">📋 Planners</button>
                 <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
                 <button class="tab-btn" onclick="openTab('achievements')">🏆 Conquistas</button>
+                <button class="tab-btn" onclick="openTab('calendar')">📅 Calendário</button>
             </div>
 
             <div id="plannersTab" class="tab-content active">
@@ -292,9 +360,21 @@
                 <h2 style="margin-bottom:1rem;">🏆 Conquistas Desbloqueadas</h2>
                 <div class="achievements-grid" id="achievementsList"></div>
             </div>
+
+            <div id="calendarTab" class="tab-content">
+                <div class="calendar-view">
+                    <div class="calendar-header">
+                        <button class="btn-secundario" onclick="changeMonth(-1)">◀ Anterior</button>
+                        <h2 id="calendarTitle">Janeiro 2024</h2>
+                        <button class="btn-secundario" onclick="changeMonth(1)">Próximo ▶</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Modal Criar Planner -->
     <div id="modalCriar" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2><span id="modalIcone"></span> <span id="modalTitulo">Novo</span></h2><button class="close-modal" onclick="fecharModal('modalCriar')">&times;</button></div>
@@ -307,20 +387,186 @@
         </div>
     </div>
 
+    <!-- Modal Ver Planner (CUTTING EDGE) -->
     <div id="modalVer" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2><button class="close-modal" onclick="fecharModal('modalVer')">&times;</button></div>
-            <div class="form-group"><label>Nova Tarefa</label><input type="text" id="inputTarefa"></div>
-            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-                <select id="inputPrio" style="flex:1; padding:0.7rem; border:2px solid #E5E7EB; border-radius:6px;">
-                    <option value="baixa">🟢 Baixa</option>
-                    <option value="media">🟡 Média</option>
-                    <option value="alta">🔴 Alta</option>
-                </select>
-                <input type="date" id="inputDataT" style="flex:1; padding:0.7rem; border:2px solid #E5E7EB; border-radius:6px;">
+            <div class="modal-header">
+                <h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalVer')">&times;</button>
             </div>
-            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="addTarefa()">+ Adicionar</button>
-            <div id="listaTarefas"></div>
+
+            <div class="view-switcher">
+                <button class="view-btn active" onclick="switchView('list')">📋 Lista</button>
+                <button class="view-btn" onclick="switchView('kanban')">📊 Kanban</button>
+                <button class="view-btn" onclick="switchView('timeline')">📈 Timeline</button>
+            </div>
+
+            <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
+
+            <div id="aiSuggestionBox" style="display:none;" class="ai-suggestion">
+                <span class="ai-suggestion-icon">🤖</span>
+                <strong>Sugestão IA:</strong> <span id="aiSuggestionText"></span>
+            </div>
+
+            <div id="listView" class="tab-content active">
+                <div id="listaTarefas"></div>
+            </div>
+
+            <div id="kanbanView" class="tab-content">
+                <div class="kanban-board">
+                    <div class="kanban-column">
+                        <div class="kanban-header">📋 A Fazer</div>
+                        <div id="kanbanTodo"></div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">🚀 Em Progresso</div>
+                        <div id="kanbanProgress"></div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">✅ Concluído</div>
+                        <div id="kanbanDone"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="timelineView" class="tab-content">
+                <div class="timeline-view" id="timelineContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova Tarefa CUTTING EDGE -->
+    <div id="modalNovaTarefa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✨ Nova Tarefa Avançada</h2>
+                <button class="close-modal" onclick="fecharModal('modalNovaTarefa')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Título da Tarefa *</label>
+                <input type="text" id="novaTarefaTitulo" placeholder="Ex: Reunião com cliente">
+            </div>
+
+            <div class="form-group">
+                <label>Descrição Completa</label>
+                <textarea id="novaTarefaDescricao" placeholder="Descreva detalhes, objetivos, contexto..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="novaTarefaCategoria">
+                        <option value="trabalho">💼 Trabalho</option>
+                        <option value="pessoal">🏠 Pessoal</option>
+                        <option value="saude">💪 Saúde</option>
+                        <option value="estudos">📚 Estudos</option>
+                        <option value="financeiro">💰 Financeiro</option>
+                        <option value="outro">📌 Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Prioridade</label>
+                    <select id="novaTarefaPrioridade">
+                        <option value="baixa">🟢 Baixa</option>
+                        <option value="media">🟡 Média</option>
+                        <option value="alta">🔴 Alta</option>
+                        <option value="urgente">🔥 Urgente</option>
+                        <option value="critica">⚡ Crítica</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Data (DD/MM/AAAA)</label>
+                    <input type="text" id="novaTarefaData" placeholder="25/12/2024">
+                </div>
+                <div class="form-group">
+                    <label>Hora</label>
+                    <input type="time" id="novaTarefaHora">
+                </div>
+                <div class="form-group">
+                    <label>Duração (min)</label>
+                    <input type="number" id="novaTarefaDuracao" placeholder="60">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Repetir Tarefa</label>
+                <select id="novaTarefaRepetir">
+                    <option value="nao">Não repetir</option>
+                    <option value="diario">📅 Diariamente</option>
+                    <option value="semanal">📆 Semanalmente</option>
+                    <option value="mensal">🗓️ Mensalmente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tags (pressione Enter para adicionar)</label>
+                <div class="tags-input" id="tagsContainer">
+                    <input type="text" class="tag-input-field" id="tagInput" placeholder="Digite e pressione Enter">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>⏰ Lembretes</label>
+                <div class="form-row">
+                    <select id="lembreteSelect">
+                        <option value="">Selecione...</option>
+                        <option value="5min">5 minutos antes</option>
+                        <option value="15min">15 minutos antes</option>
+                        <option value="30min">30 minutos antes</option>
+                        <option value="1h">1 hora antes</option>
+                        <option value="1dia">1 dia antes</option>
+                    </select>
+                    <button type="button" class="btn-secundario" onclick="adicionarLembrete()">+ Adicionar</button>
+                </div>
+                <div class="reminder-list" id="lembretesLista"></div>
+            </div>
+
+            <div class="form-group">
+                <label>✅ Subtarefas</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                    <input type="text" id="subtarefaInput" placeholder="Nome da subtarefa" style="flex:1;">
+                    <button type="button" class="btn-secundario" onclick="adicionarSubtarefa()">+ Adicionar</button>
+                </div>
+                <div class="subtask-list" id="subtarefasLista"></div>
+            </div>
+
+            <div class="form-group">
+                <label>🔗 Links e Anexos</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                    <input type="text" id="anexoInput" placeholder="Cole o link aqui" style="flex:1;">
+                    <button type="button" class="btn-secundario" onclick="adicionarAnexo()">+ Adicionar</button>
+                </div>
+                <div class="anexo-list" id="anexosLista"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Contexto</label>
+                    <select id="novaTarefaContexto">
+                        <option value="qualquer">📍 Qualquer lugar</option>
+                        <option value="casa">🏠 Casa</option>
+                        <option value="escritorio">🏢 Escritório</option>
+                        <option value="online">💻 Online</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Energia Necessária</label>
+                    <select id="novaTarefaEnergia">
+                        <option value="baixa">😊 Baixa</option>
+                        <option value="media">⚡ Média</option>
+                        <option value="alta">🔥 Alta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; margin-top:1.5rem;">
+                <button class="btn-secundario" style="flex:1;" onclick="fecharModal('modalNovaTarefa')">Cancelar</button>
+                <button class="btn-primario" style="flex:1;" onclick="salvarNovaTarefa()">💾 Salvar Tarefa</button>
+            </div>
         </div>
     </div>
 
@@ -334,6 +580,13 @@
         let planners = [];
         let plannerAberto = null;
         let tipoAtual = '';
+        let currentView = 'list';
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let tempTags = [];
+        let tempLembretes = [];
+        let tempSubtarefas = [];
+        let tempAnexos = [];
         
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
@@ -354,10 +607,15 @@
 
         async function init() {
             document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
+            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('authContainer').style.display = 'flex';
+                
+                setupTagInput();
+                checkNotificationSupport();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
@@ -365,6 +623,167 @@
         }
         
         init();
+
+        function formatDateBR(date) {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function parseDateBR(dateStr) {
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        function setupTagInput() {
+            const tagInput = document.getElementById('tagInput');
+            if (tagInput) {
+                tagInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const tag = tagInput.value.trim();
+                        if (tag && !tempTags.includes(tag)) {
+                            tempTags.push(tag);
+                            renderTags();
+                            tagInput.value = '';
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderTags() {
+            const container = document.getElementById('tagsContainer');
+            const tagInput = document.getElementById('tagInput');
+            container.innerHTML = '';
+            
+            tempTags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `${tag} <span class="tag-remove" onclick="removeTag('${tag}')">✕</span>`;
+                container.appendChild(tagEl);
+            });
+            
+            container.appendChild(tagInput);
+        }
+
+        function removeTag(tag) {
+            tempTags = tempTags.filter(t => t !== tag);
+            renderTags();
+        }
+
+        function adicionarLembrete() {
+            const select = document.getElementById('lembreteSelect');
+            const value = select.value;
+            if (value && !tempLembretes.includes(value)) {
+                tempLembretes.push(value);
+                renderLembretes();
+            }
+        }
+
+        function renderLembretes() {
+            const container = document.getElementById('lembretesLista');
+            const labels = {
+                '5min': '🔔 5 minutos antes',
+                '15min': '🔔 15 minutos antes',
+                '30min': '🔔 30 minutos antes',
+                '1h': '🔔 1 hora antes',
+                '1dia': '🔔 1 dia antes'
+            };
+            
+            container.innerHTML = tempLembretes.map(l => `
+                <div class="reminder-item">
+                    <span>${labels[l]}</span>
+                    <button class="btn-icon btn-del" onclick="removeLembrete('${l}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeLembrete(lembrete) {
+            tempLembretes = tempLembretes.filter(l => l !== lembrete);
+            renderLembretes();
+        }
+
+        function adicionarSubtarefa() {
+            const input = document.getElementById('subtarefaInput');
+            const text = input.value.trim();
+            if (text) {
+                tempSubtarefas.push({ text, done: false });
+                renderSubtarefas();
+                input.value = '';
+            }
+        }
+
+        function renderSubtarefas() {
+            const container = document.getElementById('subtarefasLista');
+            container.innerHTML = tempSubtarefas.map((s, i) => `
+                <div class="subtask-item">
+                    <input type="checkbox" class="subtask-checkbox" ${s.done ? 'checked' : ''} onchange="toggleSubtarefa(${i})">
+                    <span class="subtask-text">${s.text}</span>
+                    <button class="btn-icon btn-del" onclick="removeSubtarefa(${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleSubtarefa(index) {
+            tempSubtarefas[index].done = !tempSubtarefas[index].done;
+            renderSubtarefas();
+        }
+
+        function removeSubtarefa(index) {
+            tempSubtarefas.splice(index, 1);
+            renderSubtarefas();
+        }
+
+        function adicionarAnexo() {
+            const input = document.getElementById('anexoInput');
+            const url = input.value.trim();
+            if (url) {
+                tempAnexos.push(url);
+                renderAnexos();
+                input.value = '';
+            }
+        }
+
+        function renderAnexos() {
+            const container = document.getElementById('anexosLista');
+            container.innerHTML = tempAnexos.map((a, i) => `
+                <div class="anexo-item">
+                    🔗 <a href="${a}" target="_blank">${a.substring(0, 30)}...</a>
+                    <button class="btn-icon btn-del" onclick="removeAnexo(${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeAnexo(index) {
+            tempAnexos.splice(index, 1);
+            renderAnexos();
+        }
+
+        function checkNotificationSupport() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                document.getElementById('notificationBanner').style.display = 'flex';
+            }
+        }
+
+        async function requestNotificationPermission() {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                document.getElementById('notificationBanner').style.display = 'none';
+                showNotification('🎉 Notificações Ativadas!', 'Você receberá lembretes das suas tarefas.');
+            }
+        }
+
+        function showNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { body, icon: '✨' });
+            }
+        }
 
         function showTab(t) {
             document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)));
@@ -388,57 +807,6 @@
         function hideMsg() { 
             document.getElementById('authError').style.display='none'; 
             document.getElementById('authSuccess').style.display='none'; 
-        }
-
-        async function debugLogin() {
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPassword').value;
-            
-            if (!email || !pass) {
-                alert('Preencha email e senha primeiro!');
-                return;
-            }
-            
-            try {
-                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
-                
-                if (error || !user) {
-                    alert('❌ Usuário não encontrado!\n\nEmail procurado: ' + email);
-                    return;
-                }
-                
-                const debugInfo = `
-🔍 DEBUG INFO:
-━━━━━━━━━━━━━━━━━━
-✅ Usuário encontrado!
-
-📧 Email: ${user.email}
-👤 Nome: ${user.name}
-🔐 Senha no banco: ${user.password.substring(0, 20)}...
-📏 Tamanho senha: ${user.password.length} caracteres
-🔒 É hash? ${user.password.startsWith('$2') ? 'SIM ✅' : 'NÃO ❌ (texto plano)'}
-📅 Criado em: ${user.created_at || 'N/A'}
-
-💡 Senha digitada tem ${pass.length} caracteres
-                `.trim();
-                
-                alert(debugInfo);
-                
-                // Testar comparação
-                if (user.password.startsWith('$2')) {
-                    try {
-                        const isValid = await bcrypt.compare(pass, user.password);
-                        alert(isValid ? '✅ Senha CORRETA!' : '❌ Senha INCORRETA!');
-                    } catch (err) {
-                        alert('❌ Erro ao comparar: ' + err.message);
-                    }
-                } else {
-                    alert(user.password === pass ? '✅ Senha CORRETA!' : '❌ Senha INCORRETA!');
-                }
-                
-            } catch (err) {
-                alert('❌ Erro: ' + err.message);
-            }
         }
 
         async function handleSignup(e) {
@@ -500,10 +868,8 @@
                     return;
                 }
                 
-                // Verificar se senha está hasheada (começa com $2a$ ou $2b$)
                 let isValid = false;
                 if (user.password && user.password.startsWith('$2')) {
-                    // Senha hasheada - usar bcrypt
                     try {
                         isValid = await bcrypt.compare(pass, user.password);
                     } catch (bcryptErr) {
@@ -514,15 +880,11 @@
                         return;
                     }
                 } else {
-                    // Senha em texto plano (contas antigas) - comparação direta
                     isValid = (user.password === pass);
-                    
-                    // Se login correto, atualizar para hash
                     if (isValid) {
                         try {
                             const hashedPassword = await bcrypt.hash(pass, 10);
                             await supabase.from('users').update({ password: hashedPassword }).eq('email', email);
-                            console.log('✅ Senha migrada para hash');
                         } catch (hashErr) {
                             console.warn('Aviso: não foi possível migrar senha:', hashErr);
                         }
@@ -596,6 +958,8 @@
             renderPlanners();
             renderAchievements();
             renderCharts();
+            renderCalendar();
+            showAISuggestions();
         }
 
         async function updateStreak() {
@@ -648,6 +1012,7 @@
             document.getElementById('newLevel').textContent = level;
             document.getElementById('levelUpModal').classList.add('active');
             createConfetti();
+            showNotification('🎉 Level Up!', `Você alcançou o nível ${level}!`);
         }
 
         function closeLevelUp() {
@@ -761,7 +1126,7 @@
             });
             
             const prioData = {
-                alta: tarefas.filter(t => t.prioridade === 'alta').length,
+                alta: tarefas.filter(t => t.prioridade === 'alta' || t.prioridade === 'urgente' || t.prioridade === 'critica').length,
                 media: tarefas.filter(t => t.prioridade === 'media').length,
                 baixa: tarefas.filter(t => t.prioridade === 'baixa').length
             };
@@ -769,7 +1134,7 @@
             new Chart(document.getElementById('priorityChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Alta', 'Média', 'Baixa'],
+                    labels: ['Alta/Urgente', 'Média', 'Baixa'],
                     datasets: [{
                         data: [prioData.alta, prioData.media, prioData.baixa],
                         backgroundColor: ['#EF4444', '#F59E0B', '#10B981']
@@ -796,17 +1161,15 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            if (tab === 'planners') {
-                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-                document.getElementById('plannersTab').classList.add('active');
-            } else if (tab === 'stats') {
-                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-                document.getElementById('statsTab').classList.add('active');
-                renderCharts();
-            } else if (tab === 'achievements') {
-                document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
-                document.getElementById('achievementsTab').classList.add('active');
-                renderAchievements();
+            const tabs = ['planners', 'stats', 'achievements', 'calendar'];
+            const index = tabs.indexOf(tab);
+            if (index !== -1) {
+                document.querySelectorAll('.tab-btn')[index].classList.add('active');
+                document.getElementById(tab + 'Tab').classList.add('active');
+                
+                if (tab === 'stats') renderCharts();
+                if (tab === 'achievements') renderAchievements();
+                if (tab === 'calendar') renderCalendar();
             }
         }
 
@@ -878,51 +1241,235 @@
             document.getElementById('modalVer').style.display = 'block';
         }
 
-        function renderTarefas(tarefas) {
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#modalVer .tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (view === 'list') {
+                document.querySelector('.view-btn:nth-child(1)').classList.add('active');
+                document.getElementById('listView').classList.add('active');
+            } else if (view === 'kanban') {
+                document.querySelector('.view-btn:nth-child(2)').classList.add('active');
+                document.getElementById('kanbanView').classList.add('active');
+                renderKanban();
+            } else if (view === 'timeline') {
+                document.querySelector('.view-btn:nth-child(3)').classList.add('active');
+                document.getElementById('timelineView').classList.add('active');
+                renderTimeline();
+            }
+        }
+
+        async function renderTarefas(tarefas) {
             const c = document.getElementById('listaTarefas');
             if (!tarefas.length) {
-                c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
+                c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa criada</p>';
                 return;
             }
-            c.innerHTML = tarefas.map(t => `
-                <div class="tarefa-item">
-                    <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
-                    <div class="tarefa-conteudo">
-                        <div class="tarefa-titulo" style="${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${t.titulo}</div>
+            
+            const prioIcons = {
+                'baixa': '🟢',
+                'media': '🟡',
+                'alta': '🔴',
+                'urgente': '🔥',
+                'critica': '⚡'
+            };
+            
+            c.innerHTML = tarefas.map(t => {
+                const data = t.data_formatada || formatDateBR(t.data);
+                const hora = t.hora || '';
+                const descricao = t.descricao ? t.descricao.substring(0, 80) + '...' : '';
+                
+                return `
+                    <div class="tarefa-item">
+                        <div class="tarefa-header">
+                            <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
+                            <div class="tarefa-conteudo">
+                                <div class="tarefa-titulo" style="${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${prioIcons[t.prioridade] || '📌'} ${t.titulo}</div>
+                                ${descricao ? `<div class="tarefa-descricao">${descricao}</div>` : ''}
+                                <div class="tarefa-meta">
+                                    ${data ? `<span class="tarefa-meta-item">📅 ${data}${hora ? ' ' + hora : ''}</span>` : ''}
+                                    ${t.categoria ? `<span class="tarefa-meta-item">${getCategoriaIcon(t.categoria)} ${t.categoria}</span>` : ''}
+                                    ${t.duracao ? `<span class="tarefa-meta-item">⏱️ ${t.duracao}min</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tarefa-actions">
+                            <button class="btn-icon" onclick="editarTarefa(${t.id})">✏️</button>
+                            <button class="btn-icon btn-del" onclick="deletarTarefa(${t.id})">🗑️</button>
+                        </div>
                     </div>
-                    <button class="btn-del" onclick="deletarTarefa(${t.id})">✕</button>
+                `;
+            }).join('');
+        }
+
+        function getCategoriaIcon(cat) {
+            const icons = {
+                'trabalho': '💼',
+                'pessoal': '🏠',
+                'saude': '💪',
+                'estudos': '📚',
+                'financeiro': '💰',
+                'outro': '📌'
+            };
+            return icons[cat] || '📌';
+        }
+
+        async function renderKanban() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+            if (!tarefas) return;
+            
+            const todo = tarefas.filter(t => !t.done && !t.em_progresso);
+            const progress = tarefas.filter(t => !t.done && t.em_progresso);
+            const done = tarefas.filter(t => t.done);
+            
+            document.getElementById('kanbanTodo').innerHTML = renderKanbanCards(todo);
+            document.getElementById('kanbanProgress').innerHTML = renderKanbanCards(progress);
+            document.getElementById('kanbanDone').innerHTML = renderKanbanCards(done);
+        }
+
+        function renderKanbanCards(tarefas) {
+            if (!tarefas.length) return '<p style="color:#999;font-size:0.85em;">Nenhuma tarefa</p>';
+            
+            return tarefas.map(t => `
+                <div class="kanban-card">
+                    <div style="font-weight:700; margin-bottom:0.5rem;">${t.titulo}</div>
+                    <div style="font-size:0.85em; color:#666;">${t.data_formatada || formatDateBR(t.data)}</div>
                 </div>
             `).join('');
         }
 
-        async function addTarefa() {
-            const titulo = document.getElementById('inputTarefa').value.trim();
-            if (!titulo) { alert('❌ Digite o título!'); return; }
+        async function renderTimeline() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
+            if (!tarefas || !tarefas.length) {
+                document.getElementById('timelineContainer').innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
+                return;
+            }
+            
+            const grouped = {};
+            tarefas.forEach(t => {
+                const date = t.data_formatada || formatDateBR(t.data);
+                if (!grouped[date]) grouped[date] = [];
+                grouped[date].push(t);
+            });
+            
+            const html = Object.keys(grouped).map(date => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${date}</div>
+                    <div class="timeline-content">
+                        ${grouped[date].map(t => `<div style="margin-bottom:0.5rem;"><strong>${t.titulo}</strong>${t.hora ? ' - ' + t.hora : ''}</div>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('timelineContainer').innerHTML = html;
+        }
+
+        function abrirModalNovaTarefa() {
+            tempTags = [];
+            tempLembretes = [];
+            tempSubtarefas = [];
+            tempAnexos = [];
+            
+            document.getElementById('novaTarefaTitulo').value = '';
+            document.getElementById('novaTarefaDescricao').value = '';
+            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            document.getElementById('novaTarefaHora').value = '';
+            document.getElementById('novaTarefaDuracao').value = '';
+            
+            renderTags();
+            renderLembretes();
+            renderSubtarefas();
+            renderAnexos();
+            
+            document.getElementById('modalNovaTarefa').style.display = 'block';
+        }
+
+        async function salvarNovaTarefa() {
+            const titulo = document.getElementById('novaTarefaTitulo').value.trim();
+            if (!titulo) { alert('❌ Digite o título da tarefa!'); return; }
+            
+            const descricao = document.getElementById('novaTarefaDescricao').value.trim();
+            const categoria = document.getElementById('novaTarefaCategoria').value;
+            const prioridade = document.getElementById('novaTarefaPrioridade').value;
+            const dataFormatada = document.getElementById('novaTarefaData').value;
+            const data = parseDateBR(dataFormatada);
+            const hora = document.getElementById('novaTarefaHora').value;
+            const duracao = parseInt(document.getElementById('novaTarefaDuracao').value) || null;
+            const repetir = document.getElementById('novaTarefaRepetir').value;
+            const contexto = document.getElementById('novaTarefaContexto').value;
+            const energia = document.getElementById('novaTarefaEnergia').value;
             
             try {
-                await supabase.from('tarefas').insert([{
+                const novaTarefa = {
                     planner_id: plannerAberto,
-                    titulo: titulo,
-                    prioridade: document.getElementById('inputPrio').value,
-                    data: document.getElementById('inputDataT').value,
-                    done: false
-                }]);
+                    titulo,
+                    descricao,
+                    categoria,
+                    prioridade,
+                    data,
+                    data_formatada: dataFormatada,
+                    hora,
+                    duracao,
+                    repetir,
+                    contexto,
+                    energia,
+                    tags: tempTags,
+                    lembretes: tempLembretes,
+                    subtarefas: tempSubtarefas,
+                    anexos: tempAnexos,
+                    done: false,
+                    em_progresso: false
+                };
                 
-                document.getElementById('inputTarefa').value = '';
-                document.getElementById('inputDataT').value = '';
-                await addXP(10);
+                await supabase.from('tarefas').insert([novaTarefa]);
+                
+                fecharModal('modalNovaTarefa');
+                await addXP(30);
                 abrirPlanner(plannerAberto);
+                
+                // Agendar lembretes
+                agendarLembretes(novaTarefa);
+                
+                showNotification('✅ Tarefa Criada!', titulo);
             } catch (err) {
                 console.error('Erro:', err);
-                alert('❌ Erro ao adicionar');
+                alert('❌ Erro ao criar tarefa');
             }
+        }
+
+        function agendarLembretes(tarefa) {
+            if (!tarefa.lembretes || tarefa.lembretes.length === 0) return;
+            
+            const dataHora = new Date(tarefa.data + ' ' + (tarefa.hora || '00:00'));
+            
+            tarefa.lembretes.forEach(l => {
+                let tempoAntes = 0;
+                if (l === '5min') tempoAntes = 5 * 60 * 1000;
+                else if (l === '15min') tempoAntes = 15 * 60 * 1000;
+                else if (l === '30min') tempoAntes = 30 * 60 * 1000;
+                else if (l === '1h') tempoAntes = 60 * 60 * 1000;
+                else if (l === '1dia') tempoAntes = 24 * 60 * 60 * 1000;
+                
+                const alertTime = dataHora.getTime() - tempoAntes;
+                const agora = Date.now();
+                
+                if (alertTime > agora) {
+                    setTimeout(() => {
+                        showNotification('⏰ Lembrete: ' + tarefa.titulo, 'Tarefa programada para breve!');
+                    }, alertTime - agora);
+                }
+            });
         }
 
         async function toggleTarefa(id) {
             try {
                 const { data: t } = await supabase.from('tarefas').select('done').eq('id', id).single();
                 await supabase.from('tarefas').update({ done: !t.done }).eq('id', id);
-                if (!t.done) await addXP(20);
+                if (!t.done) {
+                    await addXP(20);
+                    showNotification('✅ Tarefa Concluída!', 'Você ganhou +20 XP!');
+                }
                 await checkAchievements();
                 abrirPlanner(plannerAberto);
             } catch (err) {
@@ -930,8 +1477,12 @@
             }
         }
 
+        async function editarTarefa(id) {
+            alert('🚧 Função de edição avançada em desenvolvimento');
+        }
+
         async function deletarTarefa(id) {
-            if (!confirm('Deletar?')) return;
+            if (!confirm('Deletar esta tarefa?')) return;
             try {
                 await supabase.from('tarefas').delete().eq('id', id);
                 abrirPlanner(plannerAberto);
@@ -941,7 +1492,7 @@
         }
 
         async function deletarPlanner(id) {
-            if (!confirm('Deletar planner?')) return;
+            if (!confirm('Deletar planner e todas as tarefas?')) return;
             try {
                 await supabase.from('tarefas').delete().eq('planner_id', id);
                 await supabase.from('planners').delete().eq('id', id);
@@ -950,6 +1501,99 @@
             } catch (err) {
                 console.error('Erro:', err);
             }
+        }
+
+        async function renderCalendar() {
+            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            document.getElementById('calendarTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            
+            let html = '<div class="calendar-day-header">Dom</div><div class="calendar-day-header">Seg</div><div class="calendar-day-header">Ter</div><div class="calendar-day-header">Qua</div><div class="calendar-day-header">Qui</div><div class="calendar-day-header">Sex</div><div class="calendar-day-header">Sáb</div>';
+            
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day"></div>';
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayTasks = tarefas?.filter(t => t.data === dateStr) || [];
+                
+                html += `
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">${day}</div>
+                        ${dayTasks.slice(0, 3).map(t => `<div class="calendar-task" title="${t.titulo}">${t.titulo.substring(0, 15)}</div>`).join('')}
+                        ${dayTasks.length > 3 ? `<div style="font-size:0.7em; color:#666;">+${dayTasks.length - 3} mais</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        async function showAISuggestions() {
+            const hour = new Date().getHours();
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            
+            if (!tarefas || tarefas.length === 0) return;
+            
+            const pending = tarefas.filter(t => !t.done);
+            const alta = pending.filter(t => t.prioridade === 'alta' || t.prioridade === 'urgente' || t.prioridade === 'critica');
+            
+            let suggestion = '';
+            
+            if (hour >= 6 && hour < 12) {
+                if (alta.length > 0) {
+                    suggestion = `🌅 Bom dia! Você tem ${alta.length} tarefa(s) de alta prioridade. Recomendo começar pela mais urgente.`;
+                } else {
+                    suggestion = '🌅 Bom dia! Momento ideal para tarefas que exigem mais concentração.';
+                }
+            } else if (hour >= 12 && hour < 18) {
+                suggestion = '☀️ Boa tarde! Seu pico de produtividade geralmente é agora. Aproveite!';
+            } else if (hour >= 18 && hour < 22) {
+                const tomorrow = tarefas.filter(t => {
+                    const taskDate = new Date(t.data);
+                    const tom = new Date();
+                    tom.setDate(tom.getDate() + 1);
+                    return taskDate.toDateString() === tom.toDateString();
+                });
+                if (tomorrow.length > 0) {
+                    suggestion = `🌆 Boa noite! Você tem ${tomorrow.length} tarefa(s) para amanhã. Que tal revisar?`;
+                } else {
+                    suggestion = '🌆 Boa noite! Momento ideal para planejamento do dia seguinte.';
+                }
+            } else {
+                suggestion = '🌙 É tarde! Descanse bem para manter a produtividade alta amanhã.';
+            }
+            
+            if (currentUser.streak >= 5) {
+                suggestion += ` 🔥 Você está em um streak de ${currentUser.streak} dias! Continue assim!`;
+            }
+            
+            // Mostrar sugestão quando abrir um planner
+            setTimeout(() => {
+                const aiBox = document.getElementById('aiSuggestionBox');
+                const aiText = document.getElementById('aiSuggestionText');
+                if (aiBox && aiText && suggestion) {
+                    aiText.textContent = suggestion;
+                    aiBox.style.display = 'block';
+                }
+            }, 1000);
         }
 
         function fecharModal(id) {
