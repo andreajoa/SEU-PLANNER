@@ -4,33 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B46C1">
-    <meta name="description" content="Planner Premium ULTRA - Organize sua vida com gamificação e produtividade avançada">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Planner ULTRA">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Planner ULTRA">
-    <meta name="msapplication-TileColor" content="#6B46C1">
-    <meta name="msapplication-TileImage" content="/icon-144.png">
-    <title>✨ Planner Premium ULTRA - Cutting Edge</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
-    
-    <!-- Ícones para iOS -->
-    <link rel="apple-touch-icon" href="/icon-152.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/icon-72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="/icon-96.png">
-    <link rel="apple-touch-icon" sizes="128x128" href="/icon-128.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/icon-144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
-    <link rel="apple-touch-icon" sizes="384x384" href="/icon-384.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/icon-72.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/icon-72.png">
+    <title>✨ Planner Premium ULTRA</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -72,7 +46,7 @@
         .auth-box { background: white; border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
         .auth-logo { text-align: center; margin-bottom: 1.5rem; }
         .auth-logo-icon { font-size: 3em; }
-        .auth-logo h1 { font-size: 1.4em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .auth-logo h1 { font-size: 1.4em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .trial-badge { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 0.8rem 0; display: inline-block; }
         .auth-tabs { display: flex; margin-bottom: 1.5rem; background: var(--gray); border-radius: 10px; padding: 4px; }
         .auth-tab { flex: 1; padding: 0.6rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 8px; color: #666; font-size: 0.9em; }
@@ -95,6 +69,10 @@
         .trial-banner.danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
         
+        .eco-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 600; }
+        .eco-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 0.5rem; }
+        .eco-stat { font-size: 0.9em; }
+        
         .paywall-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 1rem; }
         .paywall-overlay.active { display: flex; }
         .paywall-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%; text-align: center; }
@@ -115,8 +93,8 @@
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
         
-        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 800px; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; white-space: nowrap; }
+        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 1200px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.85em; white-space: nowrap; }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .tab-content { display: none; }
@@ -157,13 +135,26 @@
         .planner-item-acoes { display: flex; gap: 0.3rem; }
         .planner-item-acoes button { flex: 1; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: 600; }
         
+        .biblioteca-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+        .biblioteca-card { background: white; border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.2s; }
+        .biblioteca-card:hover { transform: translateY(-3px); }
+        .biblioteca-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
+        .biblioteca-title { font-weight: 700; font-size: 0.9em; }
+        .biblioteca-subtitle { font-size: 0.75em; color: #666; margin-top: 0.2rem; }
+        
+        .tutorial-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; }
+        .tutorial-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+        .tutorial-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .tutorial-icon { font-size: 2.5em; }
+        .tutorial-title { font-size: 1.2em; font-weight: 700; }
+        .tutorial-desc { color: #666; font-size: 0.9em; }
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
         .modal-content { background: white; margin: 2% auto; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray); padding-bottom: 1rem; }
         .close-modal { font-size: 1.5em; cursor: pointer; background: none; border: none; color: #999; }
         
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-        .form-row-half { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
         
         .tags-input { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; border: 2px solid var(--gray); border-radius: 8px; min-height: 45px; }
         .tag { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.85em; display: flex; align-items: center; gap: 0.3rem; }
@@ -180,9 +171,6 @@
         
         .anexo-list { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .anexo-item { background: var(--light); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.85em; display: flex; align-items: center; gap: 0.5rem; }
-        
-        .ai-suggestion { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
-        .ai-suggestion-icon { font-size: 1.2em; margin-right: 0.5rem; }
         
         .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; border-left: 4px solid var(--primary); cursor: pointer; transition: all 0.2s; }
         .tarefa-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -229,33 +217,25 @@
         .spinner { width: 40px; height: 40px; border: 4px solid var(--gray); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .notification-permission { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        
-        .install-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998; box-shadow: 0 -4px 20px rgba(0,0,0,0.2); }
-        .install-banner button { background: white; color: #10B981; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-left: 1rem; }
-        .install-banner button:hover { opacity: 0.9; }
+        .google-calendar-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .gcal-header { text-align: center; margin-bottom: 2rem; }
+        .gcal-icon { font-size: 4em; margin-bottom: 1rem; }
+        .gcal-benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .gcal-benefit { text-align: center; }
+        .gcal-benefit-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
+        .gcal-steps { background: var(--light); border-radius: 10px; padding: 1.5rem; }
+        .gcal-step { margin-bottom: 1rem; padding-left: 2rem; position: relative; }
+        .gcal-step:before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: 700; }
         
         @media (max-width: 768px) {
             .modal-content { width: 98%; padding: 1rem; }
-            .form-row, .form-row-half { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
             .kanban-board { grid-template-columns: 1fr; }
+            .tab-menu { font-size: 0.75em; }
         }
     </style>
 </head>
 <body>
-    <!-- Banner de Instalação PWA -->
-    <div class="install-banner" id="installBanner">
-        <span>📱 Instale o app na sua tela inicial para acesso rápido!</span>
-        <button onclick="installPWA()">Instalar Agora</button>
-        <button onclick="dismissInstallBanner()" style="background:transparent; color:white; border:1px solid white;">Agora Não</button>
-    </div>
-
-    <!-- Banner iOS específico -->
-    <div class="install-banner" id="iosBanner" style="display:none;">
-        <span>📱 Para instalar: toque em <strong>Compartilhar</strong> 📤 e depois em <strong>"Adicionar à Tela de Início"</strong></span>
-        <button onclick="dismissIOSBanner()" style="background:white; color:#10B981;">Entendi</button>
-    </div>
-
     <div class="loading" id="loadingScreen">
         <div class="spinner"></div>
         <p>Inicializando sistema avançado...</p>
@@ -269,8 +249,8 @@
                 <div class="trial-badge">🎁 7 dias grátis • R$ 19,99/mês</div>
             </div>
             <div class="auth-tabs">
-                <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
-                <button class="auth-tab" onclick="showTab('signup')">Criar Conta</button>
+                <button class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
+                <button class="auth-tab" onclick="showAuthTab('signup')">Criar Conta</button>
             </div>
             <div id="authError" class="auth-msg auth-error"></div>
             <div id="authSuccess" class="auth-msg auth-success"></div>
@@ -311,6 +291,14 @@
     </div>
 
     <div id="trialBanner" class="trial-banner" style="display:none;"></div>
+    
+    <div class="eco-banner">
+        🌱 100% Digital • Zero Papel
+        <div class="eco-stats">
+            <span class="eco-stat">📄 <span id="paperSaved">0</span> páginas economizadas</span>
+            <span class="eco-stat">🌳 <span id="treesSaved">0</span> árvores salvas</span>
+        </div>
+    </div>
 
     <div class="app-container" id="appContainer">
         <div class="navbar">
@@ -324,16 +312,14 @@
         </div>
 
         <div class="container">
-            <div id="notificationBanner" class="notification-permission" style="display:none;">
-                <span>🔔 Ative notificações para receber lembretes das suas tarefas!</span>
-                <button class="btn-nav" onclick="requestNotificationPermission()">Ativar</button>
-            </div>
-
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="openTab('planners')">📋 Planners</button>
-                <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
+                <button class="tab-btn" onclick="openTab('biblioteca')">📖 Biblioteca</button>
+                <button class="tab-btn" onclick="openTab('tutoriais')">📚 Tutoriais</button>
+                <button class="tab-btn" onclick="openTab('stats')">📊 Stats</button>
                 <button class="tab-btn" onclick="openTab('achievements')">🏆 Conquistas</button>
                 <button class="tab-btn" onclick="openTab('calendar')">📅 Calendário</button>
+                <button class="tab-btn" onclick="openTab('google')">🔗 Google</button>
             </div>
 
             <div id="plannersTab" class="tab-content active">
@@ -360,6 +346,76 @@
                     <h2 style="margin-bottom:1rem;">📋 Meus Planners</h2>
                     <div class="planners-grid" id="meusPlanners"></div>
                 </div>
+            </div>
+
+            <div id="bibliotecaTab" class="tab-content">
+                <h2 style="margin-bottom:1rem;">📖 Biblioteca Premium (900+ Páginas)</h2>
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom:1.5rem;">
+                    <h3 style="margin-bottom:1rem;">📅 Planejamento Temporal</h3>
+                    <div class="biblioteca-grid">
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('diario')">
+                            <div class="biblioteca-icon">📅</div>
+                            <div class="biblioteca-title">Páginas Diárias</div>
+                            <div class="biblioteca-subtitle">365 páginas</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('semanal')">
+                            <div class="biblioteca-icon">📆</div>
+                            <div class="biblioteca-title">Páginas Semanais</div>
+                            <div class="biblioteca-subtitle">52 páginas</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('mensal')">
+                            <div class="biblioteca-icon">🗓️</div>
+                            <div class="biblioteca-title">Páginas Mensais</div>
+                            <div class="biblioteca-subtitle">12 páginas</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('anual')">
+                            <div class="biblioteca-icon">📊</div>
+                            <div class="biblioteca-title">Visão Anual</div>
+                            <div class="biblioteca-subtitle">1 página</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <h3 style="margin-bottom:1rem;">🎯 Planejadores Temáticos</h3>
+                    <div class="biblioteca-grid">
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('financeiro')">
+                            <div class="biblioteca-icon">💰</div>
+                            <div class="biblioteca-title">Financeiro</div>
+                            <div class="biblioteca-subtitle">Controle total</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('saude')">
+                            <div class="biblioteca-icon">💪</div>
+                            <div class="biblioteca-title">Saúde</div>
+                            <div class="biblioteca-subtitle">Bem-estar</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('leitura')">
+                            <div class="biblioteca-icon">📚</div>
+                            <div class="biblioteca-title">Leitura</div>
+                            <div class="biblioteca-subtitle">Livros & Metas</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('viagem')">
+                            <div class="biblioteca-icon">✈️</div>
+                            <div class="biblioteca-title">Viagens</div>
+                            <div class="biblioteca-subtitle">Planeje aventuras</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('metas')">
+                            <div class="biblioteca-icon">🎯</div>
+                            <div class="biblioteca-title">Metas</div>
+                            <div class="biblioteca-subtitle">Objetivos</div>
+                        </div>
+                        <div class="biblioteca-card" onclick="abrirBiblioteca('habitos')">
+                            <div class="biblioteca-icon">🔥</div>
+                            <div class="biblioteca-title">Hábitos</div>
+                            <div class="biblioteca-subtitle">Tracker diário</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tutoriaisTab" class="tab-content">
+                <h2 style="margin-bottom:1.5rem;">📚 Área de Membros - Tutoriais Exclusivos</h2>
+                <div id="tutoriaisLista"></div>
             </div>
 
             <div id="statsTab" class="tab-content">
@@ -415,6 +471,50 @@
                     <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
             </div>
+
+            <div id="googleTab" class="tab-content">
+                <div class="google-calendar-section">
+                    <div class="gcal-header">
+                        <div class="gcal-icon">📅</div>
+                        <h2>Integração Google Calendar</h2>
+                        <p style="color:#666; margin-top:0.5rem;">Sincronize suas tarefas com o Google Calendar</p>
+                    </div>
+                    
+                    <div class="gcal-benefits">
+                        <div class="gcal-benefit">
+                            <div class="gcal-benefit-icon">📱</div>
+                            <h3>Acesso Universal</h3>
+                            <p style="color:#666; font-size:0.9em;">Android, iPhone, Web, Desktop</p>
+                        </div>
+                        <div class="gcal-benefit">
+                            <div class="gcal-benefit-icon">🔔</div>
+                            <h3>Notificações Nativas</h3>
+                            <p style="color:#666; font-size:0.9em;">Alertas em todos dispositivos</p>
+                        </div>
+                        <div class="gcal-benefit">
+                            <div class="gcal-benefit-icon">🔄</div>
+                            <h3>Sync Automático</h3>
+                            <p style="color:#666; font-size:0.9em;">Sempre atualizado</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gcal-steps">
+                        <h3 style="margin-bottom:1rem;">Como Integrar:</h3>
+                        <div class="gcal-step">Acesse suas configurações do Google Calendar</div>
+                        <div class="gcal-step">Clique em "Adicionar calendário" → "A partir de URL"</div>
+                        <div class="gcal-step">Cole a URL abaixo e confirme</div>
+                        <div class="gcal-step">Suas tarefas aparecerão automaticamente!</div>
+                    </div>
+                    
+                    <div style="background:var(--light); border-radius:10px; padding:1rem; margin-top:1.5rem;">
+                        <label style="font-weight:600; display:block; margin-bottom:0.5rem;">Sua URL de Sincronização:</label>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="text" id="gcalUrl" readonly style="flex:1; padding:0.7rem; border:2px solid var(--gray); border-radius:6px; font-family:monospace; font-size:0.85em;">
+                            <button class="btn-primario" onclick="copyGcalUrl()">📋 Copiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -431,7 +531,7 @@
         </div>
     </div>
 
-    <!-- Modal Ver Planner (CUTTING EDGE) -->
+    <!-- Modal Ver Planner -->
     <div id="modalVer" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -446,11 +546,6 @@
             </div>
 
             <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
-
-            <div id="aiSuggestionBox" style="display:none;" class="ai-suggestion">
-                <span class="ai-suggestion-icon">🤖</span>
-                <strong>Sugestão IA:</strong> <span id="aiSuggestionText"></span>
-            </div>
 
             <div id="listView" class="tab-content active">
                 <div id="listaTarefas"></div>
@@ -479,7 +574,7 @@
         </div>
     </div>
 
-    <!-- Modal Nova Tarefa CUTTING EDGE -->
+    <!-- Modal Nova Tarefa -->
     <div id="modalNovaTarefa" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -523,8 +618,8 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>Data (DD/MM/AAAA)</label>
-                    <input type="text" id="novaTarefaData" placeholder="25/12/2024">
+                    <label>Data</label>
+                    <input type="date" id="novaTarefaData">
                 </div>
                 <div class="form-group">
                     <label>Hora</label>
@@ -614,6 +709,28 @@
         </div>
     </div>
 
+    <!-- Modal Biblioteca -->
+    <div id="modalBiblioteca" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="biblioIcone"></span> <span id="biblioTitulo">Biblioteca</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalBiblioteca')">&times;</button>
+            </div>
+            <div id="biblioConteudo"></div>
+        </div>
+    </div>
+
+    <!-- Modal Tutorial -->
+    <div id="modalTutorial" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="tutorialIcone"></span> <span id="tutorialTitulo">Tutorial</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalTutorial')">&times;</button>
+            </div>
+            <div id="tutorialConteudo"></div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
@@ -632,10 +749,6 @@
         let tempSubtarefas = [];
         let tempAnexos = [];
         
-        // PWA Variables
-        let deferredPrompt;
-        let isInstalled = false;
-        
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
             'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
@@ -653,9 +766,247 @@
             { id: 'planner_pro', name: 'Planejador Pro', icon: '📋', requirement: 5 }
         ];
 
+        const tutoriaisData = [
+            {
+                id: 'comeco',
+                icon: '🚀',
+                title: 'Como Começar',
+                desc: 'Guia completo para dar seus primeiros passos',
+                content: `
+                    <h3>🚀 Bem-vindo ao Planner Premium ULTRA!</h3>
+                    <p style="margin:1rem 0;">Este tutorial vai te ensinar tudo para começar com o pé direito.</p>
+                    
+                    <h4 style="margin-top:1.5rem;">1️⃣ Crie seu primeiro planner</h4>
+                    <p>Vá na aba "Planners" e escolha o tipo ideal para você: To-Do, Projetos, Hábitos ou Financeiro.</p>
+                    
+                    <h4 style="margin-top:1.5rem;">2️⃣ Adicione tarefas</h4>
+                    <p>Clique em "Nova Tarefa Avançada" e preencha todos os detalhes. Quanto mais informações, melhor!</p>
+                    
+                    <h4 style="margin-top:1.5rem;">3️⃣ Ganhe XP e suba de nível</h4>
+                    <p>Cada tarefa concluída te dá +20 XP. Complete tarefas diariamente para manter seu streak!</p>
+                    
+                    <h4 style="margin-top:1.5rem;">4️⃣ Explore a Biblioteca</h4>
+                    <p>900+ páginas prontas para você usar: diárias, semanais, mensais e planejadores temáticos.</p>
+                `
+            },
+            {
+                id: 'gamificacao',
+                icon: '🎮',
+                title: 'Sistema de Gamificação',
+                desc: 'Entenda níveis, XP, streaks e conquistas',
+                content: `
+                    <h3>🎮 Sistema de Gamificação</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">⭐ Níveis e XP</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Criar planner: +50 XP</li>
+                        <li>Completar tarefa: +20 XP</li>
+                        <li>Cada nível requer: Nível × 100 XP</li>
+                        <li>Exemplo: Nível 5 → 500 XP necessários</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🔥 Streak</h4>
+                    <p>Use o app todos os dias para manter seu streak ativo! Cada dia consecutivo aumenta o contador.</p>
+                    
+                    <h4 style="margin-top:1.5rem;">🏆 Conquistas</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>🎯 Primeira Tarefa: Complete 1 tarefa</li>
+                        <li>👑 Mestre das Tarefas: 10 tarefas</li>
+                        <li>💯 Centenário: 100 tarefas</li>
+                        <li>🔥 Streak 7 dias</li>
+                        <li>💪 Streak 30 dias</li>
+                        <li>⭐ Nível 10</li>
+                        <li>📋 5 planners criados</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'tarefas',
+                icon: '✅',
+                title: 'Tarefas Avançadas',
+                desc: 'Domine todos os campos e recursos',
+                content: `
+                    <h3>✅ Tarefas Avançadas</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">📝 Campos Principais</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li><strong>Título:</strong> Nome curto e claro</li>
+                        <li><strong>Descrição:</strong> Detalhes completos</li>
+                        <li><strong>Categoria:</strong> Organize por área da vida</li>
+                        <li><strong>Prioridade:</strong> De Baixa a Crítica</li>
+                        <li><strong>Data/Hora:</strong> Quando fazer</li>
+                        <li><strong>Duração:</strong> Tempo estimado</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🎯 Recursos Avançados</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li><strong>Tags:</strong> Palavras-chave para busca</li>
+                        <li><strong>Lembretes:</strong> De 5min a 1 dia antes</li>
+                        <li><strong>Subtarefas:</strong> Divida em etapas</li>
+                        <li><strong>Anexos:</strong> Links úteis</li>
+                        <li><strong>Contexto:</strong> Onde fazer (casa, escritório, etc)</li>
+                        <li><strong>Energia:</strong> Quanta disposição precisa</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">💡 Dica Pro</h4>
+                    <p>Preencha TODOS os campos! Quanto mais informações, mais fácil planejar seu dia.</p>
+                `
+            },
+            {
+                id: 'kanban',
+                icon: '📊',
+                title: 'Visão Kanban',
+                desc: 'Gerencie tarefas visualmente',
+                content: `
+                    <h3>📊 Visão Kanban</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">🎯 O que é Kanban?</h4>
+                    <p>É um método visual de organização que divide tarefas em 3 colunas:</p>
+                    
+                    <ul style="margin-left:1.5rem; margin-top:1rem;">
+                        <li><strong>📋 A Fazer:</strong> Tarefas pendentes</li>
+                        <li><strong>🚀 Em Progresso:</strong> O que você está fazendo agora</li>
+                        <li><strong>✅ Concluído:</strong> Tarefas finalizadas</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🔄 Como Usar</h4>
+                    <ol style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Abra qualquer planner</li>
+                        <li>Clique em "📊 Kanban" no topo</li>
+                        <li>Visualize suas tarefas organizadas</li>
+                        <li>Arraste cards entre colunas (futuro)</li>
+                    </ol>
+                    
+                    <h4 style="margin-top:1.5rem;">💡 Melhor Prática</h4>
+                    <p>Mantenha no máximo 3 tarefas em "Em Progresso" para não se sobrecarregar!</p>
+                `
+            },
+            {
+                id: 'google',
+                icon: '📅',
+                title: 'Google Calendar',
+                desc: 'Sincronize com todos seus dispositivos',
+                content: `
+                    <h3>📅 Integração Google Calendar</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">✨ Por que integrar?</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>📱 Acesso em Android, iPhone, Web e Desktop</li>
+                        <li>🔔 Notificações push nativas</li>
+                        <li>🔄 Sincronização automática</li>
+                        <li>👥 Compartilhe com família/equipe</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🔗 Como Conectar</h4>
+                    <ol style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Vá na aba "🔗 Google"</li>
+                        <li>Copie sua URL personalizada</li>
+                        <li>Abra Google Calendar</li>
+                        <li>Vá em Configurações → Adicionar calendário → De URL</li>
+                        <li>Cole a URL e confirme</li>
+                        <li>Pronto! Suas tarefas aparecerão automaticamente</li>
+                    </ol>
+                    
+                    <h4 style="margin-top:1.5rem;">💡 Dica</h4>
+                    <p>Ative notificações no Google Calendar para nunca perder um prazo!</p>
+                `
+            },
+            {
+                id: 'produtividade',
+                icon: '⚡',
+                title: 'Dicas de Produtividade',
+                desc: 'Técnicas comprovadas',
+                content: `
+                    <h3>⚡ Dicas de Produtividade</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">🍅 Técnica Pomodoro</h4>
+                    <p>Trabalhe 25min → Pausa 5min → Repita 4x → Pausa longa 30min</p>
+                    <p>Use o campo "Duração" para planejar seus pomodoros!</p>
+                    
+                    <h4 style="margin-top:1.5rem;">🐸 Eat the Frog</h4>
+                    <p>Faça a tarefa mais difícil/importante PRIMEIRO. Marque como "Crítica" ou "Urgente".</p>
+                    
+                    <h4 style="margin-top:1.5rem;">📋 Regra dos 2 Minutos</h4>
+                    <p>Se algo leva menos de 2min, faça AGORA! Não adicione ao planner.</p>
+                    
+                    <h4 style="margin-top:1.5rem;">🎯 MIT (Most Important Tasks)</h4>
+                    <p>Identifique 1-3 tarefas ESSENCIAIS do dia. Use prioridade "Alta" ou "Crítica".</p>
+                    
+                    <h4 style="margin-top:1.5rem;">⚡ Energia × Tempo</h4>
+                    <p>Tarefas que exigem alta energia → manhã</p>
+                    <p>Tarefas automáticas → tarde/noite</p>
+                    <p>Use o campo "Energia Necessária"!</p>
+                `
+            },
+            {
+                id: 'relatorios',
+                icon: '📈',
+                title: 'Relatórios e Stats',
+                desc: 'Analise sua produtividade',
+                content: `
+                    <h3>📈 Relatórios e Estatísticas</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">📊 Gráficos Disponíveis</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li><strong>Produtividade Semanal:</strong> Tarefas completadas por dia</li>
+                        <li><strong>Por Prioridade:</strong> Distribuição alta/média/baixa</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">📉 Métricas Principais</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li><strong>Nível:</strong> Seu progresso geral</li>
+                        <li><strong>Streak:</strong> Dias consecutivos ativos</li>
+                        <li><strong>Tarefas Concluídas:</strong> Total histórico</li>
+                        <li><strong>Taxa de Conclusão:</strong> % de sucesso</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">💡 Como Usar</h4>
+                    <p>Analise seus padrões semanalmente:</p>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Qual dia você é mais produtivo?</li>
+                        <li>Está priorizando corretamente?</li>
+                        <li>Sua taxa de conclusão está subindo?</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'atalhos',
+                icon: '⌨️',
+                title: 'Atalhos Avançados',
+                desc: 'Use o sistema como um pro',
+                content: `
+                    <h3>⌨️ Atalhos e Truques Pro</h3>
+                    
+                    <h4 style="margin-top:1.5rem;">⚡ Navegação Rápida</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Use as abas do topo para alternar rapidamente</li>
+                        <li>Clique no badge de nível para ir direto para Stats</li>
+                        <li>ESC fecha qualquer modal aberto</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">✏️ Criação Rápida</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li><strong>Tags:</strong> Digite e pressione ENTER</li>
+                        <li><strong>Subtarefas:</strong> Adicione múltiplas rapidamente</li>
+                        <li><strong>Data:</strong> Use o formato DD/MM/AAAA</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🎯 Organização Pro</h4>
+                    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+                        <li>Use emojis no título das tarefas para identificação visual</li>
+                        <li>Crie planners por projeto, não por tipo</li>
+                        <li>Revise sua Biblioteca Premium semanalmente</li>
+                    </ul>
+                    
+                    <h4 style="margin-top:1.5rem;">🌱 Sustentabilidade</h4>
+                    <p>Veja no topo quantas páginas e árvores você já economizou usando nosso planner digital!</p>
+                `
+            }
+        ];
+
         async function init() {
             document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
-            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
             
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -663,111 +1014,11 @@
                 document.getElementById('authContainer').style.display = 'flex';
                 
                 setupTagInput();
-                checkNotificationSupport();
-                registerServiceWorker();
-                setupPWAInstall();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
             }
         }
-        
-        // ========== PWA FUNCTIONS ==========
-        
-        async function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    const registration = await navigator.serviceWorker.register('/sw.js');
-                    console.log('✅ Service Worker registrado:', registration);
-                    
-                    // Verificar se já está instalado
-                    if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-                        isInstalled = true;
-                        console.log('📱 App já instalado');
-                    }
-                    
-                    // Suporte a notificações
-                    if ('PushManager' in window) {
-                        console.log('✅ Push notifications suportadas');
-                    }
-                } catch (err) {
-                    console.error('❌ Erro ao registrar Service Worker:', err);
-                }
-            }
-        }
-        
-        function setupPWAInstall() {
-            // Detectar iOS
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
-            
-            // Se for iOS e NÃO estiver instalado, mostrar banner específico
-            if (isIOS && !isInStandaloneMode) {
-                setTimeout(() => {
-                    const dismissed = localStorage.getItem('iosBannerDismissed');
-                    if (!dismissed) {
-                        document.getElementById('iosBanner').style.display = 'flex';
-                    }
-                }, 2000);
-                return; // iOS não suporta beforeinstallprompt
-            }
-            
-            // Capturar evento beforeinstallprompt (Android/Desktop)
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                
-                // Mostrar banner após 3 segundos se não estiver instalado
-                if (!isInstalled) {
-                    setTimeout(() => {
-                        const dismissed = localStorage.getItem('installBannerDismissed');
-                        if (!dismissed) {
-                            document.getElementById('installBanner').style.display = 'flex';
-                        }
-                    }, 3000);
-                }
-            });
-            
-            // Detectar quando app é instalado
-            window.addEventListener('appinstalled', () => {
-                console.log('🎉 PWA instalado com sucesso!');
-                isInstalled = true;
-                document.getElementById('installBanner').style.display = 'none';
-                document.getElementById('iosBanner').style.display = 'none';
-                showNotification('🎉 App Instalado!', 'Planner Premium ULTRA está pronto para uso!');
-            });
-        }
-        
-        async function installPWA() {
-            if (!deferredPrompt) {
-                alert('Instalação não disponível. Use a opção do navegador: Menu → Instalar app');
-                return;
-            }
-            
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                console.log('✅ Usuário aceitou instalação');
-                document.getElementById('installBanner').style.display = 'none';
-            } else {
-                console.log('❌ Usuário recusou instalação');
-            }
-            
-            deferredPrompt = null;
-        }
-        
-        function dismissInstallBanner() {
-            document.getElementById('installBanner').style.display = 'none';
-            localStorage.setItem('installBannerDismissed', 'true');
-        }
-        
-        function dismissIOSBanner() {
-            document.getElementById('iosBanner').style.display = 'none';
-            localStorage.setItem('iosBannerDismissed', 'true');
-        }
-        
-        // ========== END PWA FUNCTIONS ==========
         
         init();
 
@@ -777,14 +1028,6 @@
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
             return `${day}/${month}/${year}`;
-        }
-
-        function parseDateBR(dateStr) {
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
-            return dateStr;
         }
 
         function setupTagInput() {
@@ -912,27 +1155,7 @@
             renderAnexos();
         }
 
-        function checkNotificationSupport() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                document.getElementById('notificationBanner').style.display = 'flex';
-            }
-        }
-
-        async function requestNotificationPermission() {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                document.getElementById('notificationBanner').style.display = 'none';
-                showNotification('🎉 Notificações Ativadas!', 'Você receberá lembretes das suas tarefas.');
-            }
-        }
-
-        function showNotification(title, body) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification(title, { body, icon: '✨' });
-            }
-        }
-
-        function showTab(t) {
+        function showAuthTab(t) {
             document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)));
             document.getElementById('loginForm').classList.toggle('active', t==='login');
             document.getElementById('signupForm').classList.toggle('active', t==='signup');
@@ -984,7 +1207,8 @@
                     email, name, password: hashedPassword,
                     trial_end: trialEndDate.toISOString().split('T')[0],
                     subscription_status: 'trial',
-                    xp: 0, level: 1, streak: 0, last_activity: new Date().toISOString().split('T')[0]
+                    xp: 0, level: 1, streak: 0, last_activity: new Date().toISOString().split('T')[0],
+                    paper_saved: 0
                 }]).select().single();
                 
                 if (error) throw error;
@@ -1021,7 +1245,7 @@
                         isValid = await bcrypt.compare(pass, user.password);
                     } catch (bcryptErr) {
                         console.error('Erro bcrypt:', bcryptErr);
-                        showError('❌ Erro ao validar senha. Tente novamente.');
+                        showError('❌ Erro ao validar senha');
                         document.getElementById('loginBtn').disabled = false;
                         document.getElementById('loginBtn').textContent = 'Entrar';
                         return;
@@ -1102,11 +1326,13 @@
             document.getElementById('userName').textContent = user.name.split(' ')[0];
             
             updateGamification();
+            updateEcoStats();
             renderPlanners();
             renderAchievements();
             renderCharts();
             renderCalendar();
-            showAISuggestions();
+            renderTutoriais();
+            updateGoogleCalendarUrl();
         }
 
         async function updateStreak() {
@@ -1159,7 +1385,6 @@
             document.getElementById('newLevel').textContent = level;
             document.getElementById('levelUpModal').classList.add('active');
             createConfetti();
-            showNotification('🎉 Level Up!', `Você alcançou o nível ${level}!`);
         }
 
         function closeLevelUp() {
@@ -1194,6 +1419,21 @@
             document.getElementById('statStreak').textContent = streak;
             document.getElementById('xpBar').style.width = xpPercent + '%';
             document.getElementById('xpBar').textContent = `${xp}/${xpForNextLevel} XP`;
+        }
+
+        async function updateEcoStats() {
+            const paperSaved = currentUser.paper_saved || 0;
+            const treesSaved = Math.floor(paperSaved / 10000);
+            
+            document.getElementById('paperSaved').textContent = paperSaved.toLocaleString('pt-BR');
+            document.getElementById('treesSaved').textContent = treesSaved;
+        }
+
+        async function incrementPaperSaved(pages = 1) {
+            const newPaperSaved = (currentUser.paper_saved || 0) + pages;
+            await supabase.from('users').update({ paper_saved: newPaperSaved }).eq('email', currentUser.email);
+            currentUser.paper_saved = newPaperSaved;
+            updateEcoStats();
         }
 
         async function checkAchievements() {
@@ -1301,14 +1541,14 @@
             document.getElementById('appContainer').classList.remove('active');
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('paywallOverlay').classList.remove('active');
-            showTab('login');
+            showAuthTab('login');
         }
 
         function openTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            const tabs = ['planners', 'stats', 'achievements', 'calendar'];
+            const tabs = ['planners', 'biblioteca', 'tutoriais', 'stats', 'achievements', 'calendar', 'google'];
             const index = tabs.indexOf(tab);
             if (index !== -1) {
                 document.querySelectorAll('.tab-btn')[index].classList.add('active');
@@ -1369,6 +1609,7 @@
                 fecharModal('modalCriar');
                 renderPlanners();
                 await addXP(50);
+                await incrementPaperSaved(10);
             } catch (err) {
                 console.error('Erro:', err);
                 alert('❌ Erro ao criar');
@@ -1423,7 +1664,7 @@
             };
             
             c.innerHTML = tarefas.map(t => {
-                const data = t.data_formatada || formatDateBR(t.data);
+                const data = t.data ? formatDateBR(t.data) : '';
                 const hora = t.hora || '';
                 const descricao = t.descricao ? t.descricao.substring(0, 80) + '...' : '';
                 
@@ -1442,7 +1683,6 @@
                             </div>
                         </div>
                         <div class="tarefa-actions">
-                            <button class="btn-icon" onclick="editarTarefa(${t.id})">✏️</button>
                             <button class="btn-icon btn-del" onclick="deletarTarefa(${t.id})">🗑️</button>
                         </div>
                     </div>
@@ -1481,7 +1721,7 @@
             return tarefas.map(t => `
                 <div class="kanban-card">
                     <div style="font-weight:700; margin-bottom:0.5rem;">${t.titulo}</div>
-                    <div style="font-size:0.85em; color:#666;">${t.data_formatada || formatDateBR(t.data)}</div>
+                    <div style="font-size:0.85em; color:#666;">${t.data ? formatDateBR(t.data) : 'Sem data'}</div>
                 </div>
             `).join('');
         }
@@ -1495,7 +1735,7 @@
             
             const grouped = {};
             tarefas.forEach(t => {
-                const date = t.data_formatada || formatDateBR(t.data);
+                const date = t.data ? formatDateBR(t.data) : 'Sem data';
                 if (!grouped[date]) grouped[date] = [];
                 grouped[date].push(t);
             });
@@ -1520,7 +1760,7 @@
             
             document.getElementById('novaTarefaTitulo').value = '';
             document.getElementById('novaTarefaDescricao').value = '';
-            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
             document.getElementById('novaTarefaHora').value = '';
             document.getElementById('novaTarefaDuracao').value = '';
             
@@ -1539,8 +1779,7 @@
             const descricao = document.getElementById('novaTarefaDescricao').value.trim();
             const categoria = document.getElementById('novaTarefaCategoria').value;
             const prioridade = document.getElementById('novaTarefaPrioridade').value;
-            const dataFormatada = document.getElementById('novaTarefaData').value;
-            const data = parseDateBR(dataFormatada);
+            const data = document.getElementById('novaTarefaData').value;
             const hora = document.getElementById('novaTarefaHora').value;
             const duracao = parseInt(document.getElementById('novaTarefaDuracao').value) || null;
             const repetir = document.getElementById('novaTarefaRepetir').value;
@@ -1555,7 +1794,6 @@
                     categoria,
                     prioridade,
                     data,
-                    data_formatada: dataFormatada,
                     hora,
                     duracao,
                     repetir,
@@ -1573,40 +1811,12 @@
                 
                 fecharModal('modalNovaTarefa');
                 await addXP(30);
+                await incrementPaperSaved(3);
                 abrirPlanner(plannerAberto);
-                
-                // Agendar lembretes
-                agendarLembretes(novaTarefa);
-                
-                showNotification('✅ Tarefa Criada!', titulo);
             } catch (err) {
                 console.error('Erro:', err);
                 alert('❌ Erro ao criar tarefa');
             }
-        }
-
-        function agendarLembretes(tarefa) {
-            if (!tarefa.lembretes || tarefa.lembretes.length === 0) return;
-            
-            const dataHora = new Date(tarefa.data + ' ' + (tarefa.hora || '00:00'));
-            
-            tarefa.lembretes.forEach(l => {
-                let tempoAntes = 0;
-                if (l === '5min') tempoAntes = 5 * 60 * 1000;
-                else if (l === '15min') tempoAntes = 15 * 60 * 1000;
-                else if (l === '30min') tempoAntes = 30 * 60 * 1000;
-                else if (l === '1h') tempoAntes = 60 * 60 * 1000;
-                else if (l === '1dia') tempoAntes = 24 * 60 * 60 * 1000;
-                
-                const alertTime = dataHora.getTime() - tempoAntes;
-                const agora = Date.now();
-                
-                if (alertTime > agora) {
-                    setTimeout(() => {
-                        showNotification('⏰ Lembrete: ' + tarefa.titulo, 'Tarefa programada para breve!');
-                    }, alertTime - agora);
-                }
-            });
         }
 
         async function toggleTarefa(id) {
@@ -1615,17 +1825,13 @@
                 await supabase.from('tarefas').update({ done: !t.done }).eq('id', id);
                 if (!t.done) {
                     await addXP(20);
-                    showNotification('✅ Tarefa Concluída!', 'Você ganhou +20 XP!');
+                    await incrementPaperSaved(1);
                 }
                 await checkAchievements();
                 abrirPlanner(plannerAberto);
             } catch (err) {
                 console.error('Erro:', err);
             }
-        }
-
-        async function editarTarefa(id) {
-            alert('🚧 Função de edição avançada em desenvolvimento');
         }
 
         async function deletarTarefa(id) {
@@ -1693,54 +1899,259 @@
             renderCalendar();
         }
 
-        async function showAISuggestions() {
-            const hour = new Date().getHours();
-            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+        function renderTutoriais() {
+            const html = tutoriaisData.map(t => `
+                <div class="tutorial-card" onclick="abrirTutorial('${t.id}')">
+                    <div class="tutorial-header">
+                        <div class="tutorial-icon">${t.icon}</div>
+                        <div>
+                            <div class="tutorial-title">${t.title}</div>
+                            <div class="tutorial-desc">${t.desc}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('tutoriaisLista').innerHTML = html;
+        }
+
+        function abrirTutorial(id) {
+            const tutorial = tutoriaisData.find(t => t.id === id);
+            if (!tutorial) return;
             
-            if (!tarefas || tarefas.length === 0) return;
-            
-            const pending = tarefas.filter(t => !t.done);
-            const alta = pending.filter(t => t.prioridade === 'alta' || t.prioridade === 'urgente' || t.prioridade === 'critica');
-            
-            let suggestion = '';
-            
-            if (hour >= 6 && hour < 12) {
-                if (alta.length > 0) {
-                    suggestion = `🌅 Bom dia! Você tem ${alta.length} tarefa(s) de alta prioridade. Recomendo começar pela mais urgente.`;
-                } else {
-                    suggestion = '🌅 Bom dia! Momento ideal para tarefas que exigem mais concentração.';
+            document.getElementById('tutorialIcone').textContent = tutorial.icon;
+            document.getElementById('tutorialTitulo').textContent = tutorial.title;
+            document.getElementById('tutorialConteudo').innerHTML = tutorial.content;
+            document.getElementById('modalTutorial').style.display = 'block';
+        }
+
+        function abrirBiblioteca(tipo) {
+            const bibliotecaData = {
+                'diario': {
+                    icon: '📅',
+                    title: 'Páginas Diárias',
+                    content: `
+                        <h3>📅 Páginas Diárias (365 páginas)</h3>
+                        <p style="margin:1rem 0;">Cada dia do ano tem uma página dedicada para você planejar em detalhes.</p>
+                        <h4 style="margin-top:1.5rem;">O que incluir:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>✅ Lista de tarefas do dia</li>
+                            <li>🎯 3 prioridades principais</li>
+                            <li>💧 Rastreamento de água</li>
+                            <li>🍎 Refeições e nutrição</li>
+                            <li>📝 Reflexão e gratidão</li>
+                            <li>⏰ Horário das atividades</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Use este planner para ter total controle do seu dia!</p>
+                    `
+                },
+                'semanal': {
+                    icon: '📆',
+                    title: 'Páginas Semanais',
+                    content: `
+                        <h3>📆 Páginas Semanais (52 páginas)</h3>
+                        <p style="margin:1rem 0;">Visão completa de cada semana do ano.</p>
+                        <h4 style="margin-top:1.5rem;">Conteúdo:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>📋 Objetivos da semana</li>
+                            <li>📅 Vista de 7 dias</li>
+                            <li>🎯 Metas semanais</li>
+                            <li>📊 Revisão de progresso</li>
+                            <li>💪 Hábitos a desenvolver</li>
+                            <li>📝 Notas e insights</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Revise domingo à noite e planeje a semana!</p>
+                    `
+                },
+                'mensal': {
+                    icon: '🗓️',
+                    title: 'Páginas Mensais',
+                    content: `
+                        <h3>🗓️ Páginas Mensais (12 páginas)</h3>
+                        <p style="margin:1rem 0;">Um mês inteiro em uma página!</p>
+                        <h4 style="margin-top:1.5rem;">Inclui:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>📅 Calendário do mês</li>
+                            <li>🎯 Objetivos mensais</li>
+                            <li>💰 Orçamento e finanças</li>
+                            <li>📊 Balanço geral</li>
+                            <li>🏆 Conquistas do mês</li>
+                            <li>📈 Análise de resultados</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Faça uma revisão mensal sempre no dia 1!</p>
+                    `
+                },
+                'anual': {
+                    icon: '📊',
+                    title: 'Visão Anual',
+                    content: `
+                        <h3>📊 Visão Anual (1 página especial)</h3>
+                        <p style="margin:1rem 0;">Planeje o ano completo de uma vez!</p>
+                        <h4 style="margin-top:1.5rem;">Componentes:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>🎯 Metas anuais (pessoal, profissional, saúde)</li>
+                            <li>📅 12 meses em visão geral</li>
+                            <li>💰 Planejamento financeiro anual</li>
+                            <li>✈️ Viagens planejadas</li>
+                            <li>🎓 Cursos e aprendizados</li>
+                            <li>📈 Indicadores de progresso</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Defina 3-5 metas principais e revise trimestralmente!</p>
+                    `
+                },
+                'financeiro': {
+                    icon: '💰',
+                    title: 'Planejador Financeiro',
+                    content: `
+                        <h3>💰 Planejador Financeiro Completo</h3>
+                        <p style="margin:1rem 0;">Controle total das suas finanças!</p>
+                        <h4 style="margin-top:1.5rem;">Recursos:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>💵 Rastreamento de receitas</li>
+                            <li>💸 Controle de despesas por categoria</li>
+                            <li>📊 Orçamento mensal</li>
+                            <li>🎯 Metas de economia</li>
+                            <li>💳 Gerenciamento de dívidas</li>
+                            <li>📈 Investimentos e patrimônio</li>
+                            <li>📝 Notas de compras importantes</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Atualize diariamente e revise semanalmente!</p>
+                    `
+                },
+                'saude': {
+                    icon: '💪',
+                    title: 'Planejador de Saúde',
+                    content: `
+                        <h3>💪 Planejador de Saúde e Bem-estar</h3>
+                        <p style="margin:1rem 0;">Cuide do seu corpo e mente!</p>
+                        <h4 style="margin-top:1.5rem;">Inclui:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>🏋️ Treinos e exercícios</li>
+                            <li>🍎 Planejamento de refeições</li>
+                            <li>💧 Rastreador de água (8 copos/dia)</li>
+                            <li>😴 Controle de sono</li>
+                            <li>🧘 Meditação e mindfulness</li>
+                            <li>📊 Medidas e peso</li>
+                            <li>💊 Medicamentos e suplementos</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Consistência é a chave! Use diariamente.</p>
+                    `
+                },
+                'leitura': {
+                    icon: '📚',
+                    title: 'Planejador de Leitura',
+                    content: `
+                        <h3>📚 Planejador de Leitura</h3>
+                        <p style="margin:1rem 0;">Organize seus livros e metas de leitura!</p>
+                        <h4 style="margin-top:1.5rem;">Recursos:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>📖 Lista de livros a ler</li>
+                            <li>✅ Livros concluídos</li>
+                            <li>⭐ Avaliações e notas</li>
+                            <li>📝 Citações favoritas</li>
+                            <li>🎯 Meta anual de livros</li>
+                            <li>📊 Estatísticas de leitura</li>
+                            <li>💭 Reflexões sobre cada livro</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Meta realista: 1-2 livros por mês!</p>
+                    `
+                },
+                'viagem': {
+                    icon: '✈️',
+                    title: 'Planejador de Viagens',
+                    content: `
+                        <h3>✈️ Planejador de Viagens</h3>
+                        <p style="margin:1rem 0;">Planeje aventuras inesquecíveis!</p>
+                        <h4 style="margin-top:1.5rem;">Componentes:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>🗺️ Destinos desejados</li>
+                            <li>📅 Datas e itinerário</li>
+                            <li>💰 Orçamento da viagem</li>
+                            <li>✈️ Voos e transportes</li>
+                            <li>🏨 Hospedagem</li>
+                            <li>📝 Checklist de mala</li>
+                            <li>📸 Lugares para visitar</li>
+                            <li>🍽️ Restaurantes recomendados</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Comece a planejar 3-6 meses antes!</p>
+                    `
+                },
+                'metas': {
+                    icon: '🎯',
+                    title: 'Planejador de Metas',
+                    content: `
+                        <h3>🎯 Planejador de Metas e Objetivos</h3>
+                        <p style="margin:1rem 0;">Transforme sonhos em realidade!</p>
+                        <h4 style="margin-top:1.5rem;">Sistema SMART:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>🎯 <strong>S</strong>pecific - Específica</li>
+                            <li>📊 <strong>M</strong>easurable - Mensurável</li>
+                            <li>✅ <strong>A</strong>chievable - Atingível</li>
+                            <li>💡 <strong>R</strong>elevant - Relevante</li>
+                            <li>⏰ <strong>T</strong>ime-bound - Temporal</li>
+                        </ul>
+                        <h4 style="margin-top:1.5rem;">Áreas de Vida:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>💼 Carreira</li>
+                            <li>💰 Financeiro</li>
+                            <li>💪 Saúde</li>
+                            <li>👨‍👩‍👧‍👦 Relacionamentos</li>
+                            <li>🎓 Educação</li>
+                            <li>🌟 Desenvolvimento Pessoal</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Revise suas metas semanalmente!</p>
+                    `
+                },
+                'habitos': {
+                    icon: '🔥',
+                    title: 'Tracker de Hábitos',
+                    content: `
+                        <h3>🔥 Tracker de Hábitos</h3>
+                        <p style="margin:1rem 0;">Construa hábitos poderosos!</p>
+                        <h4 style="margin-top:1.5rem;">Hábitos Populares:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>💧 Beber 2L de água</li>
+                            <li>🏃 Exercício 30min</li>
+                            <li>📚 Ler 20 páginas</li>
+                            <li>🧘 Meditação 10min</li>
+                            <li>😴 Dormir 8h</li>
+                            <li>🍎 Comer saudável</li>
+                            <li>📝 Gratidão diária</li>
+                            <li>🚫 Sem redes sociais</li>
+                        </ul>
+                        <h4 style="margin-top:1.5rem;">Sistema de Tracking:</h4>
+                        <ul style="margin-left:1.5rem;">
+                            <li>✅ Marque cada dia completo</li>
+                            <li>🔥 Veja seu streak crescer</li>
+                            <li>📊 Analise padrões</li>
+                            <li>🎯 Ajuste conforme necessário</li>
+                        </ul>
+                        <p style="margin-top:1rem; font-style:italic; color:#666;">💡 Dica: Comece com 3-5 hábitos. Adicione mais gradualmente!</p>
+                    `
                 }
-            } else if (hour >= 12 && hour < 18) {
-                suggestion = '☀️ Boa tarde! Seu pico de produtividade geralmente é agora. Aproveite!';
-            } else if (hour >= 18 && hour < 22) {
-                const tomorrow = tarefas.filter(t => {
-                    const taskDate = new Date(t.data);
-                    const tom = new Date();
-                    tom.setDate(tom.getDate() + 1);
-                    return taskDate.toDateString() === tom.toDateString();
-                });
-                if (tomorrow.length > 0) {
-                    suggestion = `🌆 Boa noite! Você tem ${tomorrow.length} tarefa(s) para amanhã. Que tal revisar?`;
-                } else {
-                    suggestion = '🌆 Boa noite! Momento ideal para planejamento do dia seguinte.';
-                }
-            } else {
-                suggestion = '🌙 É tarde! Descanse bem para manter a produtividade alta amanhã.';
-            }
+            };
             
-            if (currentUser.streak >= 5) {
-                suggestion += ` 🔥 Você está em um streak de ${currentUser.streak} dias! Continue assim!`;
-            }
+            const biblio = bibliotecaData[tipo];
+            if (!biblio) return;
             
-            // Mostrar sugestão quando abrir um planner
-            setTimeout(() => {
-                const aiBox = document.getElementById('aiSuggestionBox');
-                const aiText = document.getElementById('aiSuggestionText');
-                if (aiBox && aiText && suggestion) {
-                    aiText.textContent = suggestion;
-                    aiBox.style.display = 'block';
-                }
-            }, 1000);
+            document.getElementById('biblioIcone').textContent = biblio.icon;
+            document.getElementById('biblioTitulo').textContent = biblio.title;
+            document.getElementById('biblioConteudo').innerHTML = biblio.content;
+            document.getElementById('modalBiblioteca').style.display = 'block';
+            
+            incrementPaperSaved(5);
+        }
+
+        function updateGoogleCalendarUrl() {
+            const baseUrl = window.location.origin;
+            const calendarUrl = `${baseUrl}/api/calendar/${currentUser.email}`;
+            document.getElementById('gcalUrl').value = calendarUrl;
+        }
+
+        function copyGcalUrl() {
+            const input = document.getElementById('gcalUrl');
+            input.select();
+            document.execCommand('copy');
+            alert('✅ URL copiada! Cole no Google Calendar.');
         }
 
         function fecharModal(id) {
