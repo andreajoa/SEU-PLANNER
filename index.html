@@ -1029,21 +1029,20 @@
         ];
 
         async function init() {
-            document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
-            document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
-            
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('authContainer').style.display = 'flex';
-                
-                setupTagInput();
-                setupPWAInstall();
-            } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro ao conectar');
-            }
-        }
+    document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
+    document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
+    
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('authContainer').style.display = 'flex';
+        setupTagInput();
+        setupPWAInstall();
+    } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro ao conectar');
+    }
+}
         
         init();
 
