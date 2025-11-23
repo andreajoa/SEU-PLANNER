@@ -353,22 +353,22 @@
                 <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom:1.5rem;">
                     <h3 style="margin-bottom:1rem;">📅 Planejamento Temporal</h3>
                     <div class="biblioteca-grid">
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('diario')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('diario')">
                             <div class="biblioteca-icon">📅</div>
                             <div class="biblioteca-title">Páginas Diárias</div>
                             <div class="biblioteca-subtitle">365 páginas</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('semanal')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('semanal')">
                             <div class="biblioteca-icon">📆</div>
                             <div class="biblioteca-title">Páginas Semanais</div>
                             <div class="biblioteca-subtitle">52 páginas</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('mensal')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('mensal')">
                             <div class="biblioteca-icon">🗓️</div>
                             <div class="biblioteca-title">Páginas Mensais</div>
                             <div class="biblioteca-subtitle">12 páginas</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('anual')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('anual')">
                             <div class="biblioteca-icon">📊</div>
                             <div class="biblioteca-title">Visão Anual</div>
                             <div class="biblioteca-subtitle">1 página</div>
@@ -376,40 +376,45 @@
                     </div>
                 </div>
                 
-                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom:1.5rem;">
                     <h3 style="margin-bottom:1rem;">🎯 Planejadores Temáticos</h3>
                     <div class="biblioteca-grid">
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('financeiro')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('financeiro_biblio')">
                             <div class="biblioteca-icon">💰</div>
                             <div class="biblioteca-title">Financeiro</div>
                             <div class="biblioteca-subtitle">Controle total</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('saude')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('saude')">
                             <div class="biblioteca-icon">💪</div>
                             <div class="biblioteca-title">Saúde</div>
                             <div class="biblioteca-subtitle">Bem-estar</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('leitura')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('leitura')">
                             <div class="biblioteca-icon">📚</div>
                             <div class="biblioteca-title">Leitura</div>
                             <div class="biblioteca-subtitle">Livros & Metas</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('viagem')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('viagem')">
                             <div class="biblioteca-icon">✈️</div>
                             <div class="biblioteca-title">Viagens</div>
                             <div class="biblioteca-subtitle">Planeje aventuras</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('metas')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('metas')">
                             <div class="biblioteca-icon">🎯</div>
                             <div class="biblioteca-title">Metas</div>
                             <div class="biblioteca-subtitle">Objetivos</div>
                         </div>
-                        <div class="biblioteca-card" onclick="abrirBiblioteca('habitos')">
+                        <div class="biblioteca-card" onclick="criarPlannerBiblioteca('habitos_biblio')">
                             <div class="biblioteca-icon">🔥</div>
                             <div class="biblioteca-title">Hábitos</div>
                             <div class="biblioteca-subtitle">Tracker diário</div>
                         </div>
                     </div>
+                </div>
+                
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <h2 style="margin-bottom:1rem;">📋 Meus Planners da Biblioteca</h2>
+                    <div class="planners-grid" id="meusPlannersBiblioteca"></div>
                 </div>
             </div>
 
@@ -753,7 +758,17 @@
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
             'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
             'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B' },
-            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
+            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' },
+            'diario': { nome: 'Diário', icone: '📅', cor: '#EC4899' },
+            'semanal': { nome: 'Semanal', icone: '📆', cor: '#10B981' },
+            'mensal': { nome: 'Mensal', icone: '🗓️', cor: '#F59E0B' },
+            'anual': { nome: 'Anual', icone: '📊', cor: '#6B46C1' },
+            'financeiro_biblio': { nome: 'Financeiro Premium', icone: '💰', cor: '#8B5CF6' },
+            'saude': { nome: 'Saúde', icone: '💪', cor: '#EF4444' },
+            'leitura': { nome: 'Leitura', icone: '📚', cor: '#3B82F6' },
+            'viagem': { nome: 'Viagens', icone: '✈️', cor: '#06B6D4' },
+            'metas': { nome: 'Metas', icone: '🎯', cor: '#F59E0B' },
+            'habitos_biblio': { nome: 'Hábitos Tracker', icone: '🔥', cor: '#EF4444' }
         };
         
         const achievements = [
@@ -1562,26 +1577,102 @@
 
         async function renderPlanners() {
             const c = document.getElementById('meusPlanners');
+            const biblioPlannersEl = document.getElementById('meusPlannersBiblioteca');
+            
             if (!planners.length) {
                 c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
+                if (biblioPlannersEl) biblioPlannersEl.innerHTML = '<p style="text-align:center;color:#999;">Nenhum planner criado da biblioteca</p>';
                 return;
             }
             
-            const html = await Promise.all(planners.map(async p => {
-                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
-                const numTarefas = tarefas?.length || 0;
-                return `
-                    <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
-                        <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
-                        <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''}</div>
-                        <div class="planner-item-acoes">
-                            <button onclick="abrirPlanner(${p.id})">Abrir</button>
-                            <button onclick="deletarPlanner(${p.id})">Deletar</button>
+            // Separar planners normais dos da biblioteca
+            const plannersNormais = planners.filter(p => ['todo', 'projeto', 'habitos', 'financeiro'].includes(p.tipo));
+            const plannersBiblioteca = planners.filter(p => !['todo', 'projeto', 'habitos', 'financeiro'].includes(p.tipo));
+            
+            // Renderizar planners normais
+            if (plannersNormais.length === 0) {
+                c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
+            } else {
+                const htmlNormais = await Promise.all(plannersNormais.map(async p => {
+                    const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                    const numTarefas = tarefas?.length || 0;
+                    return `
+                        <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
+                            <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
+                            <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''}</div>
+                            <div class="planner-item-acoes">
+                                <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                                <button onclick="deletarPlanner(${p.id})">Deletar</button>
+                            </div>
                         </div>
-                    </div>
-                `;
-            }));
-            c.innerHTML = html.join('');
+                    `;
+                }));
+                c.innerHTML = htmlNormais.join('');
+            }
+            
+            // Renderizar planners da biblioteca
+            if (biblioPlannersEl) {
+                if (plannersBiblioteca.length === 0) {
+                    biblioPlannersEl.innerHTML = '<p style="text-align:center;color:#999;">Nenhum planner criado da biblioteca</p>';
+                } else {
+                    const htmlBiblioteca = await Promise.all(plannersBiblioteca.map(async p => {
+                        const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                        const numTarefas = tarefas?.length || 0;
+                        return `
+                            <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
+                                <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
+                                <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''}</div>
+                                <div class="planner-item-acoes">
+                                    <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                                    <button onclick="deletarPlanner(${p.id})">Deletar</button>
+                                </div>
+                            </div>
+                        `;
+                    }));
+                    biblioPlannersEl.innerHTML = htmlBiblioteca.join('');
+                }
+            }
+        }
+
+        async function criarPlannerBiblioteca(tipo) {
+            const nomes = {
+                'diario': 'Meu Planner Diário 2024',
+                'semanal': 'Planejamento Semanal 2024',
+                'mensal': 'Visão Mensal 2024',
+                'anual': 'Metas Anuais 2024',
+                'financeiro_biblio': 'Controle Financeiro Pessoal',
+                'saude': 'Jornada de Saúde & Bem-estar',
+                'leitura': 'Lista de Leitura 2024',
+                'viagem': 'Minhas Viagens',
+                'metas': 'Metas & Objetivos 2024',
+                'habitos_biblio': 'Tracker de Hábitos Diários'
+            };
+            
+            const nomeDefault = nomes[tipo] || 'Novo Planner';
+            
+            try {
+                const { data: newPlanner, error } = await supabase.from('planners').insert([{
+                    user_email: currentUser.email,
+                    tipo: tipo,
+                    nome: nomeDefault
+                }]).select().single();
+                
+                if (error) throw error;
+                
+                planners.push(newPlanner);
+                await addXP(50);
+                await incrementPaperSaved(20); // Biblioteca economiza mais páginas
+                
+                renderPlanners();
+                
+                // Abrir automaticamente após criar
+                setTimeout(() => abrirPlanner(newPlanner.id), 300);
+                
+                alert(`✅ ${tipos[tipo].nome} criado com sucesso! +50 XP`);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('❌ Erro ao criar planner da biblioteca');
+            }
         }
 
         function criarPlanner(tipo) {
@@ -1925,6 +2016,7 @@
         }
 
         function abrirBiblioteca(tipo) {
+            // Esta função ainda mostra informações, mas agora também sugere criar
             const bibliotecaData = {
                 'diario': {
                     icon: '📅',
