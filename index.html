@@ -236,19 +236,19 @@
         }
         .install-btn { 
     position: fixed; 
-    right: 20px; 
-    bottom: 20px; 
+    right: 16px; 
+    bottom: 16px; 
     z-index: 10000; 
-    padding: 0.9rem 1.2rem; 
+    padding: 0.5rem 0.8rem; 
     border: none; 
     border-radius: 999px; 
-    font-weight: 800; 
+    font-weight: 700; 
     background: linear-gradient(135deg, var(--primary), var(--secondary)); 
     color: white; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    cursor: pointer; /* ← ADICIONEI */
-    font-size: 1em; /* ← ADICIONEI */
-    transition: all 0.3s ease; /* ← ADICIONEI para animação suave */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: all 0.2s ease;
 }
 
 .install-btn:hover {
@@ -260,38 +260,7 @@
     transform: scale(0.95); /* ← ADICIONEI efeito de clique */
 }
 
-.ios-tip { 
-    position: fixed; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    bottom: 20px; 
-    z-index: 9999; 
-    background: #F3E8FF; 
-    color: #6B46C1; 
-    padding: 0.8rem 1rem; 
-    border-radius: 10px; 
-    font-weight: 700;
-    text-align: center; /* ← ADICIONEI */
-    max-width: 90%; /* ← ADICIONEI para mobile */
-    font-size: 0.9em; /* ← ADICIONEI */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* ← ADICIONEI sombra */
-}
 
-/* ← ADICIONEI animação de entrada */
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-}
-
-.ios-tip {
-    animation: slideUp 0.5s ease;
-}
     </style>
 </head>
 <body>
@@ -1101,6 +1070,9 @@
 }
         
         init();
+        window.addEventListener('load', () => {
+            try { setupPWAInstall(); } catch (_) {}
+        });
 
         function formatDateBR(date) {
             const d = new Date(date);
@@ -1361,28 +1333,22 @@
     if (btn) {
         btn.addEventListener('click', async () => {
             console.log('👆 Botão de instalação clicado!');
-            
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             if (!deferredPrompt) {
-                console.log('❌ deferredPrompt não disponível');
-                alert('⚠️ Instalação não disponível neste navegador. Tente pelo Chrome ou Edge.');
+                if (isIOS && !isStandalone) {
+                    alert('No iPhone: abra o menu Compartilhar e toque em "Adicionar à Tela de Início"');
+                    return;
+                }
+                alert('Instalação não disponível neste navegador. Tente pelo Chrome ou Edge.');
                 return;
             }
-            
             btn.disabled = true;
             btn.textContent = 'Instalando...';
-            
             try {
                 await deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                
                 console.log('Resultado da instalação:', outcome);
-                
-                if (outcome === 'accepted') {
-                    console.log('✅ Usuário aceitou a instalação');
-                } else {
-                    console.log('❌ Usuário recusou a instalação');
-                }
-                
                 deferredPrompt = null;
                 btn.style.display = 'none';
             } catch (err) {
@@ -1390,33 +1356,18 @@
                 alert('❌ Erro ao instalar o app');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Instalar App';
+                btn.textContent = 'Instalar agora';
             }
         });
     }
     
-    // Detectar iPhone/iPad
+    // Detectar modo instalado e exibir botão quando não instalado (inclui iOS)
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                         window.navigator.standalone === true;
-    
-    const tip = document.getElementById('iosInstallTip');
-    if (isIOS && !isStandalone && tip) {
-        tip.style.display = 'block';
-        console.log('📱 iPhone detectado - mostrando dica de instalação');
-    }
-    
-    // Forçar exibição do botão em desenvolvimento (REMOVER EM PRODUÇÃO)
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeout(() => {
-            const btn = document.getElementById('installBtn');
-            if (btn && !deferredPrompt) {
-                btn.style.display = 'block';
-                btn.textContent = '📱 Testar Instalação (Dev)';
-                console.log('🛠️ Modo desenvolvimento - botão sempre visível');
-            }
-        }, 2000);
-    }
+    const btnInit = document.getElementById('installBtn');
+    if (btnInit) btnInit.style.display = isStandalone ? 'none' : 'block';
+
 }
 
         async function handleLogin(e) {
@@ -2590,7 +2541,6 @@
             if (e.target.classList.contains('modal')) e.target.style.display = 'none';
         };
     </script>
-    <button id="installBtn" class="install-btn" style="display:none;">Instalar App</button>
-    <div id="iosInstallTip" class="ios-tip" style="display:none;">Para iPhone: toque em Compartilhar e "Adicionar à Tela de Início"</div>
+    <button id="installBtn" class="install-btn" style="display:none;">Instalar agora</button>
 </body>
 </html>
