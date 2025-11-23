@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B46C1">
-    <meta name="description" content="Planner Premium ULTRA - Organize sua vida com gamificação, Google Calendar e sustentabilidade">
+    <meta name="description" content="Planner Premium ULTRA - Organize sua vida com gamificação e produtividade avançada">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>✨ Planner Premium ULTRA</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Planner ULTRA">
+    <title>✨ Planner Premium ULTRA - Cutting Edge</title>
     
     <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
     <link rel="apple-touch-icon" href="/icon-152.png">
@@ -14,7 +16,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,22 +26,75 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); color: var(--dark); min-height: 100vh; }
         
-        .eco-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; margin-bottom: 1rem; border-radius: 10px; }
-        .eco-stats { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; font-size: 0.95em; }
-        .eco-stat { display: flex; align-items: center; gap: 0.5rem; }
+        @keyframes levelUp {
+            0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti { position: fixed; width: 10px; height: 10px; z-index: 10000; pointer-events: none; }
+        
+        .level-up-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 9999; background: white; padding: 3rem; border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center; animation: levelUp 0.6s ease;
+        }
+        
+        .level-up-modal.active { display: block; }
+        .level-up-icon { font-size: 5em; margin-bottom: 1rem; }
+        .level-up-title { font-size: 2em; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .auth-box { background: white; border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+        .auth-logo { text-align: center; margin-bottom: 1.5rem; }
+        .auth-logo-icon { font-size: 3em; }
+        .auth-logo h1 { font-size: 1.4em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .trial-badge { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 0.8rem 0; display: inline-block; }
+        .auth-tabs { display: flex; margin-bottom: 1.5rem; background: var(--gray); border-radius: 10px; padding: 4px; }
+        .auth-tab { flex: 1; padding: 0.6rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 8px; color: #666; font-size: 0.9em; }
+        .auth-tab.active { background: white; color: var(--primary); }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.85em; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; font-family: inherit; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .btn-auth { width: 100%; padding: 0.9rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1em; }
+        .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
+        .auth-msg { padding: 0.7rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85em; display: none; }
+        .auth-error { background: #FEE2E2; color: #DC2626; }
+        .auth-success { background: #D1FAE5; color: #059669; }
+        
+        .trial-banner { padding: 1rem; text-align: center; font-weight: 700; font-size: 0.9em; }
+        .trial-banner.warning { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+        .trial-banner.danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        
+        .paywall-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 1rem; }
+        .paywall-overlay.active { display: flex; }
+        .paywall-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%; text-align: center; }
+        .paywall-icon { font-size: 4em; margin-bottom: 1rem; }
+        .paywall-title { font-size: 2em; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .app-container { display: none; background: linear-gradient(135deg, #F9FAFB, #F3E8FF); min-height: 100vh; }
         .app-container.active { display: block; }
-        
         .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
         .navbar-title { font-size: 1.2em; font-weight: 800; }
         .navbar-user { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
         .user-badge { background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; }
         .level-badge { background: linear-gradient(135deg, #F59E0B, #D97706); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; cursor: pointer; }
+        .streak-badge { background: linear-gradient(135deg, #EF4444, #DC2626); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; }
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
         
-        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 1400px; overflow-x: auto; flex-wrap: wrap; justify-content: center; }
+        .eco-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; margin-bottom: 1rem; border-radius: 10px; }
+        
+        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 1200px; overflow-x: auto; flex-wrap: wrap; justify-content: center; }
         .tab-btn { padding: 0.7rem 1rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; white-space: nowrap; }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
@@ -48,6 +102,30 @@
         .tab-content.active { display: block; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 1rem; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+        .stat-value { font-size: 2em; font-weight: 800; color: var(--primary); }
+        .stat-label { color: #666; font-size: 0.85em; margin-top: 0.3rem; }
+        
+        .xp-bar { background: var(--gray); border-radius: 20px; height: 30px; overflow: hidden; margin: 1rem 0; }
+        .xp-fill { background: linear-gradient(135deg, #10B981, #059669); height: 100%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85em; }
+        
+        .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .planner-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; border-top: 4px solid; transition: transform 0.2s; }
+        .planner-card:hover { transform: translateY(-3px); }
+        .planner-header { color: white; padding: 1rem; text-align: center; }
+        .planner-icon { font-size: 2em; }
+        .planner-title { font-size: 0.95em; font-weight: 700; margin-top: 0.3rem; }
+        .planner-body { padding: 1rem; }
+        .btn-criar { width: 100%; padding: 0.6rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
+        
+        .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .planner-item { color: white; border-radius: 10px; padding: 1rem; }
+        .planner-item-nome { font-weight: 700; margin-bottom: 0.2rem; }
+        .planner-item-info { font-size: 0.75em; opacity: 0.9; margin-bottom: 0.6rem; }
+        .planner-item-acoes { display: flex; gap: 0.3rem; }
+        .planner-item-acoes button { flex: 1; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: 600; }
         
         .biblioteca-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
         .biblioteca-card { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); border-radius: 10px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
@@ -60,6 +138,16 @@
         .tutorial-item:hover { transform: translateX(5px); }
         .tutorial-nome { font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; font-size: 1.05em; }
         .tutorial-preview { font-size: 0.9em; color: #666; line-height: 1.6; }
+        
+        .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; border-left: 4px solid var(--primary); cursor: pointer; transition: all 0.2s; }
+        .tarefa-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .tarefa-header { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 0.5rem; }
+        .tarefa-checkbox { width: 20px; height: 20px; cursor: pointer; margin-top: 0.2rem; }
+        .tarefa-conteudo { flex: 1; }
+        .tarefa-titulo { font-weight: 700; font-size: 1em; margin-bottom: 0.3rem; }
+        .tarefa-descricao { font-size: 0.85em; color: #666; margin-bottom: 0.5rem; }
+        .tarefa-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75em; color: #666; }
+        .tarefa-meta-item { background: white; padding: 0.2rem 0.5rem; border-radius: 4px; }
         
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
         .modal-content { background: white; margin: 2% auto; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
@@ -76,43 +164,122 @@
     </style>
 </head>
 <body>
+    <!-- LOGIN/SIGNUP -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">✨</div>
+                <h1>Planner Premium ULTRA</h1>
+                <div class="trial-badge">🎁 7 dias grátis • R$ 19,99/mês</div>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
+                <button class="auth-tab" onclick="showTab('signup')">Criar Conta</button>
+            </div>
+            <div id="authError" class="auth-msg auth-error"></div>
+            <div id="authSuccess" class="auth-msg auth-success"></div>
+
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" required></div>
+                <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
+            </form>
+
+            <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
+                <div class="form-group"><label>Nome Completo</label><input type="text" id="signupName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="signupEmail" required></div>
+                <div class="form-group"><label>Senha (mín. 6)</label><input type="password" id="signupPassword" minlength="6" required></div>
+                <button type="submit" class="btn-auth" id="signupBtn">🎁 Começar Trial Grátis</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- APP PRINCIPAL -->
     <div class="app-container" id="appContainer">
         <div class="navbar">
             <div class="navbar-title">✨ Planner Premium ULTRA</div>
             <div class="navbar-user">
                 <span class="level-badge" id="levelBadge">⭐ Nível 1</span>
+                <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
 
         <div class="eco-banner">
-            🌱 100% Digital = Zero Papel | 
-            <div class="eco-stats">
-                <div class="eco-stat">📄 Papel economizado: <strong id="paperSaved">0</strong> folhas</div>
-                <div class="eco-stat">🌍 Equivalente a <strong id="treesSaved">0</strong> árvores</div>
-            </div>
+            🌱 100% Digital = Zero Papel | 📄 Papel economizado: <strong id="paperSaved">0</strong> folhas | 🌍 Árvores salvas: <strong id="treesSaved">0</strong>
         </div>
 
         <div class="container">
+            <!-- ABAS PRINCIPAIS -->
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="openTab('planners')">📋 Planners</button>
+                <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
+                <button class="tab-btn" onclick="openTab('achievements')">🏆 Conquistas</button>
                 <button class="tab-btn" onclick="openTab('biblioteca')">📖 Biblioteca</button>
                 <button class="tab-btn" onclick="openTab('tutoriais')">📚 Tutoriais</button>
-                <button class="tab-btn" onclick="openTab('google')">📅 Google Calendar</button>
-                <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
+                <button class="tab-btn" onclick="openTab('calendar')">📅 Calendário</button>
             </div>
 
-            <!-- PLANNERS TAB -->
+            <!-- ABA PLANNERS (SEU PLANNER ORIGINAL) -->
             <div id="plannersTab" class="tab-content active">
-                <h2 style="margin-bottom:1rem;">📋 Meus Planners</h2>
-                <div id="meusPlanners" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:1rem;"></div>
+                <h2 style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
+                <div class="planner-types">
+                    <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                </div>
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <h2 style="margin-bottom:1rem;">📋 Meus Planners</h2>
+                    <div class="planners-grid" id="meusPlanners"></div>
+                </div>
             </div>
 
-            <!-- BIBLIOTECA TAB (900+ Páginas Hiperlinkadas) -->
+            <!-- ABA ESTATÍSTICAS -->
+            <div id="statsTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">⭐</div>
+                        <div class="stat-value" id="statLevel">1</div>
+                        <div class="stat-label">Nível</div>
+                        <div class="xp-bar"><div class="xp-fill" id="xpBar" style="width:0%;">0/100 XP</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">🔥</div>
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Dias de Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">✅</div>
+                        <div class="stat-value" id="statCompleted">0</div>
+                        <div class="stat-label">Tarefas Concluídas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA CONQUISTAS -->
+            <div id="achievementsTab" class="tab-content">
+                <h2 style="margin-bottom:1rem;">🏆 Suas Conquistas</h2>
+                <p style="text-align: center; color: #666;">Suas conquistas aparecerão aqui conforme você avança!</p>
+            </div>
+
+            <!-- ABA BIBLIOTECA (NOVO) -->
             <div id="bibliotecaTab" class="tab-content">
-                <h2 style="margin-bottom:1rem; font-size:1.3em; font-weight:800;">📖 Biblioteca Premium (900+ Páginas)</h2>
-                <p style="margin-bottom:1.5rem; color:#666;">Acesse templates prontos, planejadores temáticos e muito mais!</p>
+                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📖 Biblioteca Premium (900+ Páginas para Ler)</h2>
+                <p style="margin-bottom:1.5rem; color:#666; font-size:0.95em;">Acesse templates prontos e aprenda com conteúdo premium!</p>
                 
                 <h3 style="margin-bottom:1rem; font-weight:700;">📅 Planejadores Por Período</h3>
                 <div class="biblioteca-grid">
@@ -173,106 +340,48 @@
                 </div>
             </div>
 
-            <!-- TUTORIAIS TAB -->
+            <!-- ABA TUTORIAIS (NOVO) -->
             <div id="tutoriaisTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📚 Tutoriais Completos</h2>
+                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📚 Tutoriais Completos (Saiba Como Usar)</h2>
                 
                 <div class="tutorial-item" onclick="abrirTutorial('comeco')">
                     <div class="tutorial-nome">🚀 Como Começar - Primeiros Passos</div>
-                    <div class="tutorial-preview">
-                        Aprenda o básico do Planner Premium ULTRA. Configure sua conta, entenda a interface e crie seu primeiro planejador em minutos.
-                    </div>
+                    <div class="tutorial-preview">Aprenda o básico. Configure sua conta e crie seu primeiro planejador em minutos.</div>
                 </div>
 
                 <div class="tutorial-item" onclick="abrirTutorial('gamificacao')">
                     <div class="tutorial-nome">⭐ Sistema de Gamificação - Ganhe XP e Suba de Nível</div>
-                    <div class="tutorial-preview">
-                        Descubra como ganhar XP, subir de nível, manter streaks e desbloquear conquistas. Torne sua produtividade em um jogo emocionante!
-                    </div>
+                    <div class="tutorial-preview">Descubra como ganhar XP, subir de nível, manter streaks e desbloquear conquistas.</div>
                 </div>
 
                 <div class="tutorial-item" onclick="abrirTutorial('tarefas')">
                     <div class="tutorial-nome">✅ Criando e Gerenciando Tarefas Avançadas</div>
-                    <div class="tutorial-preview">
-                        Domine a criação de tarefas com prioridades, subtarefas, lembretes, tags, anexos e muito mais. Organize tudo que você precisa fazer.
-                    </div>
+                    <div class="tutorial-preview">Domine a criação de tarefas com prioridades, subtarefas, lembretes, tags e muito mais.</div>
                 </div>
 
                 <div class="tutorial-item" onclick="abrirTutorial('kanban')">
                     <div class="tutorial-nome">📊 Utilizando a Visualização Kanban</div>
-                    <div class="tutorial-preview">
-                        Organize suas tarefas em colunas (A Fazer, Em Progresso, Concluído). Visualize o fluxo do seu trabalho de forma clara e intuitiva.
-                    </div>
+                    <div class="tutorial-preview">Organize suas tarefas em colunas (A Fazer, Em Progresso, Concluído).</div>
                 </div>
 
-                <div class="tutorial-item" onclick="abrirTutorial('google-sync')">
-                    <div class="tutorial-nome">📅 Sincronizando com Google Calendar</div>
-                    <div class="tutorial-preview">
-                        Conecte sua conta Google e veja seus compromissos do Google Calendar integrados. Seus eventos aparecem automaticamente nos planejadores.
-                    </div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('estudo')">
+                <div class="tutorial-item" onclick="abrirTutorial('dicas')">
                     <div class="tutorial-nome">📚 Dicas de Produtividade com Gamificação</div>
-                    <div class="tutorial-preview">
-                        Técnicas comprovadas para aumentar sua produtividade usando o sistema de XP, lembretes, contextos de tarefas e análise de dados.
-                    </div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('relatorios')">
-                    <div class="tutorial-nome">📈 Gerando Relatórios e Insights</div>
-                    <div class="tutorial-preview">
-                        Analise gráficos de produtividade, taxa de conclusão, tarefas por prioridade e muito mais. Entenda seus padrões de trabalho.
-                    </div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('atalhos')">
-                    <div class="tutorial-nome">⌨️ Atalhos Avançados e Dicas Práticas</div>
-                    <div class="tutorial-preview">
-                        Domine atalhos de teclado, truques de produtividade e hacks para trabalhar 10x mais rápido no Planner Premium ULTRA.
-                    </div>
+                    <div class="tutorial-preview">Técnicas comprovadas para aumentar sua produtividade usando o Planner.</div>
                 </div>
             </div>
 
-            <!-- GOOGLE CALENDAR TAB -->
-            <div id="googleTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📅 Google Calendar Integration</h2>
-                
-                <div style="background: white; border-radius: 12px; padding: 2rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <div style="font-size: 3em; margin-bottom: 1rem;">📅</div>
-                    <h3 style="margin-bottom: 0.5rem;">Integração com Google Calendar</h3>
-                    <p style="color: #666; margin-bottom: 1.5rem;">Seus compromissos do Google Calendar sincronizados automaticamente com o Planner Premium ULTRA</p>
-                    
-                    <button class="btn-primario" onclick="connectGoogleCalendar()" style="margin-bottom: 1rem;">🔗 Conectar Google Calendar</button>
-                    
-                    <div id="googleEvents" style="margin-top: 2rem; display: none;">
-                        <h4 style="margin-bottom: 1rem;">📋 Próximos Eventos:</h4>
-                        <div id="eventsList" style="text-align: left;"></div>
-                    </div>
-                    
-                    <div style="margin-top: 2rem; background: linear-gradient(135deg, #F3E8FF, #E9D5FF); padding: 1.5rem; border-radius: 10px; text-align: left;">
-                        <h4 style="margin-bottom: 0.5rem;">✨ Benefícios da Integração:</h4>
-                        <ul style="list-style: none; color: #666; font-size: 0.95em;">
-                            <li>✅ Sincronização automática de eventos</li>
-                            <li>✅ Compatível com Android, iPhone, Web e Desktop</li>
-                            <li>✅ Funciona offline com atualizações automáticas</li>
-                            <li>✅ Zero esforço - tudo acontece automaticamente</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- STATS TAB -->
-            <div id="statsTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem;">📊 Suas Estatísticas</h2>
-                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <p style="color: #666; text-align: center;">📈 Gráficos e dados de produtividade aparecerão aqui</p>
+            <!-- ABA CALENDÁRIO -->
+            <div id="calendarTab" class="tab-content">
+                <h2 style="margin-bottom:1rem;">📅 Calendário</h2>
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <p style="color: #666;">Integração com Google Calendar em desenvolvimento.</p>
+                    <p style="color: #999; font-size: 0.9em; margin-top: 0.5rem;">Seus eventos aparecerão aqui automaticamente!</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Biblioteca -->
+    <!-- MODAL BIBLIOTECA -->
     <div id="modalBiblioteca" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -285,7 +394,7 @@
         </div>
     </div>
 
-    <!-- Modal Tutoriais -->
+    <!-- MODAL TUTORIAL -->
     <div id="modalTutorial" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -301,410 +410,39 @@
     <script>
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
+        const STRIPE_LINK = 'https://buy.stripe.com/test_6oE14q0lh7iW5sA9AA';
         
         let supabase = null;
         let currentUser = null;
+        let planners = [];
 
         // Conteúdo da Biblioteca
         const bibliotecaConteudo = {
-            'diario': {
-                titulo: '📝 Planejador Diário',
-                conteudo: `
-                    <h3>Planejador Diário - 365 Páginas</h3>
-                    <p>Uma página para cada dia do ano, com estrutura otimizada para maximizar sua produtividade.</p>
-                    <h4 style="margin-top: 1.5rem;">Estrutura de Cada Página:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Data:</strong> Identificação clara do dia</li>
-                        <li><strong>Metas do Dia:</strong> 3 metas principais (regra dos 3)</li>
-                        <li><strong>Tarefas:</strong> Lista completa de tarefas</li>
-                        <li><strong>Reflexão:</strong> Como foi o dia? O que aprender?</li>
-                        <li><strong>Gratidão:</strong> 3 coisas pelas quais você é grato</li>
-                        <li><strong>Próximos Passos:</strong> Planejamento para amanhã</li>
-                    </ul>
-                    <h4 style="margin-top: 1.5rem;">Como Usar:</h4>
-                    <p>Comece cada dia preenchendo suas 3 metas principais. Durante o dia, adicione tarefas e marque como concluídas. À noite, faça a reflexão.</p>
-                `
-            },
-            'semanal': {
-                titulo: '📆 Planejador Semanal',
-                conteudo: `
-                    <h3>Planejador Semanal - 52 Páginas</h3>
-                    <p>Uma página para cada semana do ano. Visão ampla dos seus compromissos e metas.</p>
-                    <h4 style="margin-top: 1.5rem;">Estrutura de Cada Página:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Semana:</strong> Data de início e fim</li>
-                        <li><strong>Objetivos da Semana:</strong> Metas principais</li>
-                        <li><strong>Cronograma:</strong> Seg, Ter, Qua, Qui, Sex, Sáb, Dom</li>
-                        <li><strong>Prioridades:</strong> O que é mais importante</li>
-                        <li><strong>Review:</strong> Como foi a semana?</li>
-                    </ul>
-                `
-            },
-            'mensal': {
-                titulo: '📊 Planejador Mensal',
-                conteudo: `
-                    <h3>Planejador Mensal - 12 Páginas</h3>
-                    <p>Uma página para cada mês. Veja o panorama completo de 30 dias.</p>
-                    <h4 style="margin-top: 1.5rem;">Estrutura de Cada Página:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Mês:</strong> Janeiro a Dezembro</li>
-                        <li><strong>Objetivos Mensais:</strong> Grandes metas</li>
-                        <li><strong>Calendário:</strong> Visão de 30 dias</li>
-                        <li><strong>Eventos Importantes:</strong> Marcos e datas</li>
-                        <li><strong>Análise:</strong> Performance do mês</li>
-                    </ul>
-                `
-            },
-            'anual': {
-                titulo: '🎯 Planejador Anual',
-                conteudo: `
-                    <h3>Planejador Anual - Visão Completa do Ano</h3>
-                    <p>Uma página para todo o ano. Defina sua visão e acompanhe o progresso.</p>
-                    <h4 style="margin-top: 1.5rem;">Seções Principais:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Metas por Categoria:</strong> Saúde, Financeiro, Relacionamentos, Desenvolvimento</li>
-                        <li><strong>Milestones:</strong> Eventos importantes do ano</li>
-                        <li><strong>Revisão Trimestral:</strong> 4 checkpoints ao longo do ano</li>
-                        <li><strong>Reflexão Final:</strong> Aprendizados e crescimento</li>
-                    </ul>
-                `
-            },
-            'financeiro': {
-                titulo: '💰 Planejador Financeiro',
-                conteudo: `
-                    <h3>Planejador Financeiro - Controle Completo</h3>
-                    <p>Gerencie seu dinheiro com inteligência e alcance independência financeira.</p>
-                    <h4 style="margin-top: 1.5rem;">Módulos Inclusos:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Orçamento Mensal:</strong> Renda e despesas</li>
-                        <li><strong>Categorias de Despesa:</strong> Alimentação, Transporte, Lazer, etc</li>
-                        <li><strong>Investimentos:</strong> Acompanhamento de portfólio</li>
-                        <li><strong>Metas Financeiras:</strong> Fundo de emergência, aposentadoria, etc</li>
-                        <li><strong>Análise Mensal:</strong> Onde seu dinheiro vai?</li>
-                    </ul>
-                `
-            },
-            'saude': {
-                titulo: '💪 Planejador de Saúde',
-                conteudo: `
-                    <h3>Planejador de Saúde - Bem-estar em Primeiro Lugar</h3>
-                    <p>Rastreie exercícios, nutrição, sono e saúde mental para uma vida melhor.</p>
-                    <h4 style="margin-top: 1.5rem;">Elementos Rastreados:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Exercícios:</strong> Tipo, duração, intensidade</li>
-                        <li><strong>Nutrição:</strong> Refeições, calorias, água consumida</li>
-                        <li><strong>Sono:</strong> Horas dormidas, qualidade</li>
-                        <li><strong>Saúde Mental:</strong> Meditação, humor, estresse</li>
-                        <li><strong>Saúde Preventiva:</strong> Consultas, exames</li>
-                    </ul>
-                `
-            },
-            'leitura': {
-                titulo: '📚 Rastreador de Leitura',
-                conteudo: `
-                    <h3>Rastreador de Leitura - Para Bibliofilia</h3>
-                    <p>Organize sua leitura, crie metas de livros e não esqueça das histórias.</p>
-                    <h4 style="margin-top: 1.5rem;">Para Cada Livro:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Título e Autor:</strong> Informações básicas</li>
-                        <li><strong>Gênero:</strong> Ficção, Não-ficção, etc</li>
-                        <li><strong>Progresso:</strong> Páginas lidas</li>
-                        <li><strong>Resenha:</strong> Suas anotações</li>
-                        <li><strong>Avaliação:</strong> Estrelas (1-5)</li>
-                        <li><strong>Aprendizados:</strong> O que você aprendeu</li>
-                    </ul>
-                `
-            },
-            'viagem': {
-                titulo: '✈️ Planejador de Viagens',
-                conteudo: `
-                    <h3>Planejador de Viagens - Prepare-se para Aventuras</h3>
-                    <p>Organize cada detalhe da sua viagem, do orçamento ao itinerário.</p>
-                    <h4 style="margin-top: 1.5rem;">Seções de Planejamento:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Destino e Datas:</strong> Informações essenciais</li>
-                        <li><strong>Orçamento:</strong> Transporte, hospedagem, atividades</li>
-                        <li><strong>Itinerário Diário:</strong> O que fazer cada dia</li>
-                        <li><strong>Checklist de Mala:</strong> O que levar</li>
-                        <li><strong>Contatos Importantes:</strong> Telefones, endereços</li>
-                        <li><strong>Experiências Desejadas:</strong> Sonhos para a viagem</li>
-                    </ul>
-                `
-            },
-            'metas': {
-                titulo: '🎯 Rastreador de Metas',
-                conteudo: `
-                    <h3>Rastreador de Metas - Alcance Seus Sonhos</h3>
-                    <p>Defina metas SMART e acompanhe seu progresso ao longo do tempo.</p>
-                    <h4 style="margin-top: 1.5rem;">Para Cada Meta:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Meta:</strong> O que você quer alcançar</li>
-                        <li><strong>Categoria:</strong> Pessoal, Profissional, Saúde, Financeira</li>
-                        <li><strong>Prazo:</strong> Quando quer alcançar</li>
-                        <li><strong>Passos:</strong> Como chegar lá (quebra em sub-metas)</li>
-                        <li><strong>Progresso:</strong> Porcentagem completa</li>
-                        <li><strong>Revisão Mensal:</strong> Avaliação do progresso</li>
-                    </ul>
-                `
-            },
-            'habitos': {
-                titulo: '🔥 Construtor de Hábitos',
-                conteudo: `
-                    <h3>Construtor de Hábitos - 66 Dias para Nova Você</h3>
-                    <p>Crie novos hábitos positivos e destrua os negativos com foco diário.</p>
-                    <h4 style="margin-top: 1.5rem;">Sistema de Rastreamento:</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Hábito:</strong> O que deseja fazer</li>
-                        <li><strong>Categoria:</strong> Saúde, Produtividade, Aprendizado</li>
-                        <li><strong>Frequência:</strong> Diário, 3x/semana, etc</li>
-                        <li><strong>Checklist de 66 Dias:</strong> Marque cada conclusão</li>
-                        <li><strong>Notas:</strong> Como você se sentiu</li>
-                        <li><strong>Reward:</strong> Celebre seus sucessos</li>
-                    </ul>
-                `
-            }
+            'diario': { titulo: '📝 Planejador Diário', conteudo: '<h3>Planejador Diário - 365 Páginas</h3><p>Uma página para cada dia do ano com estrutura otimizada.</p><h4 style="margin-top: 1.5rem;">Estrutura:</h4><ul style="margin-left: 1.5rem;"><li><strong>Data:</strong> Identificação clara do dia</li><li><strong>Metas do Dia:</strong> 3 metas principais</li><li><strong>Tarefas:</strong> Lista completa</li><li><strong>Reflexão:</strong> Como foi o dia?</li><li><strong>Gratidão:</strong> 3 coisas pelas quais é grato</li></ul>' },
+            'semanal': { titulo: '📆 Planejador Semanal', conteudo: '<h3>Planejador Semanal - 52 Páginas</h3><p>Uma página para cada semana do ano. Visão ampla dos compromissos.</p><h4 style="margin-top: 1.5rem;">Inclui:</h4><ul style="margin-left: 1.5rem;"><li>Objetivos da semana</li><li>Cronograma dia a dia</li><li>Prioridades</li><li>Review da semana</li></ul>' },
+            'mensal': { titulo: '📊 Planejador Mensal', conteudo: '<h3>Planejador Mensal - 12 Páginas</h3><p>Uma página para cada mês. Veja o panorama completo de 30 dias.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Objetivos mensais</li><li>Calendário visual</li><li>Eventos importantes</li><li>Análise do mês</li></ul>' },
+            'anual': { titulo: '🎯 Planejador Anual', conteudo: '<h3>Planejador Anual - Visão Completa</h3><p>Uma página para todo o ano. Defina sua visão anual.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Metas por categoria (Saúde, Financeiro, Relacionamentos)</li><li>Milestones do ano</li><li>Revisão trimestral</li><li>Reflexão final</li></ul>' },
+            'financeiro': { titulo: '💰 Planejador Financeiro', conteudo: '<h3>Planejador Financeiro</h3><p>Gerencie seu dinheiro com inteligência.</p><h4 style="margin-top: 1.5rem;">Módulos:</h4><ul style="margin-left: 1.5rem;"><li>Orçamento mensal</li><li>Categorias de despesa</li><li>Investimentos</li><li>Metas financeiras</li><li>Análise mensal</li></ul>' },
+            'saude': { titulo: '💪 Planejador de Saúde', conteudo: '<h3>Planejador de Saúde</h3><p>Rastreie exercícios, nutrição, sono e bem-estar.</p><h4 style="margin-top: 1.5rem;">Rastreie:</h4><ul style="margin-left: 1.5rem;"><li>Exercícios diários</li><li>Nutrição e água</li><li>Qualidade de sono</li><li>Saúde mental</li><li>Consultas médicas</li></ul>' },
+            'leitura': { titulo: '📚 Rastreador de Leitura', conteudo: '<h3>Rastreador de Leitura</h3><p>Organize sua leitura e não esqueça das histórias.</p><h4 style="margin-top: 1.5rem;">Para cada livro:</h4><ul style="margin-left: 1.5rem;"><li>Título e autor</li><li>Gênero</li><li>Progresso de leitura</li><li>Resenha pessoal</li><li>Avaliação</li><li>Aprendizados</li></ul>' },
+            'viagem': { titulo: '✈️ Planejador de Viagens', conteudo: '<h3>Planejador de Viagens</h3><p>Organize cada detalhe da sua viagem.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Destino e datas</li><li>Orçamento</li><li>Itinerário diário</li><li>Checklist de mala</li><li>Contatos importantes</li><li>Experiências desejadas</li></ul>' },
+            'metas': { titulo: '🎯 Rastreador de Metas', conteudo: '<h3>Rastreador de Metas</h3><p>Defina metas SMART e acompanhe progresso.</p><h4 style="margin-top: 1.5rem;">Para cada meta:</h4><ul style="margin-left: 1.5rem;"><li>Meta clara</li><li>Categoria</li><li>Prazo</li><li>Passos para chegar lá</li><li>Progresso percentual</li><li>Revisão mensal</li></ul>' },
+            'habitos': { titulo: '🔥 Construtor de Hábitos', conteudo: '<h3>Construtor de Hábitos - 66 Dias</h3><p>Crie novos hábitos positivos.</p><h4 style="margin-top: 1.5rem;">Rastreamento:</h4><ul style="margin-left: 1.5rem;"><li>Nome do hábito</li><li>Categoria</li><li>Frequência</li><li>Checklist de 66 dias</li><li>Notas pessoais</li><li>Celebração de sucessos</li></ul>' }
         };
 
         // Conteúdo dos Tutoriais
         const tutoriaisConteudo = {
-            'comeco': {
-                titulo: '🚀 Como Começar - Primeiros Passos',
-                conteudo: `
-                    <h3>Bem-vindo ao Planner Premium ULTRA!</h3>
-                    <p>Vamos começar sua jornada de produtividade em 5 passos simples.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Passo 1: Crie Sua Conta</h4>
-                    <p>Clique em "Criar Conta" e preencha seus dados. Você ganha 7 dias grátis!</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Passo 2: Configure Suas Preferências</h4>
-                    <p>Escolha seus planners, cores favoritas e notificações.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Passo 3: Crie Seu Primeiro Planner</h4>
-                    <p>Clique em "Criar Novo Planner" e escolha o tipo (To-Do, Projeto, Hábitos ou Financeiro).</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Passo 4: Adicione Sua Primeira Tarefa</h4>
-                    <p>Clique em "+ Nova Tarefa" e comece a adicionar o que precisa fazer.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Passo 5: Sincronize com Google Calendar (Opcional)</h4>
-                    <p>Conecte sua conta Google para sincronizar eventos automaticamente.</p>
-                    
-                    <p style="margin-top: 1.5rem; font-style: italic; color: #666;">💡 Dica: Comece com um único planejador e adicione outros conforme se sentir confortável!</p>
-                `
-            },
-            'gamificacao': {
-                titulo: '⭐ Sistema de Gamificação',
-                conteudo: `
-                    <h3>Transforme Produtividade em um Jogo!</h3>
-                    <p>Nosso sistema de gamificação é projetado para manter você motivado todos os dias.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Como Ganhar XP</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>Criar um planner: +50 XP</li>
-                        <li>Criar uma tarefa: +30 XP</li>
-                        <li>Completar uma tarefa: +20 XP</li>
-                        <li>Completar 3+ tarefas num dia: +50 XP bônus</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Sistema de Níveis</h4>
-                    <p>A cada 100 XP, você sobe um nível! Veja sua barra no topo da tela preenchendo.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Streaks (Rajadas)</h4>
-                    <p>Complete uma tarefa a cada dia para manter seu streak! 🔥 Quanto maior o streak, mais motivador!</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Conquistas (Achievements)</h4>
-                    <p>Desbloqueie badges especiais completando objetivos:</p>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>🎯 Primeira Tarefa - Complete sua 1ª tarefa</li>
-                        <li>👑 Mestre das Tarefas - Complete 10 tarefas</li>
-                        <li>💯 Centenário - Complete 100 tarefas</li>
-                        <li>🔥 Streak 7 Dias - Mantenha 7 dias seguidos</li>
-                        <li>💪 Streak 30 Dias - Mantenha 30 dias seguidos</li>
-                    </ul>
-                `
-            },
-            'tarefas': {
-                titulo: '✅ Criando Tarefas Avançadas',
-                conteudo: `
-                    <h3>Domine a Criação de Tarefas</h3>
-                    <p>Tarefas são o coração do Planner Premium ULTRA. Aqui está como criar tarefas poderosas.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Campos Básicos</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Título:</strong> O que você precisa fazer?</li>
-                        <li><strong>Descrição:</strong> Detalhes, contexto, objetivos</li>
-                        <li><strong>Data:</strong> Quando precisa fazer?</li>
-                        <li><strong>Hora:</strong> A que horas?</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Priorização</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>🟢 Baixa - Pode esperar</li>
-                        <li>🟡 Média - Importante</li>
-                        <li>🔴 Alta - Urgente</li>
-                        <li>🔥 Urgente - Fazer hoje</li>
-                        <li>⚡ Crítica - Emergência</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Subtarefas</h4>
-                    <p>Divida tarefas grandes em passos pequenos. Isso torna tudo mais gerenciável!</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Lembretes</h4>
-                    <p>Receba notificações: 5 min, 15 min, 30 min, 1 hora ou 1 dia antes.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Tags e Categorias</h4>
-                    <p>Organize por: Trabalho, Pessoal, Saúde, Estudos, Financeiro</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Contexto</h4>
-                    <p>Marque onde fazer: Casa, Escritório, Online, Qualquer Lugar</p>
-                `
-            },
-            'kanban': {
-                titulo: '📊 Visualização Kanban',
-                conteudo: `
-                    <h3>O Método Kanban para Fluxo Visual</h3>
-                    <p>Veja suas tarefas em colunas: A Fazer, Em Progresso, Concluído.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Como Usar</h4>
-                    <ol style="margin-left: 1.5rem;">
-                        <li>Crie suas tarefas normalmente</li>
-                        <li>Clique na aba "Kanban" ao abrir um planejador</li>
-                        <li>Veja todas as tarefas organizadas em 3 colunas</li>
-                        <li>Arraste tarefas entre colunas conforme o progresso</li>
-                    </ol>
-                    
-                    <h4 style="margin-top: 1.5rem;">Benefícios</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>Visualização clara do progresso</li>
-                        <li>Limite de WIP (Work in Progress)</li>
-                        <li>Menos desperdício de tempo</li>
-                        <li>Melhor foco nas prioridades</li>
-                    </ul>
-                    
-                    <p style="margin-top: 1.5rem;"><strong>💡 Dica:</strong> Use Kanban para projetos com múltiplas etapas!</p>
-                `
-            },
-            'google-sync': {
-                titulo: '📅 Sincronizando com Google Calendar',
-                conteudo: `
-                    <h3>Integração Perfeita com Google Calendar</h3>
-                    <p>Seus compromissos aparecem automaticamente no Planner.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Como Conectar</h4>
-                    <ol style="margin-left: 1.5rem;">
-                        <li>Vá para a aba "Google Calendar"</li>
-                        <li>Clique em "Conectar Google Calendar"</li>
-                        <li>Autorize o acesso à sua conta Google</li>
-                        <li>Pronto! Seus eventos estão sincronizados</li>
-                    </ol>
-                    
-                    <h4 style="margin-top: 1.5rem;">O Que Você Ganha</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>✅ Eventos do Google Calendar aparecem no seu Planner</li>
-                        <li>✅ Funciona em todos os dispositivos</li>
-                        <li>✅ Atualizações automáticas em tempo real</li>
-                        <li>✅ Offline com sincronização quando online</li>
-                        <li>✅ Compatível: Android, iPhone, Web, Desktop</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Compatibilidade Universal</h4>
-                    <p>Como você tem Google Calendar, você já tem tudo que precisa!</p>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>📱 iPhone: Google Calendar app nativa</li>
-                        <li>🤖 Android: Google Calendar app nativa</li>
-                        <li>💻 Web: google.com/calendar</li>
-                        <li>🖥️ Desktop: Qualquer navegador</li>
-                    </ul>
-                `
-            },
-            'estudo': {
-                titulo: '📚 Dicas de Produtividade',
-                conteudo: `
-                    <h3>Técnicas Comprovadas para Aumentar Produtividade</h3>
-                    <p>Use o Planner Premium ULTRA para trabalhar mais inteligente, não mais duro.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">1. Regra dos 3</h4>
-                    <p>Escolha 3 tarefas principais para cada dia. Foco total nelas.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">2. Técnica Pomodoro</h4>
-                    <p>Trabalhe 25 minutos, descanse 5. Use a duração das tarefas para controlar.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">3. Método Kanban</h4>
-                    <p>Limite de 3-5 tarefas em progresso. Termine antes de começar novo.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">4. Contexto de Tarefas</h4>
-                    <p>Agrupe tarefas por local: Casa, Escritório, Online.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">5. Blocos de Tempo</h4>
-                    <p>Reserve horários específicos para tipos de tarefas.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">6. Mantenha Streaks</h4>
-                    <p>Complete algo todo dia. Mesmo pequenas ações contam!</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">7. Revise Diariamente</h4>
-                    <p>5 minutos de reflexão noturna economiza horas futura.</p>
-                `
-            },
-            'relatorios': {
-                titulo: '📈 Relatórios e Insights',
-                conteudo: `
-                    <h3>Analise Seus Dados de Produtividade</h3>
-                    <p>Entenda seus padrões e melhore continuamente.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Gráficos Disponíveis</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>📊 Produtividade Semanal - Tarefas concluídas por dia</li>
-                        <li>🎯 Tarefas por Prioridade - Distribução de esforço</li>
-                        <li>📈 Tendência de XP - Sua evolução gamificada</li>
-                        <li>🔥 Histórico de Streaks - Seus picos de consistência</li>
-                        <li>🏆 Progresso de Conquistas - Badges desbloqueadas</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Perguntas que os Dados Respondem</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>Qual é meu melhor dia da semana?</li>
-                        <li>Estou completando minhas tarefas de alta prioridade?</li>
-                        <li>Meu streak está crescendo?</li>
-                        <li>Qual é minha taxa de conclusão?</li>
-                        <li>Onde devo melhorar?</li>
-                    </ul>
-                `
-            },
-            'atalhos': {
-                titulo: '⌨️ Atalhos Avançados',
-                conteudo: `
-                    <h3>Trabalhe 10x Mais Rápido</h3>
-                    <p>Use esses atalhos e truques para dominar o Planner.</p>
-                    
-                    <h4 style="margin-top: 1.5rem;">Atalhos de Teclado</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li><strong>Tab:</strong> Navegar entre campos</li>
-                        <li><strong>Enter:</strong> Salvar tarefa</li>
-                        <li><strong>Escape:</strong> Fechar modal</li>
-                        <li><strong>Ctrl+Enter:</strong> Completar tarefa</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Truques de Poder</h4>
-                    <ul style="margin-left: 1.5rem;">
-                        <li>Use Tags para filtrar rapidamente</li>
-                        <li>Crie templates de tarefas repetitivas</li>
-                        <li>Use a função "Repetir" para hábitos</li>
-                        <li>Configure lembretes automáticos</li>
-                        <li>Mantenha a tela em modo escuro para produção noturna</li>
-                    </ul>
-                    
-                    <h4 style="margin-top: 1.5rem;">Hacks de Produtividade</h4>
-                    <p><strong>1. Metas do Dia no Início:</strong> Preencha seus 3 objetivos antes de abrir email.</p>
-                    <p><strong>2. Bloqueio de Tempo:</strong> Reserve 2 horas sem interrupções.</p>
-                    <p><strong>3. Review Semanal:</strong> Domingo à noite, revise a semana.</p>
-                    <p><strong>4. Celebrate Wins:</strong> Quando completar uma grande tarefa, comemore!</p>
-                `
-            }
+            'comeco': { titulo: '🚀 Como Começar', conteudo: '<h3>Bem-vindo!</h3><p>Vamos começar em 5 passos:</p><ol style="margin-left: 1.5rem;"><li><strong>Crie sua conta:</strong> Email e senha. Ganhe 7 dias grátis!</li><li><strong>Entre no app:</strong> Você verá o dashboard principal</li><li><strong>Crie um planner:</strong> Escolha To-Do, Projeto, Hábitos ou Financeiro</li><li><strong>Adicione tarefas:</strong> Clique em "+ Nova Tarefa"</li><li><strong>Comece a usar:</strong> Marque tarefas como concluídas e ganhe XP!</li></ol><p style="margin-top: 1.5rem;"><strong>💡 Dica:</strong> Comece com um único planejador!</p>' },
+            'gamificacao': { titulo: '⭐ Gamificação', conteudo: '<h3>Sistema de Gamificação</h3><p>Ganhe XP e suba de nível completando tarefas!</p><h4 style="margin-top: 1.5rem;">Como Ganhar XP:</h4><ul style="margin-left: 1.5rem;"><li>Criar um planner: +50 XP</li><li>Criar uma tarefa: +30 XP</li><li>Completar uma tarefa: +20 XP</li><li>Manter streak: Bônus especial</li></ul><h4 style="margin-top: 1.5rem;">Streaks (Rajadas):</h4><p>Complete uma tarefa cada dia para manter seu streak! Quanto maior, mais motivador! 🔥</p>' },
+            'tarefas': { titulo: '✅ Tarefas Avançadas', conteudo: '<h3>Criando Tarefas Poderosas</h3><p>Tarefas são o coração do Planner!</p><h4 style="margin-top: 1.5rem;">Campos:</h4><ul style="margin-left: 1.5rem;"><li><strong>Título:</strong> O que precisa fazer</li><li><strong>Descrição:</strong> Detalhes e contexto</li><li><strong>Data e Hora:</strong> Quando fazer</li><li><strong>Prioridade:</strong> Baixa, Média, Alta, Urgente, Crítica</li><li><strong>Subtarefas:</strong> Divida em passos pequenos</li><li><strong>Lembretes:</strong> Receba notificações</li><li><strong>Tags:</strong> Organize por temas</li></ul>' },
+            'kanban': { titulo: '📊 Visualização Kanban', conteudo: '<h3>O Método Kanban</h3><p>Veja suas tarefas em 3 colunas:</p><ul style="margin-left: 1.5rem;"><li>📋 A Fazer</li><li>🚀 Em Progresso</li><li>✅ Concluído</li></ul><h4 style="margin-top: 1.5rem;">Como usar:</h4><ol style="margin-left: 1.5rem;"><li>Crie suas tarefas normalmente</li><li>Abra o planner e clique em "Kanban"</li><li>Arraste tarefas entre colunas</li><li>Visualize seu fluxo de trabalho</li></ol>' },
+            'dicas': { titulo: '📚 Dicas de Produtividade', conteudo: '<h3>Técnicas Comprovadas</h3><h4>1. Regra dos 3</h4><p>Escolha 3 tarefas principais cada dia. Foco total nelas!</p><h4>2. Technique Pomodoro</h4><p>Trabalhe 25 min, descanse 5. Use a duração das tarefas!</p><h4>3. Kanban</h4><p>Limite de 3-5 tarefas em progresso. Termine antes de começar nova!</p><h4>4. Contexto</h4><p>Agrupe tarefas por local: Casa, Escritório, Online.</p><h4>5. Mantenha Streaks</h4><p>Complete algo todo dia. Mesmo ações pequenas contam!</p>' }
         };
 
         async function init() {
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                document.getElementById('appContainer').classList.add('active');
+                document.getElementById('authContainer').style.display = 'flex';
                 updateEcoCounter();
             } catch (err) {
                 console.error('Erro:', err);
@@ -712,20 +450,129 @@
         }
 
         function updateEcoCounter() {
-            // Simulação: cada usuário economiza ~500 folhas por ano (365 dias × tarefas)
-            const hoursUsingApp = Math.floor(Math.random() * 8760); // Horas em um ano
-            const paperSaved = Math.floor(hoursUsingApp / 2) * 10; // ~5 folhas por hora
-            const treesSaved = Math.floor(paperSaved / 8333); // ~8333 folhas por árvore
+            const paperSaved = Math.floor(Math.random() * 1000) + 500;
+            const treesSaved = Math.floor(paperSaved / 8333);
+            document.getElementById('paperSaved').textContent = paperSaved;
+            document.getElementById('treesSaved').textContent = treesSaved;
+        }
+
+        function showTab(t) {
+            document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)));
+            document.getElementById('loginForm').classList.toggle('active', t==='login');
+            document.getElementById('signupForm').classList.toggle('active', t==='signup');
+            hideMsg();
+        }
+        
+        function showError(m) { 
+            document.getElementById('authError').textContent=m; 
+            document.getElementById('authError').style.display='block'; 
+            document.getElementById('authSuccess').style.display='none'; 
+        }
+        
+        function showSuccess(m) { 
+            document.getElementById('authSuccess').textContent=m; 
+            document.getElementById('authSuccess').style.display='block'; 
+            document.getElementById('authError').style.display='none'; 
+        }
+        
+        function hideMsg() { 
+            document.getElementById('authError').style.display='none'; 
+            document.getElementById('authSuccess').style.display='none'; 
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('signupPassword').value;
             
-            document.getElementById('paperSaved').textContent = paperSaved.toLocaleString('pt-BR');
-            document.getElementById('treesSaved').textContent = treesSaved.toLocaleString('pt-BR');
+            if (pass.length < 6) { showError('❌ Senha deve ter mínimo 6 caracteres!'); return; }
+            
+            document.getElementById('signupBtn').disabled = true;
+            document.getElementById('signupBtn').textContent = 'Criando...';
+            
+            try {
+                const { data: existing } = await supabase.from('users').select('email').eq('email', email).single();
+                if (existing) {
+                    showError('❌ Email já cadastrado!');
+                    document.getElementById('signupBtn').disabled = false;
+                    document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
+                    return;
+                }
+                
+                const hashedPassword = await bcrypt.hash(pass, 10);
+                const trialEndDate = new Date();
+                trialEndDate.setDate(trialEndDate.getDate() + 7);
+                
+                const { data: user, error } = await supabase.from('users').insert([{ 
+                    email, name, password: hashedPassword,
+                    trial_end: trialEndDate.toISOString().split('T')[0],
+                    subscription_status: 'trial',
+                    xp: 0, level: 1, streak: 0, last_activity: new Date().toISOString().split('T')[0]
+                }]).select().single();
+                
+                if (error) throw error;
+                showSuccess('✅ Conta criada! 7 dias grátis ativados!');
+                setTimeout(() => loginUser(user), 1500);
+            } catch (err) {
+                console.error('Erro:', err);
+                showError('❌ Erro ao criar conta');
+                document.getElementById('signupBtn').disabled = false;
+                document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPassword').value;
+            
+            document.getElementById('loginBtn').disabled = true;
+            document.getElementById('loginBtn').textContent = 'Entrando...';
+            
+            try {
+                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
+                if (error || !user) {
+                    showError('❌ Email não encontrado!');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+                
+                const isValid = await bcrypt.compare(pass, user.password);
+                if (!isValid) {
+                    showError('❌ Senha incorreta!');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+                
+                loginUser(user);
+            } catch (err) {
+                console.error('Erro:', err);
+                showError('❌ Erro ao fazer login');
+                document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').textContent = 'Entrar';
+            }
+        }
+
+        async function loginUser(user) {
+            currentUser = user;
+            
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            document.getElementById('userName').textContent = user.name.split(' ')[0];
+            document.getElementById('levelBadge').textContent = `⭐ Nível ${user.level || 1}`;
+            document.getElementById('streakBadge').textContent = `🔥 ${user.streak || 0} dias`;
+            
+            updateEcoCounter();
         }
 
         function openTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            const tabs = ['planners', 'biblioteca', 'tutoriais', 'google', 'stats'];
+            const tabs = ['planners', 'stats', 'achievements', 'biblioteca', 'tutoriais', 'calendar'];
             const index = tabs.indexOf(tab);
             if (index !== -1) {
                 document.querySelectorAll('.tab-btn')[index].classList.add('active');
@@ -751,18 +598,17 @@
             document.getElementById('modalTutorial').style.display = 'block';
         }
 
-        function connectGoogleCalendar() {
-            alert('🔗 Integração com Google Calendar\n\nEm breve você será redirecionado para autorizar o acesso.\n\nSeus eventos serão sincronizados automaticamente!');
-            // Implementação completa do Google Calendar será integrada aqui
-        }
-
         function fecharModal(id) {
             document.getElementById(id).style.display = 'none';
         }
 
         function logout() {
             if (confirm('Deseja realmente sair?')) {
-                window.location.reload();
+                currentUser = null;
+                document.getElementById('appContainer').classList.remove('active');
+                document.getElementById('authContainer').style.display = 'flex';
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
             }
         }
 
