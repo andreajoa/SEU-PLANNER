@@ -172,6 +172,7 @@
                 <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
                 <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" required></div>
                 <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
+                <button type="button" onclick="debugLogin()" style="width:100%; margin-top:0.5rem; padding:0.5rem; background:#666; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.8em;">🔍 Debug Login</button>
             </form>
 
             <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
@@ -389,6 +390,57 @@
             document.getElementById('authSuccess').style.display='none'; 
         }
 
+        async function debugLogin() {
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPassword').value;
+            
+            if (!email || !pass) {
+                alert('Preencha email e senha primeiro!');
+                return;
+            }
+            
+            try {
+                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
+                
+                if (error || !user) {
+                    alert('❌ Usuário não encontrado!\n\nEmail procurado: ' + email);
+                    return;
+                }
+                
+                const debugInfo = `
+🔍 DEBUG INFO:
+━━━━━━━━━━━━━━━━━━
+✅ Usuário encontrado!
+
+📧 Email: ${user.email}
+👤 Nome: ${user.name}
+🔐 Senha no banco: ${user.password.substring(0, 20)}...
+📏 Tamanho senha: ${user.password.length} caracteres
+🔒 É hash? ${user.password.startsWith('$2') ? 'SIM ✅' : 'NÃO ❌ (texto plano)'}
+📅 Criado em: ${user.created_at || 'N/A'}
+
+💡 Senha digitada tem ${pass.length} caracteres
+                `.trim();
+                
+                alert(debugInfo);
+                
+                // Testar comparação
+                if (user.password.startsWith('$2')) {
+                    try {
+                        const isValid = await bcrypt.compare(pass, user.password);
+                        alert(isValid ? '✅ Senha CORRETA!' : '❌ Senha INCORRETA!');
+                    } catch (err) {
+                        alert('❌ Erro ao comparar: ' + err.message);
+                    }
+                } else {
+                    alert(user.password === pass ? '✅ Senha CORRETA!' : '❌ Senha INCORRETA!');
+                }
+                
+            } catch (err) {
+                alert('❌ Erro: ' + err.message);
+            }
+        }
+
         async function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signupName').value.trim();
@@ -448,7 +500,35 @@
                     return;
                 }
                 
-                const isValid = await bcrypt.compare(pass, user.password);
+                // Verificar se senha está hasheada (começa com $2a$ ou $2b$)
+                let isValid = false;
+                if (user.password && user.password.startsWith('$2')) {
+                    // Senha hasheada - usar bcrypt
+                    try {
+                        isValid = await bcrypt.compare(pass, user.password);
+                    } catch (bcryptErr) {
+                        console.error('Erro bcrypt:', bcryptErr);
+                        showError('❌ Erro ao validar senha. Tente novamente.');
+                        document.getElementById('loginBtn').disabled = false;
+                        document.getElementById('loginBtn').textContent = 'Entrar';
+                        return;
+                    }
+                } else {
+                    // Senha em texto plano (contas antigas) - comparação direta
+                    isValid = (user.password === pass);
+                    
+                    // Se login correto, atualizar para hash
+                    if (isValid) {
+                        try {
+                            const hashedPassword = await bcrypt.hash(pass, 10);
+                            await supabase.from('users').update({ password: hashedPassword }).eq('email', email);
+                            console.log('✅ Senha migrada para hash');
+                        } catch (hashErr) {
+                            console.warn('Aviso: não foi possível migrar senha:', hashErr);
+                        }
+                    }
+                }
+                
                 if (!isValid) {
                     showError('❌ Senha incorreta!');
                     document.getElementById('loginBtn').disabled = false;
@@ -459,7 +539,7 @@
                 loginUser(user);
             } catch (err) {
                 console.error('Erro login:', err);
-                showError('❌ Erro ao fazer login');
+                showError('❌ Erro ao fazer login: ' + err.message);
                 document.getElementById('loginBtn').disabled = false;
                 document.getElementById('loginBtn').textContent = 'Entrar';
             }
