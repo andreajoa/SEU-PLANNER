@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B46C1">
+    <link rel="manifest" href="manifest.json">
     <title>✨ Planner Premium ULTRA</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -233,6 +234,8 @@
             .kanban-board { grid-template-columns: 1fr; }
             .tab-menu { font-size: 0.75em; }
         }
+        .install-btn { position: fixed; right: 20px; bottom: 20px; z-index: 10000; padding: 0.9rem 1.2rem; border: none; border-radius: 999px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .ios-tip { position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 9999; background: #F3E8FF; color: #6B46C1; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -758,6 +761,7 @@
         let tempLembretes = [];
         let tempSubtarefas = [];
         let tempAnexos = [];
+        let deferredPrompt = null;
         
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
@@ -1034,6 +1038,7 @@
                 document.getElementById('authContainer').style.display = 'flex';
                 
                 setupTagInput();
+                setupPWAInstall();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
@@ -1222,23 +1227,62 @@
                 const hashedPassword = await bcrypt.hash(pass, 10);
                 const trialEndDate = new Date();
                 trialEndDate.setDate(trialEndDate.getDate() + 14);
-                
-                const { data: user, error } = await supabase.from('users').insert([{ 
-                    email, name, password: hashedPassword,
+                const userData = {
+                    email,
+                    name,
+                    password: hashedPassword,
                     trial_end: trialEndDate.toISOString().split('T')[0],
                     subscription_status: 'trial',
-                    xp: 0, level: 1, streak: 0, last_activity: new Date().toISOString().split('T')[0],
+                    xp: 0,
+                    level: 1,
+                    streak: 0,
+                    last_activity: new Date().toISOString().split('T')[0],
                     paper_saved: 0
-                }]).select().single();
+                };
                 
+                const { error } = await supabase.from('users').insert([userData]);
                 if (error) throw error;
                 showSuccess('✅ Conta criada! 14 dias grátis ativados!');
-                setTimeout(() => loginUser(user), 1500);
+                setTimeout(() => loginUser(userData), 1500);
             } catch (err) {
                 console.error('Erro signup:', err);
                 showError('❌ Erro ao criar conta');
                 document.getElementById('signupBtn').disabled = false;
                 document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
+            }
+        }
+
+        function setupPWAInstall() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+            }
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                const btn = document.getElementById('installBtn');
+                if (btn) btn.style.display = 'block';
+            });
+            window.addEventListener('appinstalled', () => {
+                const btn = document.getElementById('installBtn');
+                if (btn) btn.style.display = 'none';
+            });
+            const btn = document.getElementById('installBtn');
+            if (btn) {
+                btn.addEventListener('click', async () => {
+                    if (!deferredPrompt) return;
+                    btn.disabled = true;
+                    await deferredPrompt.prompt();
+                    await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    btn.style.display = 'none';
+                    btn.disabled = false;
+                });
+            }
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const tip = document.getElementById('iosInstallTip');
+            if (isIOS && !isStandalone && tip) {
+                tip.style.display = 'block';
             }
         }
 
@@ -2433,5 +2477,7 @@
             if (e.target.classList.contains('modal')) e.target.style.display = 'none';
         };
     </script>
+    <button id="installBtn" class="install-btn" style="display:none;">Instalar App</button>
+    <div id="iosInstallTip" class="ios-tip" style="display:none;">Para iPhone: toque em Compartilhar e "Adicionar à Tela de Início"</div>
 </body>
 </html>
