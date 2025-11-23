@@ -234,8 +234,64 @@
             .kanban-board { grid-template-columns: 1fr; }
             .tab-menu { font-size: 0.75em; }
         }
-        .install-btn { position: fixed; right: 20px; bottom: 20px; z-index: 10000; padding: 0.9rem 1.2rem; border: none; border-radius: 999px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .ios-tip { position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 9999; background: #F3E8FF; color: #6B46C1; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 700; }
+        .install-btn { 
+    position: fixed; 
+    right: 20px; 
+    bottom: 20px; 
+    z-index: 10000; 
+    padding: 0.9rem 1.2rem; 
+    border: none; 
+    border-radius: 999px; 
+    font-weight: 800; 
+    background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+    color: white; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    cursor: pointer; /* ← ADICIONEI */
+    font-size: 1em; /* ← ADICIONEI */
+    transition: all 0.3s ease; /* ← ADICIONEI para animação suave */
+}
+
+.install-btn:hover {
+    transform: scale(1.05); /* ← ADICIONEI efeito hover */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.install-btn:active {
+    transform: scale(0.95); /* ← ADICIONEI efeito de clique */
+}
+
+.ios-tip { 
+    position: fixed; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    bottom: 20px; 
+    z-index: 9999; 
+    background: #F3E8FF; 
+    color: #6B46C1; 
+    padding: 0.8rem 1rem; 
+    border-radius: 10px; 
+    font-weight: 700;
+    text-align: center; /* ← ADICIONEI */
+    max-width: 90%; /* ← ADICIONEI para mobile */
+    font-size: 0.9em; /* ← ADICIONEI */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* ← ADICIONEI sombra */
+}
+
+/* ← ADICIONEI animação de entrada */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.ios-tip {
+    animation: slideUp 0.5s ease;
+}
     </style>
 </head>
 <body>
