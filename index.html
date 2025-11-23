@@ -8,10 +8,29 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Planner ULTRA">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Planner ULTRA">
+    <meta name="msapplication-TileColor" content="#6B46C1">
+    <meta name="msapplication-TileImage" content="/icon-144.png">
     <title>✨ Planner Premium ULTRA - Cutting Edge</title>
     
+    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    
+    <!-- Ícones para iOS -->
     <link rel="apple-touch-icon" href="/icon-152.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon-72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/icon-96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/icon-128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon-144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="/icon-384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon-72.png">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -62,8 +81,9 @@
         .auth-form.active { display: block; }
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.85em; }
-        .form-group input { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; font-family: inherit; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group textarea { min-height: 100px; resize: vertical; }
         .btn-auth { width: 100%; padding: 0.9rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1em; }
         .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-msg { padding: 0.7rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85em; display: none; }
@@ -80,6 +100,9 @@
         .paywall-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%; text-align: center; }
         .paywall-icon { font-size: 4em; margin-bottom: 1rem; }
         .paywall-title { font-size: 2em; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .price-box { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .price-amount { font-size: 3em; font-weight: 800; color: var(--primary); }
+        .btn-subscribe { width: 100%; padding: 1.2rem; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1em; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .app-container { display: none; background: linear-gradient(135deg, #F9FAFB, #F3E8FF); min-height: 100vh; }
         .app-container.active { display: block; }
@@ -92,24 +115,31 @@
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
         
-        .eco-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; margin-bottom: 1rem; border-radius: 10px; }
-        
-        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 1200px; overflow-x: auto; flex-wrap: wrap; justify-content: center; }
-        .tab-btn { padding: 0.7rem 1rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; white-space: nowrap; }
+        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 800px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; white-space: nowrap; }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 1rem; }
-        
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+        .stat-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
         .stat-value { font-size: 2em; font-weight: 800; color: var(--primary); }
         .stat-label { color: #666; font-size: 0.85em; margin-top: 0.3rem; }
         
-        .xp-bar { background: var(--gray); border-radius: 20px; height: 30px; overflow: hidden; margin: 1rem 0; }
+        .xp-bar { background: var(--gray); border-radius: 20px; height: 30px; overflow: hidden; margin: 1rem 0; position: relative; }
         .xp-fill { background: linear-gradient(135deg, #10B981, #059669); height: 100%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85em; }
+        
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; }
+        .achievement { background: white; border-radius: 10px; padding: 1rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .achievement.locked { opacity: 0.3; }
+        .achievement-icon { font-size: 2.5em; }
+        .achievement-name { font-size: 0.75em; font-weight: 600; margin-top: 0.3rem; }
+        
+        .chart-container { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+        .chart-title { font-size: 1.1em; font-weight: 700; margin-bottom: 1rem; }
         
         .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .planner-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; border-top: 4px solid; transition: transform 0.2s; }
@@ -127,17 +157,32 @@
         .planner-item-acoes { display: flex; gap: 0.3rem; }
         .planner-item-acoes button { flex: 1; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: 600; }
         
-        .biblioteca-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
-        .biblioteca-card { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); border-radius: 10px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
-        .biblioteca-card:hover { border-color: var(--primary); transform: translateY(-2px); }
-        .biblioteca-icon { font-size: 2em; margin-bottom: 0.5rem; }
-        .biblioteca-nome { font-weight: 700; color: var(--dark); margin-bottom: 0.3rem; }
-        .biblioteca-desc { font-size: 0.85em; color: #666; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+        .modal-content { background: white; margin: 2% auto; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray); padding-bottom: 1rem; }
+        .close-modal { font-size: 1.5em; cursor: pointer; background: none; border: none; color: #999; }
         
-        .tutorial-item { background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s; border-left: 4px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .tutorial-item:hover { transform: translateX(5px); }
-        .tutorial-nome { font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; font-size: 1.05em; }
-        .tutorial-preview { font-size: 0.9em; color: #666; line-height: 1.6; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .form-row-half { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        
+        .tags-input { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; border: 2px solid var(--gray); border-radius: 8px; min-height: 45px; }
+        .tag { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.85em; display: flex; align-items: center; gap: 0.3rem; }
+        .tag-remove { cursor: pointer; font-weight: bold; }
+        .tag-input-field { border: none; outline: none; flex: 1; min-width: 100px; }
+        
+        .subtask-list { margin-top: 1rem; }
+        .subtask-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; gap: 0.6rem; align-items: center; }
+        .subtask-checkbox { width: 18px; height: 18px; cursor: pointer; }
+        .subtask-text { flex: 1; }
+        
+        .reminder-list { margin-top: 1rem; }
+        .reminder-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .anexo-list { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .anexo-item { background: var(--light); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.85em; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .ai-suggestion { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
+        .ai-suggestion-icon { font-size: 1.2em; margin-right: 0.5rem; }
         
         .tarefa-item { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; border-left: 4px solid var(--primary); cursor: pointer; transition: all 0.2s; }
         .tarefa-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -148,24 +193,75 @@
         .tarefa-descricao { font-size: 0.85em; color: #666; margin-bottom: 0.5rem; }
         .tarefa-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75em; color: #666; }
         .tarefa-meta-item { background: white; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .tarefa-actions { display: flex; gap: 0.5rem; }
+        .btn-icon { padding: 0.3rem 0.6rem; background: var(--gray); border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .btn-icon:hover { background: var(--primary); color: white; }
+        .btn-del { background: var(--danger); color: white; }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-        .modal-content { background: white; margin: 2% auto; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray); padding-bottom: 1rem; }
-        .close-modal { font-size: 1.5em; cursor: pointer; background: none; border: none; color: #999; }
+        .view-switcher { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem; }
+        .view-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.85em; }
+        .view-btn.active { background: var(--primary); color: white; }
+        
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .kanban-column { background: white; border-radius: 12px; padding: 1rem; }
+        .kanban-header { font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray); }
+        .kanban-card { background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; cursor: move; }
+        
+        .calendar-view { background: white; border-radius: 12px; padding: 1.5rem; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
+        .calendar-day-header { text-align: center; font-weight: 700; padding: 0.5rem; font-size: 0.85em; }
+        .calendar-day { border: 1px solid var(--gray); border-radius: 8px; padding: 0.5rem; min-height: 100px; font-size: 0.85em; }
+        .calendar-day-number { font-weight: 700; margin-bottom: 0.3rem; }
+        .calendar-task { background: var(--primary); color: white; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.7em; margin-bottom: 0.2rem; cursor: pointer; }
+        
+        .timeline-view { background: white; border-radius: 12px; padding: 1.5rem; }
+        .timeline-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .timeline-date { min-width: 100px; font-weight: 700; color: var(--primary); }
+        .timeline-content { flex: 1; border-left: 3px solid var(--primary); padding-left: 1rem; }
         
         .btn-primario { padding: 0.8rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-primario:hover { opacity: 0.9; }
+        .btn-secundario { padding: 0.8rem 1.5rem; background: var(--gray); color: var(--dark); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-secundario:hover { background: #d1d5db; }
+        
+        .loading { text-align: center; padding: 2rem; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--gray); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .notification-permission { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .install-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 700; display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998; box-shadow: 0 -4px 20px rgba(0,0,0,0.2); }
+        .install-banner button { background: white; color: #10B981; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-left: 1rem; }
+        .install-banner button:hover { opacity: 0.9; }
         
         @media (max-width: 768px) {
             .modal-content { width: 98%; padding: 1rem; }
-            .tab-menu { flex-direction: column; }
-            .tab-btn { width: 100%; }
+            .form-row, .form-row-half { grid-template-columns: 1fr; }
+            .kanban-board { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- LOGIN/SIGNUP -->
-    <div class="auth-container" id="authContainer">
+    <!-- Banner de Instalação PWA -->
+    <div class="install-banner" id="installBanner">
+        <span>📱 Instale o app na sua tela inicial para acesso rápido!</span>
+        <button onclick="installPWA()">Instalar Agora</button>
+        <button onclick="dismissInstallBanner()" style="background:transparent; color:white; border:1px solid white;">Agora Não</button>
+    </div>
+
+    <!-- Banner iOS específico -->
+    <div class="install-banner" id="iosBanner" style="display:none;">
+        <span>📱 Para instalar: toque em <strong>Compartilhar</strong> 📤 e depois em <strong>"Adicionar à Tela de Início"</strong></span>
+        <button onclick="dismissIOSBanner()" style="background:white; color:#10B981;">Entendi</button>
+    </div>
+
+    <div class="loading" id="loadingScreen">
+        <div class="spinner"></div>
+        <p>Inicializando sistema avançado...</p>
+    </div>
+
+    <div class="auth-container" id="authContainer" style="display:none;">
         <div class="auth-box">
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
@@ -194,34 +290,52 @@
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
+    <div class="paywall-overlay" id="paywallOverlay">
+        <div class="paywall-box">
+            <div class="paywall-icon">🔒</div>
+            <h1 class="paywall-title">Trial Expirado</h1>
+            <p style="color:#666; margin-bottom:2rem;">Assine agora para continuar!</p>
+            <div class="price-box">
+                <div class="price-amount">R$ 19,99</div>
+                <div style="color:#666; font-size:0.9em;">por mês</div>
+            </div>
+            <button class="btn-subscribe" onclick="redirectToStripe()">💳 Assinar Agora</button>
+        </div>
+    </div>
+
+    <div class="level-up-modal" id="levelUpModal">
+        <div class="level-up-icon">🎉</div>
+        <h2 class="level-up-title">Level Up!</h2>
+        <p style="font-size:1.5em; margin:1rem 0;">Nível <span id="newLevel">2</span></p>
+        <button class="btn-primario" onclick="closeLevelUp()">Continuar</button>
+    </div>
+
+    <div id="trialBanner" class="trial-banner" style="display:none;"></div>
+
     <div class="app-container" id="appContainer">
         <div class="navbar">
             <div class="navbar-title">✨ Planner Premium ULTRA</div>
             <div class="navbar-user">
-                <span class="level-badge" id="levelBadge">⭐ Nível 1</span>
+                <span class="level-badge" onclick="openTab('stats')" id="levelBadge">⭐ Nível 1</span>
                 <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
 
-        <div class="eco-banner">
-            🌱 100% Digital = Zero Papel | 📄 Papel economizado: <strong id="paperSaved">0</strong> folhas | 🌍 Árvores salvas: <strong id="treesSaved">0</strong>
-        </div>
-
         <div class="container">
-            <!-- ABAS PRINCIPAIS -->
+            <div id="notificationBanner" class="notification-permission" style="display:none;">
+                <span>🔔 Ative notificações para receber lembretes das suas tarefas!</span>
+                <button class="btn-nav" onclick="requestNotificationPermission()">Ativar</button>
+            </div>
+
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="openTab('planners')">📋 Planners</button>
                 <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
                 <button class="tab-btn" onclick="openTab('achievements')">🏆 Conquistas</button>
-                <button class="tab-btn" onclick="openTab('biblioteca')">📖 Biblioteca</button>
-                <button class="tab-btn" onclick="openTab('tutoriais')">📚 Tutoriais</button>
                 <button class="tab-btn" onclick="openTab('calendar')">📅 Calendário</button>
             </div>
 
-            <!-- ABA PLANNERS (SEU PLANNER ORIGINAL) -->
             <div id="plannersTab" class="tab-content active">
                 <h2 style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
                 <div class="planner-types">
@@ -248,161 +362,254 @@
                 </div>
             </div>
 
-            <!-- ABA ESTATÍSTICAS -->
             <div id="statsTab" class="tab-content">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">⭐</div>
+                        <div class="stat-icon">⭐</div>
                         <div class="stat-value" id="statLevel">1</div>
                         <div class="stat-label">Nível</div>
-                        <div class="xp-bar"><div class="xp-fill" id="xpBar" style="width:0%;">0/100 XP</div></div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpBar" style="width:0%;">0/100 XP</div>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">🔥</div>
+                        <div class="stat-icon">🔥</div>
                         <div class="stat-value" id="statStreak">0</div>
                         <div class="stat-label">Dias de Streak</div>
                     </div>
                     <div class="stat-card">
-                        <div style="font-size: 2.5em; margin-bottom: 0.5rem;">✅</div>
+                        <div class="stat-icon">✅</div>
                         <div class="stat-value" id="statCompleted">0</div>
                         <div class="stat-label">Tarefas Concluídas</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="statRate">0%</div>
+                        <div class="stat-label">Taxa de Conclusão</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">📊 Produtividade Semanal</h3>
+                    <canvas id="weeklyChart" height="80"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">🎯 Tarefas por Prioridade</h3>
+                    <canvas id="priorityChart" height="80"></canvas>
                 </div>
             </div>
 
-            <!-- ABA CONQUISTAS -->
             <div id="achievementsTab" class="tab-content">
-                <h2 style="margin-bottom:1rem;">🏆 Suas Conquistas</h2>
-                <p style="text-align: center; color: #666;">Suas conquistas aparecerão aqui conforme você avança!</p>
+                <h2 style="margin-bottom:1rem;">🏆 Conquistas Desbloqueadas</h2>
+                <div class="achievements-grid" id="achievementsList"></div>
             </div>
 
-            <!-- ABA BIBLIOTECA (NOVO) -->
-            <div id="bibliotecaTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📖 Biblioteca Premium (900+ Páginas para Ler)</h2>
-                <p style="margin-bottom:1.5rem; color:#666; font-size:0.95em;">Acesse templates prontos e aprenda com conteúdo premium!</p>
-                
-                <h3 style="margin-bottom:1rem; font-weight:700;">📅 Planejadores Por Período</h3>
-                <div class="biblioteca-grid">
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('diario')">
-                        <div class="biblioteca-icon">📝</div>
-                        <div class="biblioteca-nome">Planejador Diário</div>
-                        <div class="biblioteca-desc">365 páginas diárias com metas do dia, reflexão e tracking</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('semanal')">
-                        <div class="biblioteca-icon">📆</div>
-                        <div class="biblioteca-nome">Planejador Semanal</div>
-                        <div class="biblioteca-desc">52 páginas semanais com cronograma e prioridades</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('mensal')">
-                        <div class="biblioteca-icon">📊</div>
-                        <div class="biblioteca-nome">Planejador Mensal</div>
-                        <div class="biblioteca-desc">12 páginas mensais com objetivos e tracking</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('anual')">
-                        <div class="biblioteca-icon">🎯</div>
-                        <div class="biblioteca-nome">Planejador Anual</div>
-                        <div class="biblioteca-desc">Visão completa do ano com metas e milestones</div>
-                    </div>
-                </div>
-
-                <h3 style="margin-top:2rem; margin-bottom:1rem; font-weight:700;">🎯 Planejadores Temáticos</h3>
-                <div class="biblioteca-grid">
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('financeiro')">
-                        <div class="biblioteca-icon">💰</div>
-                        <div class="biblioteca-nome">Planejador Financeiro</div>
-                        <div class="biblioteca-desc">Controle orçamento, despesas e investimentos</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('saude')">
-                        <div class="biblioteca-icon">💪</div>
-                        <div class="biblioteca-nome">Planejador de Saúde</div>
-                        <div class="biblioteca-desc">Tracking de exercícios, nutrição e bem-estar</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('leitura')">
-                        <div class="biblioteca-icon">📚</div>
-                        <div class="biblioteca-nome">Rastreador de Leitura</div>
-                        <div class="biblioteca-desc">Registre livros lidos, notas e resenhas</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('viagem')">
-                        <div class="biblioteca-icon">✈️</div>
-                        <div class="biblioteca-nome">Planejador de Viagens</div>
-                        <div class="biblioteca-desc">Organize roteiros, orçamentos e itinerários</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('metas')">
-                        <div class="biblioteca-icon">🎯</div>
-                        <div class="biblioteca-nome">Rastreador de Metas</div>
-                        <div class="biblioteca-desc">Defina e acompanhe objetivos pessoais</div>
-                    </div>
-                    <div class="biblioteca-card" onclick="abrirBiblioteca('habitos')">
-                        <div class="biblioteca-icon">🔥</div>
-                        <div class="biblioteca-nome">Construtor de Hábitos</div>
-                        <div class="biblioteca-desc">Crie streaks e monitore novos hábitos</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ABA TUTORIAIS (NOVO) -->
-            <div id="tutoriaisTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem; font-size:1.3em; font-weight:800;">📚 Tutoriais Completos (Saiba Como Usar)</h2>
-                
-                <div class="tutorial-item" onclick="abrirTutorial('comeco')">
-                    <div class="tutorial-nome">🚀 Como Começar - Primeiros Passos</div>
-                    <div class="tutorial-preview">Aprenda o básico. Configure sua conta e crie seu primeiro planejador em minutos.</div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('gamificacao')">
-                    <div class="tutorial-nome">⭐ Sistema de Gamificação - Ganhe XP e Suba de Nível</div>
-                    <div class="tutorial-preview">Descubra como ganhar XP, subir de nível, manter streaks e desbloquear conquistas.</div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('tarefas')">
-                    <div class="tutorial-nome">✅ Criando e Gerenciando Tarefas Avançadas</div>
-                    <div class="tutorial-preview">Domine a criação de tarefas com prioridades, subtarefas, lembretes, tags e muito mais.</div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('kanban')">
-                    <div class="tutorial-nome">📊 Utilizando a Visualização Kanban</div>
-                    <div class="tutorial-preview">Organize suas tarefas em colunas (A Fazer, Em Progresso, Concluído).</div>
-                </div>
-
-                <div class="tutorial-item" onclick="abrirTutorial('dicas')">
-                    <div class="tutorial-nome">📚 Dicas de Produtividade com Gamificação</div>
-                    <div class="tutorial-preview">Técnicas comprovadas para aumentar sua produtividade usando o Planner.</div>
-                </div>
-            </div>
-
-            <!-- ABA CALENDÁRIO -->
             <div id="calendarTab" class="tab-content">
-                <h2 style="margin-bottom:1rem;">📅 Calendário</h2>
-                <div style="background: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <p style="color: #666;">Integração com Google Calendar em desenvolvimento.</p>
-                    <p style="color: #999; font-size: 0.9em; margin-top: 0.5rem;">Seus eventos aparecerão aqui automaticamente!</p>
+                <div class="calendar-view">
+                    <div class="calendar-header">
+                        <button class="btn-secundario" onclick="changeMonth(-1)">◀ Anterior</button>
+                        <h2 id="calendarTitle">Janeiro 2024</h2>
+                        <button class="btn-secundario" onclick="changeMonth(1)">Próximo ▶</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL BIBLIOTECA -->
-    <div id="modalBiblioteca" class="modal">
+    <!-- Modal Criar Planner -->
+    <div id="modalCriar" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="bibliotecaTitulo">Biblioteca</h2>
-                <button class="close-modal" onclick="fecharModal('modalBiblioteca')">&times;</button>
-            </div>
-            <div id="bibliotecaConteudo" style="line-height: 1.8; color: #333;">
-                <!-- Conteúdo será preenchido via JavaScript -->
+            <div class="modal-header"><h2><span id="modalIcone"></span> <span id="modalTitulo">Novo</span></h2><button class="close-modal" onclick="fecharModal('modalCriar')">&times;</button></div>
+            <div class="form-group"><label>Nome *</label><input type="text" id="inputNome"></div>
+            <div class="form-group"><label>Data de Início</label><input type="date" id="inputData"></div>
+            <div style="display:flex; gap:0.5rem;">
+                <button class="btn-secundario" style="flex:1;" onclick="fecharModal('modalCriar')">Cancelar</button>
+                <button class="btn-primario" style="flex:1;" onclick="salvarPlanner()">Criar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL TUTORIAL -->
-    <div id="modalTutorial" class="modal">
+    <!-- Modal Ver Planner (CUTTING EDGE) -->
+    <div id="modalVer" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="tutorialTitulo">Tutorial</h2>
-                <button class="close-modal" onclick="fecharModal('modalTutorial')">&times;</button>
+                <h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2>
+                <button class="close-modal" onclick="fecharModal('modalVer')">&times;</button>
             </div>
-            <div id="tutorialConteudo" style="line-height: 1.8; color: #333;">
-                <!-- Conteúdo será preenchido via JavaScript -->
+
+            <div class="view-switcher">
+                <button class="view-btn active" onclick="switchView('list')">📋 Lista</button>
+                <button class="view-btn" onclick="switchView('kanban')">📊 Kanban</button>
+                <button class="view-btn" onclick="switchView('timeline')">📈 Timeline</button>
+            </div>
+
+            <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
+
+            <div id="aiSuggestionBox" style="display:none;" class="ai-suggestion">
+                <span class="ai-suggestion-icon">🤖</span>
+                <strong>Sugestão IA:</strong> <span id="aiSuggestionText"></span>
+            </div>
+
+            <div id="listView" class="tab-content active">
+                <div id="listaTarefas"></div>
+            </div>
+
+            <div id="kanbanView" class="tab-content">
+                <div class="kanban-board">
+                    <div class="kanban-column">
+                        <div class="kanban-header">📋 A Fazer</div>
+                        <div id="kanbanTodo"></div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">🚀 Em Progresso</div>
+                        <div id="kanbanProgress"></div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">✅ Concluído</div>
+                        <div id="kanbanDone"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="timelineView" class="tab-content">
+                <div class="timeline-view" id="timelineContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova Tarefa CUTTING EDGE -->
+    <div id="modalNovaTarefa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✨ Nova Tarefa Avançada</h2>
+                <button class="close-modal" onclick="fecharModal('modalNovaTarefa')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Título da Tarefa *</label>
+                <input type="text" id="novaTarefaTitulo" placeholder="Ex: Reunião com cliente">
+            </div>
+
+            <div class="form-group">
+                <label>Descrição Completa</label>
+                <textarea id="novaTarefaDescricao" placeholder="Descreva detalhes, objetivos, contexto..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="novaTarefaCategoria">
+                        <option value="trabalho">💼 Trabalho</option>
+                        <option value="pessoal">🏠 Pessoal</option>
+                        <option value="saude">💪 Saúde</option>
+                        <option value="estudos">📚 Estudos</option>
+                        <option value="financeiro">💰 Financeiro</option>
+                        <option value="outro">📌 Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Prioridade</label>
+                    <select id="novaTarefaPrioridade">
+                        <option value="baixa">🟢 Baixa</option>
+                        <option value="media">🟡 Média</option>
+                        <option value="alta">🔴 Alta</option>
+                        <option value="urgente">🔥 Urgente</option>
+                        <option value="critica">⚡ Crítica</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Data (DD/MM/AAAA)</label>
+                    <input type="text" id="novaTarefaData" placeholder="25/12/2024">
+                </div>
+                <div class="form-group">
+                    <label>Hora</label>
+                    <input type="time" id="novaTarefaHora">
+                </div>
+                <div class="form-group">
+                    <label>Duração (min)</label>
+                    <input type="number" id="novaTarefaDuracao" placeholder="60">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Repetir Tarefa</label>
+                <select id="novaTarefaRepetir">
+                    <option value="nao">Não repetir</option>
+                    <option value="diario">📅 Diariamente</option>
+                    <option value="semanal">📆 Semanalmente</option>
+                    <option value="mensal">🗓️ Mensalmente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tags (pressione Enter para adicionar)</label>
+                <div class="tags-input" id="tagsContainer">
+                    <input type="text" class="tag-input-field" id="tagInput" placeholder="Digite e pressione Enter">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>⏰ Lembretes</label>
+                <div class="form-row">
+                    <select id="lembreteSelect">
+                        <option value="">Selecione...</option>
+                        <option value="5min">5 minutos antes</option>
+                        <option value="15min">15 minutos antes</option>
+                        <option value="30min">30 minutos antes</option>
+                        <option value="1h">1 hora antes</option>
+                        <option value="1dia">1 dia antes</option>
+                    </select>
+                    <button type="button" class="btn-secundario" onclick="adicionarLembrete()">+ Adicionar</button>
+                </div>
+                <div class="reminder-list" id="lembretesLista"></div>
+            </div>
+
+            <div class="form-group">
+                <label>✅ Subtarefas</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                    <input type="text" id="subtarefaInput" placeholder="Nome da subtarefa" style="flex:1;">
+                    <button type="button" class="btn-secundario" onclick="adicionarSubtarefa()">+ Adicionar</button>
+                </div>
+                <div class="subtask-list" id="subtarefasLista"></div>
+            </div>
+
+            <div class="form-group">
+                <label>🔗 Links e Anexos</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                    <input type="text" id="anexoInput" placeholder="Cole o link aqui" style="flex:1;">
+                    <button type="button" class="btn-secundario" onclick="adicionarAnexo()">+ Adicionar</button>
+                </div>
+                <div class="anexo-list" id="anexosLista"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Contexto</label>
+                    <select id="novaTarefaContexto">
+                        <option value="qualquer">📍 Qualquer lugar</option>
+                        <option value="casa">🏠 Casa</option>
+                        <option value="escritorio">🏢 Escritório</option>
+                        <option value="online">💻 Online</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Energia Necessária</label>
+                    <select id="novaTarefaEnergia">
+                        <option value="baixa">😊 Baixa</option>
+                        <option value="media">⚡ Média</option>
+                        <option value="alta">🔥 Alta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; margin-top:1.5rem;">
+                <button class="btn-secundario" style="flex:1;" onclick="fecharModal('modalNovaTarefa')">Cancelar</button>
+                <button class="btn-primario" style="flex:1;" onclick="salvarNovaTarefa()">💾 Salvar Tarefa</button>
             </div>
         </div>
     </div>
@@ -415,45 +622,314 @@
         let supabase = null;
         let currentUser = null;
         let planners = [];
-
-        // Conteúdo da Biblioteca
-        const bibliotecaConteudo = {
-            'diario': { titulo: '📝 Planejador Diário', conteudo: '<h3>Planejador Diário - 365 Páginas</h3><p>Uma página para cada dia do ano com estrutura otimizada.</p><h4 style="margin-top: 1.5rem;">Estrutura:</h4><ul style="margin-left: 1.5rem;"><li><strong>Data:</strong> Identificação clara do dia</li><li><strong>Metas do Dia:</strong> 3 metas principais</li><li><strong>Tarefas:</strong> Lista completa</li><li><strong>Reflexão:</strong> Como foi o dia?</li><li><strong>Gratidão:</strong> 3 coisas pelas quais é grato</li></ul>' },
-            'semanal': { titulo: '📆 Planejador Semanal', conteudo: '<h3>Planejador Semanal - 52 Páginas</h3><p>Uma página para cada semana do ano. Visão ampla dos compromissos.</p><h4 style="margin-top: 1.5rem;">Inclui:</h4><ul style="margin-left: 1.5rem;"><li>Objetivos da semana</li><li>Cronograma dia a dia</li><li>Prioridades</li><li>Review da semana</li></ul>' },
-            'mensal': { titulo: '📊 Planejador Mensal', conteudo: '<h3>Planejador Mensal - 12 Páginas</h3><p>Uma página para cada mês. Veja o panorama completo de 30 dias.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Objetivos mensais</li><li>Calendário visual</li><li>Eventos importantes</li><li>Análise do mês</li></ul>' },
-            'anual': { titulo: '🎯 Planejador Anual', conteudo: '<h3>Planejador Anual - Visão Completa</h3><p>Uma página para todo o ano. Defina sua visão anual.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Metas por categoria (Saúde, Financeiro, Relacionamentos)</li><li>Milestones do ano</li><li>Revisão trimestral</li><li>Reflexão final</li></ul>' },
-            'financeiro': { titulo: '💰 Planejador Financeiro', conteudo: '<h3>Planejador Financeiro</h3><p>Gerencie seu dinheiro com inteligência.</p><h4 style="margin-top: 1.5rem;">Módulos:</h4><ul style="margin-left: 1.5rem;"><li>Orçamento mensal</li><li>Categorias de despesa</li><li>Investimentos</li><li>Metas financeiras</li><li>Análise mensal</li></ul>' },
-            'saude': { titulo: '💪 Planejador de Saúde', conteudo: '<h3>Planejador de Saúde</h3><p>Rastreie exercícios, nutrição, sono e bem-estar.</p><h4 style="margin-top: 1.5rem;">Rastreie:</h4><ul style="margin-left: 1.5rem;"><li>Exercícios diários</li><li>Nutrição e água</li><li>Qualidade de sono</li><li>Saúde mental</li><li>Consultas médicas</li></ul>' },
-            'leitura': { titulo: '📚 Rastreador de Leitura', conteudo: '<h3>Rastreador de Leitura</h3><p>Organize sua leitura e não esqueça das histórias.</p><h4 style="margin-top: 1.5rem;">Para cada livro:</h4><ul style="margin-left: 1.5rem;"><li>Título e autor</li><li>Gênero</li><li>Progresso de leitura</li><li>Resenha pessoal</li><li>Avaliação</li><li>Aprendizados</li></ul>' },
-            'viagem': { titulo: '✈️ Planejador de Viagens', conteudo: '<h3>Planejador de Viagens</h3><p>Organize cada detalhe da sua viagem.</p><h4 style="margin-top: 1.5rem;">Seções:</h4><ul style="margin-left: 1.5rem;"><li>Destino e datas</li><li>Orçamento</li><li>Itinerário diário</li><li>Checklist de mala</li><li>Contatos importantes</li><li>Experiências desejadas</li></ul>' },
-            'metas': { titulo: '🎯 Rastreador de Metas', conteudo: '<h3>Rastreador de Metas</h3><p>Defina metas SMART e acompanhe progresso.</p><h4 style="margin-top: 1.5rem;">Para cada meta:</h4><ul style="margin-left: 1.5rem;"><li>Meta clara</li><li>Categoria</li><li>Prazo</li><li>Passos para chegar lá</li><li>Progresso percentual</li><li>Revisão mensal</li></ul>' },
-            'habitos': { titulo: '🔥 Construtor de Hábitos', conteudo: '<h3>Construtor de Hábitos - 66 Dias</h3><p>Crie novos hábitos positivos.</p><h4 style="margin-top: 1.5rem;">Rastreamento:</h4><ul style="margin-left: 1.5rem;"><li>Nome do hábito</li><li>Categoria</li><li>Frequência</li><li>Checklist de 66 dias</li><li>Notas pessoais</li><li>Celebração de sucessos</li></ul>' }
+        let plannerAberto = null;
+        let tipoAtual = '';
+        let currentView = 'list';
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let tempTags = [];
+        let tempLembretes = [];
+        let tempSubtarefas = [];
+        let tempAnexos = [];
+        
+        // PWA Variables
+        let deferredPrompt;
+        let isInstalled = false;
+        
+        const tipos = {
+            'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
+            'projeto': { nome: 'Projeto', icone: '🏗️', cor: '#3B82F6' },
+            'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B' },
+            'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
-
-        // Conteúdo dos Tutoriais
-        const tutoriaisConteudo = {
-            'comeco': { titulo: '🚀 Como Começar', conteudo: '<h3>Bem-vindo!</h3><p>Vamos começar em 5 passos:</p><ol style="margin-left: 1.5rem;"><li><strong>Crie sua conta:</strong> Email e senha. Ganhe 7 dias grátis!</li><li><strong>Entre no app:</strong> Você verá o dashboard principal</li><li><strong>Crie um planner:</strong> Escolha To-Do, Projeto, Hábitos ou Financeiro</li><li><strong>Adicione tarefas:</strong> Clique em "+ Nova Tarefa"</li><li><strong>Comece a usar:</strong> Marque tarefas como concluídas e ganhe XP!</li></ol><p style="margin-top: 1.5rem;"><strong>💡 Dica:</strong> Comece com um único planejador!</p>' },
-            'gamificacao': { titulo: '⭐ Gamificação', conteudo: '<h3>Sistema de Gamificação</h3><p>Ganhe XP e suba de nível completando tarefas!</p><h4 style="margin-top: 1.5rem;">Como Ganhar XP:</h4><ul style="margin-left: 1.5rem;"><li>Criar um planner: +50 XP</li><li>Criar uma tarefa: +30 XP</li><li>Completar uma tarefa: +20 XP</li><li>Manter streak: Bônus especial</li></ul><h4 style="margin-top: 1.5rem;">Streaks (Rajadas):</h4><p>Complete uma tarefa cada dia para manter seu streak! Quanto maior, mais motivador! 🔥</p>' },
-            'tarefas': { titulo: '✅ Tarefas Avançadas', conteudo: '<h3>Criando Tarefas Poderosas</h3><p>Tarefas são o coração do Planner!</p><h4 style="margin-top: 1.5rem;">Campos:</h4><ul style="margin-left: 1.5rem;"><li><strong>Título:</strong> O que precisa fazer</li><li><strong>Descrição:</strong> Detalhes e contexto</li><li><strong>Data e Hora:</strong> Quando fazer</li><li><strong>Prioridade:</strong> Baixa, Média, Alta, Urgente, Crítica</li><li><strong>Subtarefas:</strong> Divida em passos pequenos</li><li><strong>Lembretes:</strong> Receba notificações</li><li><strong>Tags:</strong> Organize por temas</li></ul>' },
-            'kanban': { titulo: '📊 Visualização Kanban', conteudo: '<h3>O Método Kanban</h3><p>Veja suas tarefas em 3 colunas:</p><ul style="margin-left: 1.5rem;"><li>📋 A Fazer</li><li>🚀 Em Progresso</li><li>✅ Concluído</li></ul><h4 style="margin-top: 1.5rem;">Como usar:</h4><ol style="margin-left: 1.5rem;"><li>Crie suas tarefas normalmente</li><li>Abra o planner e clique em "Kanban"</li><li>Arraste tarefas entre colunas</li><li>Visualize seu fluxo de trabalho</li></ol>' },
-            'dicas': { titulo: '📚 Dicas de Produtividade', conteudo: '<h3>Técnicas Comprovadas</h3><h4>1. Regra dos 3</h4><p>Escolha 3 tarefas principais cada dia. Foco total nelas!</p><h4>2. Technique Pomodoro</h4><p>Trabalhe 25 min, descanse 5. Use a duração das tarefas!</p><h4>3. Kanban</h4><p>Limite de 3-5 tarefas em progresso. Termine antes de começar nova!</p><h4>4. Contexto</h4><p>Agrupe tarefas por local: Casa, Escritório, Online.</p><h4>5. Mantenha Streaks</h4><p>Complete algo todo dia. Mesmo ações pequenas contam!</p>' }
-        };
+        
+        const achievements = [
+            { id: 'first_task', name: 'Primeira Tarefa', icon: '🎯', requirement: 1 },
+            { id: 'task_master', name: 'Mestre das Tarefas', icon: '👑', requirement: 10 },
+            { id: 'century', name: 'Centenário', icon: '💯', requirement: 100 },
+            { id: 'week_streak', name: 'Streak 7 Dias', icon: '🔥', requirement: 7 },
+            { id: 'month_streak', name: 'Streak 30 Dias', icon: '💪', requirement: 30 },
+            { id: 'level_10', name: 'Nível 10', icon: '⭐', requirement: 10 },
+            { id: 'planner_pro', name: 'Planejador Pro', icon: '📋', requirement: 5 }
+        ];
 
         async function init() {
+            document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
+            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('authContainer').style.display = 'flex';
-                updateEcoCounter();
+                
+                setupTagInput();
+                checkNotificationSupport();
+                registerServiceWorker();
+                setupPWAInstall();
             } catch (err) {
                 console.error('Erro:', err);
+                alert('Erro ao conectar');
+            }
+        }
+        
+        // ========== PWA FUNCTIONS ==========
+        
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ Service Worker registrado:', registration);
+                    
+                    // Verificar se já está instalado
+                    if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+                        isInstalled = true;
+                        console.log('📱 App já instalado');
+                    }
+                    
+                    // Suporte a notificações
+                    if ('PushManager' in window) {
+                        console.log('✅ Push notifications suportadas');
+                    }
+                } catch (err) {
+                    console.error('❌ Erro ao registrar Service Worker:', err);
+                }
+            }
+        }
+        
+        function setupPWAInstall() {
+            // Detectar iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+            
+            // Se for iOS e NÃO estiver instalado, mostrar banner específico
+            if (isIOS && !isInStandaloneMode) {
+                setTimeout(() => {
+                    const dismissed = localStorage.getItem('iosBannerDismissed');
+                    if (!dismissed) {
+                        document.getElementById('iosBanner').style.display = 'flex';
+                    }
+                }, 2000);
+                return; // iOS não suporta beforeinstallprompt
+            }
+            
+            // Capturar evento beforeinstallprompt (Android/Desktop)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Mostrar banner após 3 segundos se não estiver instalado
+                if (!isInstalled) {
+                    setTimeout(() => {
+                        const dismissed = localStorage.getItem('installBannerDismissed');
+                        if (!dismissed) {
+                            document.getElementById('installBanner').style.display = 'flex';
+                        }
+                    }, 3000);
+                }
+            });
+            
+            // Detectar quando app é instalado
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 PWA instalado com sucesso!');
+                isInstalled = true;
+                document.getElementById('installBanner').style.display = 'none';
+                document.getElementById('iosBanner').style.display = 'none';
+                showNotification('🎉 App Instalado!', 'Planner Premium ULTRA está pronto para uso!');
+            });
+        }
+        
+        async function installPWA() {
+            if (!deferredPrompt) {
+                alert('Instalação não disponível. Use a opção do navegador: Menu → Instalar app');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('✅ Usuário aceitou instalação');
+                document.getElementById('installBanner').style.display = 'none';
+            } else {
+                console.log('❌ Usuário recusou instalação');
+            }
+            
+            deferredPrompt = null;
+        }
+        
+        function dismissInstallBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('installBannerDismissed', 'true');
+        }
+        
+        function dismissIOSBanner() {
+            document.getElementById('iosBanner').style.display = 'none';
+            localStorage.setItem('iosBannerDismissed', 'true');
+        }
+        
+        // ========== END PWA FUNCTIONS ==========
+        
+        init();
+
+        function formatDateBR(date) {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function parseDateBR(dateStr) {
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        function setupTagInput() {
+            const tagInput = document.getElementById('tagInput');
+            if (tagInput) {
+                tagInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const tag = tagInput.value.trim();
+                        if (tag && !tempTags.includes(tag)) {
+                            tempTags.push(tag);
+                            renderTags();
+                            tagInput.value = '';
+                        }
+                    }
+                });
             }
         }
 
-        function updateEcoCounter() {
-            const paperSaved = Math.floor(Math.random() * 1000) + 500;
-            const treesSaved = Math.floor(paperSaved / 8333);
-            document.getElementById('paperSaved').textContent = paperSaved;
-            document.getElementById('treesSaved').textContent = treesSaved;
+        function renderTags() {
+            const container = document.getElementById('tagsContainer');
+            const tagInput = document.getElementById('tagInput');
+            container.innerHTML = '';
+            
+            tempTags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `${tag} <span class="tag-remove" onclick="removeTag('${tag}')">✕</span>`;
+                container.appendChild(tagEl);
+            });
+            
+            container.appendChild(tagInput);
+        }
+
+        function removeTag(tag) {
+            tempTags = tempTags.filter(t => t !== tag);
+            renderTags();
+        }
+
+        function adicionarLembrete() {
+            const select = document.getElementById('lembreteSelect');
+            const value = select.value;
+            if (value && !tempLembretes.includes(value)) {
+                tempLembretes.push(value);
+                renderLembretes();
+            }
+        }
+
+        function renderLembretes() {
+            const container = document.getElementById('lembretesLista');
+            const labels = {
+                '5min': '🔔 5 minutos antes',
+                '15min': '🔔 15 minutos antes',
+                '30min': '🔔 30 minutos antes',
+                '1h': '🔔 1 hora antes',
+                '1dia': '🔔 1 dia antes'
+            };
+            
+            container.innerHTML = tempLembretes.map(l => `
+                <div class="reminder-item">
+                    <span>${labels[l]}</span>
+                    <button class="btn-icon btn-del" onclick="removeLembrete('${l}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeLembrete(lembrete) {
+            tempLembretes = tempLembretes.filter(l => l !== lembrete);
+            renderLembretes();
+        }
+
+        function adicionarSubtarefa() {
+            const input = document.getElementById('subtarefaInput');
+            const text = input.value.trim();
+            if (text) {
+                tempSubtarefas.push({ text, done: false });
+                renderSubtarefas();
+                input.value = '';
+            }
+        }
+
+        function renderSubtarefas() {
+            const container = document.getElementById('subtarefasLista');
+            container.innerHTML = tempSubtarefas.map((s, i) => `
+                <div class="subtask-item">
+                    <input type="checkbox" class="subtask-checkbox" ${s.done ? 'checked' : ''} onchange="toggleSubtarefa(${i})">
+                    <span class="subtask-text">${s.text}</span>
+                    <button class="btn-icon btn-del" onclick="removeSubtarefa(${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleSubtarefa(index) {
+            tempSubtarefas[index].done = !tempSubtarefas[index].done;
+            renderSubtarefas();
+        }
+
+        function removeSubtarefa(index) {
+            tempSubtarefas.splice(index, 1);
+            renderSubtarefas();
+        }
+
+        function adicionarAnexo() {
+            const input = document.getElementById('anexoInput');
+            const url = input.value.trim();
+            if (url) {
+                tempAnexos.push(url);
+                renderAnexos();
+                input.value = '';
+            }
+        }
+
+        function renderAnexos() {
+            const container = document.getElementById('anexosLista');
+            container.innerHTML = tempAnexos.map((a, i) => `
+                <div class="anexo-item">
+                    🔗 <a href="${a}" target="_blank">${a.substring(0, 30)}...</a>
+                    <button class="btn-icon btn-del" onclick="removeAnexo(${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeAnexo(index) {
+            tempAnexos.splice(index, 1);
+            renderAnexos();
+        }
+
+        function checkNotificationSupport() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                document.getElementById('notificationBanner').style.display = 'flex';
+            }
+        }
+
+        async function requestNotificationPermission() {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                document.getElementById('notificationBanner').style.display = 'none';
+                showNotification('🎉 Notificações Ativadas!', 'Você receberá lembretes das suas tarefas.');
+            }
+        }
+
+        function showNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { body, icon: '✨' });
+            }
         }
 
         function showTab(t) {
@@ -486,7 +962,7 @@
             const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const pass = document.getElementById('signupPassword').value;
             
-            if (pass.length < 6) { showError('❌ Senha deve ter mínimo 6 caracteres!'); return; }
+            if (pass.length < 6) { showError('❌ Senha deve ter no mínimo 6 caracteres!'); return; }
             
             document.getElementById('signupBtn').disabled = true;
             document.getElementById('signupBtn').textContent = 'Criando...';
@@ -515,7 +991,7 @@
                 showSuccess('✅ Conta criada! 7 dias grátis ativados!');
                 setTimeout(() => loginUser(user), 1500);
             } catch (err) {
-                console.error('Erro:', err);
+                console.error('Erro signup:', err);
                 showError('❌ Erro ao criar conta');
                 document.getElementById('signupBtn').disabled = false;
                 document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
@@ -531,37 +1007,35 @@
             document.getElementById('loginBtn').textContent = 'Entrando...';
             
             try {
-                const { data: users, error } = await supabase.from('users').select('*').eq('email', email);
-                
-                if (error) {
-                    console.error('Erro na query:', error);
-                    showError('❌ Erro ao conectar ao banco de dados');
-                    document.getElementById('loginBtn').disabled = false;
-                    document.getElementById('loginBtn').textContent = 'Entrar';
-                    return;
-                }
-                
-                if (!users || users.length === 0) {
+                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
+                if (error || !user) {
                     showError('❌ Email não encontrado!');
                     document.getElementById('loginBtn').disabled = false;
                     document.getElementById('loginBtn').textContent = 'Entrar';
                     return;
                 }
                 
-                const user = users[0];
-                
-                // Tentar comparar com bcrypt
                 let isValid = false;
-                try {
-                    if (user.password && user.password.startsWith('$2')) {
+                if (user.password && user.password.startsWith('$2')) {
+                    try {
                         isValid = await bcrypt.compare(pass, user.password);
-                    } else {
-                        // Fallback: comparação simples
-                        isValid = (user.password === pass);
+                    } catch (bcryptErr) {
+                        console.error('Erro bcrypt:', bcryptErr);
+                        showError('❌ Erro ao validar senha. Tente novamente.');
+                        document.getElementById('loginBtn').disabled = false;
+                        document.getElementById('loginBtn').textContent = 'Entrar';
+                        return;
                     }
-                } catch (bcryptErr) {
-                    console.warn('Erro bcrypt, tentando comparação simples:', bcryptErr);
+                } else {
                     isValid = (user.password === pass);
+                    if (isValid) {
+                        try {
+                            const hashedPassword = await bcrypt.hash(pass, 10);
+                            await supabase.from('users').update({ password: hashedPassword }).eq('email', email);
+                        } catch (hashErr) {
+                            console.warn('Aviso: não foi possível migrar senha:', hashErr);
+                        }
+                    }
                 }
                 
                 if (!isValid) {
@@ -573,74 +1047,709 @@
                 
                 loginUser(user);
             } catch (err) {
-                console.error('Erro geral no login:', err);
+                console.error('Erro login:', err);
                 showError('❌ Erro ao fazer login: ' + err.message);
                 document.getElementById('loginBtn').disabled = false;
                 document.getElementById('loginBtn').textContent = 'Entrar';
             }
         }
 
+        function checkSubscriptionStatus(user) {
+            const today = new Date().toISOString().split('T')[0];
+            const trialEnd = user.trial_end;
+            const status = user.subscription_status;
+            
+            if (status === 'active') {
+                document.getElementById('trialBanner').style.display = 'none';
+                document.getElementById('paywallOverlay').classList.remove('active');
+                return true;
+            }
+            
+            if (status === 'trial' && trialEnd) {
+                const daysLeft = Math.ceil((new Date(trialEnd) - new Date(today)) / (1000 * 60 * 60 * 24));
+                if (daysLeft <= 0) {
+                    document.getElementById('paywallOverlay').classList.add('active');
+                    return false;
+                }
+                if (daysLeft <= 2) {
+                    const banner = document.getElementById('trialBanner');
+                    banner.textContent = `🔥 ÚLTIMO DIA! Assine para não perder acesso`;
+                    banner.className = 'trial-banner danger';
+                    banner.style.display = 'block';
+                } else if (daysLeft <= 5) {
+                    const banner = document.getElementById('trialBanner');
+                    banner.textContent = `⏰ ${daysLeft} dias restantes • Assine agora`;
+                    banner.className = 'trial-banner warning';
+                    banner.style.display = 'block';
+                }
+                return true;
+            }
+            document.getElementById('paywallOverlay').classList.add('active');
+            return false;
+        }
+
         async function loginUser(user) {
             currentUser = user;
+            if (!checkSubscriptionStatus(user)) return;
+            
+            await updateStreak();
+            
+            const { data: userPlanners } = await supabase.from('planners').select('*').eq('user_email', user.email);
+            planners = userPlanners || [];
             
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').classList.add('active');
             document.getElementById('userName').textContent = user.name.split(' ')[0];
-            document.getElementById('levelBadge').textContent = `⭐ Nível ${user.level || 1}`;
-            document.getElementById('streakBadge').textContent = `🔥 ${user.streak || 0} dias`;
             
-            updateEcoCounter();
+            updateGamification();
+            renderPlanners();
+            renderAchievements();
+            renderCharts();
+            renderCalendar();
+            showAISuggestions();
+        }
+
+        async function updateStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastActivity = currentUser.last_activity;
+            
+            if (lastActivity !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                
+                let newStreak = currentUser.streak || 0;
+                if (lastActivity === yesterdayStr) {
+                    newStreak++;
+                } else if (lastActivity !== today) {
+                    newStreak = 1;
+                }
+                
+                await supabase.from('users').update({ 
+                    streak: newStreak, 
+                    last_activity: today 
+                }).eq('email', currentUser.email);
+                
+                currentUser.streak = newStreak;
+            }
+        }
+
+        async function addXP(amount) {
+            const newXP = (currentUser.xp || 0) + amount;
+            const currentLevel = currentUser.level || 1;
+            const xpForNextLevel = currentLevel * 100;
+            
+            let newLevel = currentLevel;
+            let finalXP = newXP;
+            
+            if (newXP >= xpForNextLevel) {
+                newLevel++;
+                finalXP = newXP - xpForNextLevel;
+                showLevelUp(newLevel);
+                checkAchievements();
+            }
+            
+            await supabase.from('users').update({ xp: finalXP, level: newLevel }).eq('email', currentUser.email);
+            currentUser.xp = finalXP;
+            currentUser.level = newLevel;
+            updateGamification();
+        }
+
+        function showLevelUp(level) {
+            document.getElementById('newLevel').textContent = level;
+            document.getElementById('levelUpModal').classList.add('active');
+            createConfetti();
+            showNotification('🎉 Level Up!', `Você alcançou o nível ${level}!`);
+        }
+
+        function closeLevelUp() {
+            document.getElementById('levelUpModal').classList.remove('active');
+        }
+
+        function createConfetti() {
+            const colors = ['#EC4899', '#6B46C1', '#10B981', '#F59E0B', '#3B82F6'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animation = `confetti ${2 + Math.random() * 2}s linear forwards`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        function updateGamification() {
+            const level = currentUser.level || 1;
+            const xp = currentUser.xp || 0;
+            const streak = currentUser.streak || 0;
+            const xpForNextLevel = level * 100;
+            const xpPercent = (xp / xpForNextLevel) * 100;
+            
+            document.getElementById('levelBadge').textContent = `⭐ Nível ${level}`;
+            document.getElementById('streakBadge').textContent = `🔥 ${streak} dias`;
+            document.getElementById('statLevel').textContent = level;
+            document.getElementById('statStreak').textContent = streak;
+            document.getElementById('xpBar').style.width = xpPercent + '%';
+            document.getElementById('xpBar').textContent = `${xp}/${xpForNextLevel} XP`;
+        }
+
+        async function checkAchievements() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            const completed = tarefas?.filter(t => t.done).length || 0;
+            
+            const unlockedAchievements = [];
+            if (completed >= 1) unlockedAchievements.push('first_task');
+            if (completed >= 10) unlockedAchievements.push('task_master');
+            if (completed >= 100) unlockedAchievements.push('century');
+            if (currentUser.streak >= 7) unlockedAchievements.push('week_streak');
+            if (currentUser.streak >= 30) unlockedAchievements.push('month_streak');
+            if (currentUser.level >= 10) unlockedAchievements.push('level_10');
+            if (planners.length >= 5) unlockedAchievements.push('planner_pro');
+            
+            await supabase.from('users').update({ 
+                achievements: unlockedAchievements 
+            }).eq('email', currentUser.email);
+            
+            currentUser.achievements = unlockedAchievements;
+        }
+
+        function renderAchievements() {
+            const userAchievements = currentUser.achievements || [];
+            const html = achievements.map(a => {
+                const unlocked = userAchievements.includes(a.id);
+                return `
+                    <div class="achievement ${unlocked ? '' : 'locked'}">
+                        <div class="achievement-icon">${a.icon}</div>
+                        <div class="achievement-name">${a.name}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('achievementsList').innerHTML = html;
+        }
+
+        async function renderCharts() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            if (!tarefas || tarefas.length === 0) {
+                document.getElementById('statCompleted').textContent = 0;
+                document.getElementById('statRate').textContent = '0%';
+                return;
+            }
+            
+            const completed = tarefas.filter(t => t.done).length;
+            const total = tarefas.length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('statCompleted').textContent = completed;
+            document.getElementById('statRate').textContent = rate + '%';
+            
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                last7Days.push(d.toISOString().split('T')[0]);
+            }
+            
+            const weeklyData = last7Days.map(date => {
+                return tarefas.filter(t => t.done && t.data === date).length;
+            });
+            
+            new Chart(document.getElementById('weeklyChart'), {
+                type: 'line',
+                data: {
+                    labels: last7Days.map(d => new Date(d).toLocaleDateString('pt-BR', {weekday:'short'})),
+                    datasets: [{
+                        label: 'Tarefas Concluídas',
+                        data: weeklyData,
+                        borderColor: '#6B46C1',
+                        backgroundColor: 'rgba(107, 70, 193, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+            
+            const prioData = {
+                alta: tarefas.filter(t => t.prioridade === 'alta' || t.prioridade === 'urgente' || t.prioridade === 'critica').length,
+                media: tarefas.filter(t => t.prioridade === 'media').length,
+                baixa: tarefas.filter(t => t.prioridade === 'baixa').length
+            };
+            
+            new Chart(document.getElementById('priorityChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Alta/Urgente', 'Média', 'Baixa'],
+                    datasets: [{
+                        data: [prioData.alta, prioData.media, prioData.baixa],
+                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+        }
+
+        function redirectToStripe() {
+            window.open(`${STRIPE_LINK}?client_reference_id=${currentUser.email}`, '_blank');
+        }
+
+        function logout() {
+            currentUser = null;
+            planners = [];
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('paywallOverlay').classList.remove('active');
+            showTab('login');
         }
 
         function openTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            const tabs = ['planners', 'stats', 'achievements', 'biblioteca', 'tutoriais', 'calendar'];
+            const tabs = ['planners', 'stats', 'achievements', 'calendar'];
             const index = tabs.indexOf(tab);
             if (index !== -1) {
                 document.querySelectorAll('.tab-btn')[index].classList.add('active');
                 document.getElementById(tab + 'Tab').classList.add('active');
+                
+                if (tab === 'stats') renderCharts();
+                if (tab === 'achievements') renderAchievements();
+                if (tab === 'calendar') renderCalendar();
             }
         }
 
-        function abrirBiblioteca(tipo) {
-            const conteudo = bibliotecaConteudo[tipo];
-            if (!conteudo) return;
+        async function renderPlanners() {
+            const c = document.getElementById('meusPlanners');
+            if (!planners.length) {
+                c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
+                return;
+            }
             
-            document.getElementById('bibliotecaTitulo').textContent = conteudo.titulo;
-            document.getElementById('bibliotecaConteudo').innerHTML = conteudo.conteudo;
-            document.getElementById('modalBiblioteca').style.display = 'block';
+            const html = await Promise.all(planners.map(async p => {
+                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                const numTarefas = tarefas?.length || 0;
+                return `
+                    <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
+                        <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
+                        <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''}</div>
+                        <div class="planner-item-acoes">
+                            <button onclick="abrirPlanner(${p.id})">Abrir</button>
+                            <button onclick="deletarPlanner(${p.id})">Deletar</button>
+                        </div>
+                    </div>
+                `;
+            }));
+            c.innerHTML = html.join('');
         }
 
-        function abrirTutorial(tipo) {
-            const conteudo = tutoriaisConteudo[tipo];
-            if (!conteudo) return;
+        function criarPlanner(tipo) {
+            tipoAtual = tipo;
+            const t = tipos[tipo];
+            document.getElementById('modalIcone').textContent = t.icone;
+            document.getElementById('modalTitulo').textContent = 'Novo ' + t.nome;
+            document.getElementById('inputNome').value = '';
+            document.getElementById('modalCriar').style.display = 'block';
+        }
+
+        async function salvarPlanner() {
+            const nome = document.getElementById('inputNome').value.trim();
+            if (!nome) { alert('❌ Digite um nome!'); return; }
             
-            document.getElementById('tutorialTitulo').textContent = conteudo.titulo;
-            document.getElementById('tutorialConteudo').innerHTML = conteudo.conteudo;
-            document.getElementById('modalTutorial').style.display = 'block';
+            try {
+                const { data: newPlanner, error } = await supabase.from('planners').insert([{
+                    user_email: currentUser.email,
+                    tipo: tipoAtual,
+                    nome: nome
+                }]).select().single();
+                
+                if (error) throw error;
+                planners.push(newPlanner);
+                fecharModal('modalCriar');
+                renderPlanners();
+                await addXP(50);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('❌ Erro ao criar');
+            }
+        }
+
+        async function abrirPlanner(id) {
+            const p = planners.find(x => x.id === id);
+            if (!p) return;
+            
+            plannerAberto = id;
+            document.getElementById('verIcone').textContent = tipos[p.tipo]?.icone || '📋';
+            document.getElementById('verNome').textContent = p.nome;
+            
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', id).order('id');
+            renderTarefas(tarefas || []);
+            document.getElementById('modalVer').style.display = 'block';
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#modalVer .tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (view === 'list') {
+                document.querySelector('.view-btn:nth-child(1)').classList.add('active');
+                document.getElementById('listView').classList.add('active');
+            } else if (view === 'kanban') {
+                document.querySelector('.view-btn:nth-child(2)').classList.add('active');
+                document.getElementById('kanbanView').classList.add('active');
+                renderKanban();
+            } else if (view === 'timeline') {
+                document.querySelector('.view-btn:nth-child(3)').classList.add('active');
+                document.getElementById('timelineView').classList.add('active');
+                renderTimeline();
+            }
+        }
+
+        async function renderTarefas(tarefas) {
+            const c = document.getElementById('listaTarefas');
+            if (!tarefas.length) {
+                c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa criada</p>';
+                return;
+            }
+            
+            const prioIcons = {
+                'baixa': '🟢',
+                'media': '🟡',
+                'alta': '🔴',
+                'urgente': '🔥',
+                'critica': '⚡'
+            };
+            
+            c.innerHTML = tarefas.map(t => {
+                const data = t.data_formatada || formatDateBR(t.data);
+                const hora = t.hora || '';
+                const descricao = t.descricao ? t.descricao.substring(0, 80) + '...' : '';
+                
+                return `
+                    <div class="tarefa-item">
+                        <div class="tarefa-header">
+                            <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
+                            <div class="tarefa-conteudo">
+                                <div class="tarefa-titulo" style="${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${prioIcons[t.prioridade] || '📌'} ${t.titulo}</div>
+                                ${descricao ? `<div class="tarefa-descricao">${descricao}</div>` : ''}
+                                <div class="tarefa-meta">
+                                    ${data ? `<span class="tarefa-meta-item">📅 ${data}${hora ? ' ' + hora : ''}</span>` : ''}
+                                    ${t.categoria ? `<span class="tarefa-meta-item">${getCategoriaIcon(t.categoria)} ${t.categoria}</span>` : ''}
+                                    ${t.duracao ? `<span class="tarefa-meta-item">⏱️ ${t.duracao}min</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tarefa-actions">
+                            <button class="btn-icon" onclick="editarTarefa(${t.id})">✏️</button>
+                            <button class="btn-icon btn-del" onclick="deletarTarefa(${t.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getCategoriaIcon(cat) {
+            const icons = {
+                'trabalho': '💼',
+                'pessoal': '🏠',
+                'saude': '💪',
+                'estudos': '📚',
+                'financeiro': '💰',
+                'outro': '📌'
+            };
+            return icons[cat] || '📌';
+        }
+
+        async function renderKanban() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+            if (!tarefas) return;
+            
+            const todo = tarefas.filter(t => !t.done && !t.em_progresso);
+            const progress = tarefas.filter(t => !t.done && t.em_progresso);
+            const done = tarefas.filter(t => t.done);
+            
+            document.getElementById('kanbanTodo').innerHTML = renderKanbanCards(todo);
+            document.getElementById('kanbanProgress').innerHTML = renderKanbanCards(progress);
+            document.getElementById('kanbanDone').innerHTML = renderKanbanCards(done);
+        }
+
+        function renderKanbanCards(tarefas) {
+            if (!tarefas.length) return '<p style="color:#999;font-size:0.85em;">Nenhuma tarefa</p>';
+            
+            return tarefas.map(t => `
+                <div class="kanban-card">
+                    <div style="font-weight:700; margin-bottom:0.5rem;">${t.titulo}</div>
+                    <div style="font-size:0.85em; color:#666;">${t.data_formatada || formatDateBR(t.data)}</div>
+                </div>
+            `).join('');
+        }
+
+        async function renderTimeline() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
+            if (!tarefas || !tarefas.length) {
+                document.getElementById('timelineContainer').innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
+                return;
+            }
+            
+            const grouped = {};
+            tarefas.forEach(t => {
+                const date = t.data_formatada || formatDateBR(t.data);
+                if (!grouped[date]) grouped[date] = [];
+                grouped[date].push(t);
+            });
+            
+            const html = Object.keys(grouped).map(date => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${date}</div>
+                    <div class="timeline-content">
+                        ${grouped[date].map(t => `<div style="margin-bottom:0.5rem;"><strong>${t.titulo}</strong>${t.hora ? ' - ' + t.hora : ''}</div>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('timelineContainer').innerHTML = html;
+        }
+
+        function abrirModalNovaTarefa() {
+            tempTags = [];
+            tempLembretes = [];
+            tempSubtarefas = [];
+            tempAnexos = [];
+            
+            document.getElementById('novaTarefaTitulo').value = '';
+            document.getElementById('novaTarefaDescricao').value = '';
+            document.getElementById('novaTarefaData').value = formatDateBR(new Date());
+            document.getElementById('novaTarefaHora').value = '';
+            document.getElementById('novaTarefaDuracao').value = '';
+            
+            renderTags();
+            renderLembretes();
+            renderSubtarefas();
+            renderAnexos();
+            
+            document.getElementById('modalNovaTarefa').style.display = 'block';
+        }
+
+        async function salvarNovaTarefa() {
+            const titulo = document.getElementById('novaTarefaTitulo').value.trim();
+            if (!titulo) { alert('❌ Digite o título da tarefa!'); return; }
+            
+            const descricao = document.getElementById('novaTarefaDescricao').value.trim();
+            const categoria = document.getElementById('novaTarefaCategoria').value;
+            const prioridade = document.getElementById('novaTarefaPrioridade').value;
+            const dataFormatada = document.getElementById('novaTarefaData').value;
+            const data = parseDateBR(dataFormatada);
+            const hora = document.getElementById('novaTarefaHora').value;
+            const duracao = parseInt(document.getElementById('novaTarefaDuracao').value) || null;
+            const repetir = document.getElementById('novaTarefaRepetir').value;
+            const contexto = document.getElementById('novaTarefaContexto').value;
+            const energia = document.getElementById('novaTarefaEnergia').value;
+            
+            try {
+                const novaTarefa = {
+                    planner_id: plannerAberto,
+                    titulo,
+                    descricao,
+                    categoria,
+                    prioridade,
+                    data,
+                    data_formatada: dataFormatada,
+                    hora,
+                    duracao,
+                    repetir,
+                    contexto,
+                    energia,
+                    tags: tempTags,
+                    lembretes: tempLembretes,
+                    subtarefas: tempSubtarefas,
+                    anexos: tempAnexos,
+                    done: false,
+                    em_progresso: false
+                };
+                
+                await supabase.from('tarefas').insert([novaTarefa]);
+                
+                fecharModal('modalNovaTarefa');
+                await addXP(30);
+                abrirPlanner(plannerAberto);
+                
+                // Agendar lembretes
+                agendarLembretes(novaTarefa);
+                
+                showNotification('✅ Tarefa Criada!', titulo);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('❌ Erro ao criar tarefa');
+            }
+        }
+
+        function agendarLembretes(tarefa) {
+            if (!tarefa.lembretes || tarefa.lembretes.length === 0) return;
+            
+            const dataHora = new Date(tarefa.data + ' ' + (tarefa.hora || '00:00'));
+            
+            tarefa.lembretes.forEach(l => {
+                let tempoAntes = 0;
+                if (l === '5min') tempoAntes = 5 * 60 * 1000;
+                else if (l === '15min') tempoAntes = 15 * 60 * 1000;
+                else if (l === '30min') tempoAntes = 30 * 60 * 1000;
+                else if (l === '1h') tempoAntes = 60 * 60 * 1000;
+                else if (l === '1dia') tempoAntes = 24 * 60 * 60 * 1000;
+                
+                const alertTime = dataHora.getTime() - tempoAntes;
+                const agora = Date.now();
+                
+                if (alertTime > agora) {
+                    setTimeout(() => {
+                        showNotification('⏰ Lembrete: ' + tarefa.titulo, 'Tarefa programada para breve!');
+                    }, alertTime - agora);
+                }
+            });
+        }
+
+        async function toggleTarefa(id) {
+            try {
+                const { data: t } = await supabase.from('tarefas').select('done').eq('id', id).single();
+                await supabase.from('tarefas').update({ done: !t.done }).eq('id', id);
+                if (!t.done) {
+                    await addXP(20);
+                    showNotification('✅ Tarefa Concluída!', 'Você ganhou +20 XP!');
+                }
+                await checkAchievements();
+                abrirPlanner(plannerAberto);
+            } catch (err) {
+                console.error('Erro:', err);
+            }
+        }
+
+        async function editarTarefa(id) {
+            alert('🚧 Função de edição avançada em desenvolvimento');
+        }
+
+        async function deletarTarefa(id) {
+            if (!confirm('Deletar esta tarefa?')) return;
+            try {
+                await supabase.from('tarefas').delete().eq('id', id);
+                abrirPlanner(plannerAberto);
+            } catch (err) {
+                console.error('Erro:', err);
+            }
+        }
+
+        async function deletarPlanner(id) {
+            if (!confirm('Deletar planner e todas as tarefas?')) return;
+            try {
+                await supabase.from('tarefas').delete().eq('planner_id', id);
+                await supabase.from('planners').delete().eq('id', id);
+                planners = planners.filter(x => x.id !== id);
+                renderPlanners();
+            } catch (err) {
+                console.error('Erro:', err);
+            }
+        }
+
+        async function renderCalendar() {
+            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            document.getElementById('calendarTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            
+            let html = '<div class="calendar-day-header">Dom</div><div class="calendar-day-header">Seg</div><div class="calendar-day-header">Ter</div><div class="calendar-day-header">Qua</div><div class="calendar-day-header">Qui</div><div class="calendar-day-header">Sex</div><div class="calendar-day-header">Sáb</div>';
+            
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day"></div>';
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayTasks = tarefas?.filter(t => t.data === dateStr) || [];
+                
+                html += `
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">${day}</div>
+                        ${dayTasks.slice(0, 3).map(t => `<div class="calendar-task" title="${t.titulo}">${t.titulo.substring(0, 15)}</div>`).join('')}
+                        ${dayTasks.length > 3 ? `<div style="font-size:0.7em; color:#666;">+${dayTasks.length - 3} mais</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        async function showAISuggestions() {
+            const hour = new Date().getHours();
+            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            
+            if (!tarefas || tarefas.length === 0) return;
+            
+            const pending = tarefas.filter(t => !t.done);
+            const alta = pending.filter(t => t.prioridade === 'alta' || t.prioridade === 'urgente' || t.prioridade === 'critica');
+            
+            let suggestion = '';
+            
+            if (hour >= 6 && hour < 12) {
+                if (alta.length > 0) {
+                    suggestion = `🌅 Bom dia! Você tem ${alta.length} tarefa(s) de alta prioridade. Recomendo começar pela mais urgente.`;
+                } else {
+                    suggestion = '🌅 Bom dia! Momento ideal para tarefas que exigem mais concentração.';
+                }
+            } else if (hour >= 12 && hour < 18) {
+                suggestion = '☀️ Boa tarde! Seu pico de produtividade geralmente é agora. Aproveite!';
+            } else if (hour >= 18 && hour < 22) {
+                const tomorrow = tarefas.filter(t => {
+                    const taskDate = new Date(t.data);
+                    const tom = new Date();
+                    tom.setDate(tom.getDate() + 1);
+                    return taskDate.toDateString() === tom.toDateString();
+                });
+                if (tomorrow.length > 0) {
+                    suggestion = `🌆 Boa noite! Você tem ${tomorrow.length} tarefa(s) para amanhã. Que tal revisar?`;
+                } else {
+                    suggestion = '🌆 Boa noite! Momento ideal para planejamento do dia seguinte.';
+                }
+            } else {
+                suggestion = '🌙 É tarde! Descanse bem para manter a produtividade alta amanhã.';
+            }
+            
+            if (currentUser.streak >= 5) {
+                suggestion += ` 🔥 Você está em um streak de ${currentUser.streak} dias! Continue assim!`;
+            }
+            
+            // Mostrar sugestão quando abrir um planner
+            setTimeout(() => {
+                const aiBox = document.getElementById('aiSuggestionBox');
+                const aiText = document.getElementById('aiSuggestionText');
+                if (aiBox && aiText && suggestion) {
+                    aiText.textContent = suggestion;
+                    aiBox.style.display = 'block';
+                }
+            }, 1000);
         }
 
         function fecharModal(id) {
             document.getElementById(id).style.display = 'none';
         }
 
-        function logout() {
-            if (confirm('Deseja realmente sair?')) {
-                currentUser = null;
-                document.getElementById('appContainer').classList.remove('active');
-                document.getElementById('authContainer').style.display = 'flex';
-                document.getElementById('loginEmail').value = '';
-                document.getElementById('loginPassword').value = '';
-            }
-        }
-
         window.onclick = e => {
             if (e.target.classList.contains('modal')) e.target.style.display = 'none';
         };
-
-        init();
     </script>
 </body>
 </html>
