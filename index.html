@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B46C1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Planner">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <link rel="manifest" href="manifest.json">
     <title>✨ Planner Premium ULTRA</title>
     
@@ -250,6 +254,12 @@
     font-size: 0.8em;
     transition: all 0.2s ease;
 }
+
+        .install-guide { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+        .install-guide-box { background: white; border-radius: 16px; padding: 1.5rem; max-width: 420px; width: 100%; text-align: center; }
+        .install-guide-title { font-weight: 800; margin-bottom: 0.75rem; font-size: 1.1em; color: #6B46C1; }
+        .install-guide-step { margin: 0.4rem 0; font-size: 0.95em; }
+        .install-guide-actions { margin-top: 1rem; }
 
 .install-btn:hover {
     transform: scale(1.05); /* ← ADICIONEI efeito hover */
@@ -1337,7 +1347,8 @@
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             if (!deferredPrompt) {
                 if (isIOS && !isStandalone) {
-                    alert('No iPhone: abra o menu Compartilhar e toque em "Adicionar à Tela de Início"');
+                    const g = document.getElementById('installGuide');
+                    if (g) g.style.display = 'flex';
                     return;
                 }
                 alert('Instalação não disponível neste navegador. Tente pelo Chrome ou Edge.');
@@ -1367,6 +1378,8 @@
                         window.navigator.standalone === true;
     const btnInit = document.getElementById('installBtn');
     if (btnInit) btnInit.style.display = isStandalone ? 'none' : 'block';
+    const close = document.getElementById('closeInstallGuide');
+    if (close) close.addEventListener('click', () => { const g = document.getElementById('installGuide'); if (g) g.style.display = 'none'; });
 
 }
 
@@ -2542,5 +2555,16 @@
         };
     </script>
     <button id="installBtn" class="install-btn" style="display:none;">Instalar agora</button>
+    <div id="installGuide" class="install-guide" style="display:none;">
+        <div class="install-guide-box">
+            <div class="install-guide-title">Instalar no iPhone</div>
+            <div class="install-guide-step">1. Abra o menu Compartilhar do Safari (ícone ⬆️).</div>
+            <div class="install-guide-step">2. Toque em "Adicionar à Tela de Início".</div>
+            <div class="install-guide-step">3. Confirme.</div>
+            <div class="install-guide-actions">
+                <button id="closeInstallGuide" class="btn-primario">Entendi</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
