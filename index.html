@@ -531,15 +531,39 @@
             document.getElementById('loginBtn').textContent = 'Entrando...';
             
             try {
-                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
-                if (error || !user) {
+                const { data: users, error } = await supabase.from('users').select('*').eq('email', email);
+                
+                if (error) {
+                    console.error('Erro na query:', error);
+                    showError('❌ Erro ao conectar ao banco de dados');
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Entrar';
+                    return;
+                }
+                
+                if (!users || users.length === 0) {
                     showError('❌ Email não encontrado!');
                     document.getElementById('loginBtn').disabled = false;
                     document.getElementById('loginBtn').textContent = 'Entrar';
                     return;
                 }
                 
-                const isValid = await bcrypt.compare(pass, user.password);
+                const user = users[0];
+                
+                // Tentar comparar com bcrypt
+                let isValid = false;
+                try {
+                    if (user.password && user.password.startsWith('$2')) {
+                        isValid = await bcrypt.compare(pass, user.password);
+                    } else {
+                        // Fallback: comparação simples
+                        isValid = (user.password === pass);
+                    }
+                } catch (bcryptErr) {
+                    console.warn('Erro bcrypt, tentando comparação simples:', bcryptErr);
+                    isValid = (user.password === pass);
+                }
+                
                 if (!isValid) {
                     showError('❌ Senha incorreta!');
                     document.getElementById('loginBtn').disabled = false;
@@ -549,8 +573,8 @@
                 
                 loginUser(user);
             } catch (err) {
-                console.error('Erro:', err);
-                showError('❌ Erro ao fazer login');
+                console.error('Erro geral no login:', err);
+                showError('❌ Erro ao fazer login: ' + err.message);
                 document.getElementById('loginBtn').disabled = false;
                 document.getElementById('loginBtn').textContent = 'Entrar';
             }
