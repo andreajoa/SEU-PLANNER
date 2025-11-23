@@ -1301,60 +1301,40 @@
         }
 
         async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPassword').value;
-            
-            document.getElementById('loginBtn').disabled = true;
-            document.getElementById('loginBtn').textContent = 'Entrando...';
-            
-            try {
-                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
-                if (error || !user) {
-                    showError('❌ Email não encontrado!');
-                    document.getElementById('loginBtn').disabled = false;
-                    document.getElementById('loginBtn').textContent = 'Entrar';
-                    return;
-                }
-                
-                let isValid = false;
-                if (user.password && user.password.startsWith('$2')) {
-                    try {
-                        isValid = await bcrypt.compare(pass, user.password);
-                    } catch (bcryptErr) {
-                        console.error('Erro bcrypt:', bcryptErr);
-                        showError('❌ Erro ao validar senha');
-                        document.getElementById('loginBtn').disabled = false;
-                        document.getElementById('loginBtn').textContent = 'Entrar';
-                        return;
-                    }
-                } else {
-                    isValid = (user.password === pass);
-                    if (isValid) {
-                        try {
-                            const hashedPassword = await bcrypt.hash(pass, 10);
-                            await supabase.from('users').update({ password: hashedPassword }).eq('email', email);
-                        } catch (hashErr) {
-                            console.warn('Aviso: não foi possível migrar senha:', hashErr);
-                        }
-                    }
-                }
-                
-                if (!isValid) {
-                    showError('❌ Senha incorreta!');
-                    document.getElementById('loginBtn').disabled = false;
-                    document.getElementById('loginBtn').textContent = 'Entrar';
-                    return;
-                }
-                
-                loginUser(user);
-            } catch (err) {
-                console.error('Erro login:', err);
-                showError('❌ Erro ao fazer login: ' + err.message);
-                document.getElementById('loginBtn').disabled = false;
-                document.getElementById('loginBtn').textContent = 'Entrar';
-            }
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const pass = document.getElementById('loginPassword').value;
+    
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+    
+    try {
+        const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
+        
+        if (error || !user) {
+            showError('❌ Email não encontrado!');
+            btn.disabled = false;
+            btn.textContent = 'Entrar';
+            return;
         }
+        
+        if (user.password !== pass) {
+            showError('❌ Senha incorreta!');
+            btn.disabled = false;
+            btn.textContent = 'Entrar';
+            return;
+        }
+        
+        loginUser(user);
+        
+    } catch (err) {
+        console.error('Erro:', err);
+        showError('❌ Erro ao fazer login');
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+    }
+}
 
         function checkSubscriptionStatus(user) {
             const today = new Date().toISOString().split('T')[0];
