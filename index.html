@@ -246,7 +246,7 @@
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
                 <h1>Planner Premium ULTRA</h1>
-                <div class="trial-badge">🎁 7 dias grátis • R$ 19,99/mês</div>
+                <div class="trial-badge">🎁 14 dias grátis • R$ 19,99/mês</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
@@ -551,6 +551,11 @@
             </div>
 
             <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
+
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                <button class="btn-secundario" style="flex:1;" onclick="exportarExcel()">📥 Exportar Excel (CSV)</button>
+                <button class="btn-secundario" style="flex:1;" onclick="baixarRelatorioPDF()">📄 Relatório PDF</button>
+            </div>
 
             <div id="listView" class="tab-content active">
                 <div id="listaTarefas"></div>
@@ -1216,7 +1221,7 @@
                 
                 const hashedPassword = await bcrypt.hash(pass, 10);
                 const trialEndDate = new Date();
-                trialEndDate.setDate(trialEndDate.getDate() + 7);
+                trialEndDate.setDate(trialEndDate.getDate() + 14);
                 
                 const { data: user, error } = await supabase.from('users').insert([{ 
                     email, name, password: hashedPassword,
@@ -1227,7 +1232,7 @@
                 }]).select().single();
                 
                 if (error) throw error;
-                showSuccess('✅ Conta criada! 7 dias grátis ativados!');
+                showSuccess('✅ Conta criada! 14 dias grátis ativados!');
                 setTimeout(() => loginUser(user), 1500);
             } catch (err) {
                 console.error('Erro signup:', err);
@@ -2248,6 +2253,180 @@
 
         function fecharModal(id) {
             document.getElementById(id).style.display = 'none';
+        }
+
+        async function exportarExcel() {
+            if (!plannerAberto) {
+                alert('❌ Nenhum planner aberto!');
+                return;
+            }
+
+            try {
+                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
+                
+                if (!tarefas || tarefas.length === 0) {
+                    alert('❌ Nenhuma tarefa para exportar!');
+                    return;
+                }
+
+                // Criar CSV
+                let csv = 'Título,Descrição,Categoria,Prioridade,Data,Hora,Duração (min),Status,Tags,Contexto,Energia\n';
+                
+                tarefas.forEach(t => {
+                    const titulo = `"${(t.titulo || '').replace(/"/g, '""')}"`;
+                    const descricao = `"${(t.descricao || '').replace(/"/g, '""')}"`;
+                    const categoria = t.categoria || '';
+                    const prioridade = t.prioridade || '';
+                    const data = t.data ? formatDateBR(t.data) : '';
+                    const hora = t.hora || '';
+                    const duracao = t.duracao || '';
+                    const status = t.done ? 'Concluída' : 'Pendente';
+                    const tags = t.tags ? t.tags.join('; ') : '';
+                    const contexto = t.contexto || '';
+                    const energia = t.energia || '';
+                    
+                    csv += `${titulo},${descricao},${categoria},${prioridade},${data},${hora},${duracao},${status},${tags},${contexto},${energia}\n`;
+                });
+
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                const plannerNome = planners.find(p => p.id === plannerAberto)?.nome || 'planner';
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${plannerNome}_tarefas.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                alert('✅ Excel exportado com sucesso!');
+                await incrementPaperSaved(tarefas.length);
+            } catch (err) {
+                console.error('Erro ao exportar:', err);
+                alert('❌ Erro ao exportar Excel');
+            }
+        }
+
+        async function baixarRelatorioPDF() {
+            if (!plannerAberto) {
+                alert('❌ Nenhum planner aberto!');
+                return;
+            }
+
+            try {
+                const planner = planners.find(p => p.id === plannerAberto);
+                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+                
+                if (!tarefas || tarefas.length === 0) {
+                    alert('❌ Nenhuma tarefa para gerar relatório!');
+                    return;
+                }
+
+                const completed = tarefas.filter(t => t.done).length;
+                const pending = tarefas.length - completed;
+                const rate = Math.round((completed / tarefas.length) * 100);
+
+                // Criar HTML do relatório
+                let html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Relatório - ${planner.nome}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; max-width: 900px; margin: 0 auto; }
+        h1 { color: #6B46C1; border-bottom: 3px solid #EC4899; padding-bottom: 10px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
+        .stat-box { background: #F3E8FF; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-value { font-size: 2em; font-weight: bold; color: #6B46C1; }
+        .stat-label { color: #666; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { background: #6B46C1; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .done { color: #10B981; font-weight: bold; }
+        .pending { color: #F59E0B; font-weight: bold; }
+        .footer { margin-top: 40px; text-align: center; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>📊 Relatório: ${planner.nome}</h1>
+    <p><strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
+    
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-value">${tarefas.length}</div>
+            <div class="stat-label">Total de Tarefas</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">${completed}</div>
+            <div class="stat-label">Concluídas</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">${rate}%</div>
+            <div class="stat-label">Taxa de Sucesso</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Prioridade</th>
+                <th>Data</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+`;
+
+                tarefas.forEach(t => {
+                    const prioIcons = { 'baixa': '🟢', 'media': '🟡', 'alta': '🔴', 'urgente': '🔥', 'critica': '⚡' };
+                    const statusClass = t.done ? 'done' : 'pending';
+                    const statusText = t.done ? '✅ Concluída' : '⏳ Pendente';
+                    
+                    html += `
+            <tr>
+                <td>${prioIcons[t.prioridade] || '📌'} ${t.titulo}</td>
+                <td>${t.prioridade || '-'}</td>
+                <td>${t.data ? formatDateBR(t.data) : '-'}</td>
+                <td class="${statusClass}">${statusText}</td>
+            </tr>
+`;
+                });
+
+                html += `
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>🌱 Relatório gerado pelo Planner Premium ULTRA</p>
+        <p>100% Digital • Zero Papel • Sustentável</p>
+    </div>
+</body>
+</html>
+`;
+
+                // Download HTML como PDF simulation
+                const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', `Relatório_${planner.nome}.html`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                alert('✅ Relatório baixado! Abra o arquivo HTML e use Ctrl+P para salvar como PDF.');
+                await incrementPaperSaved(5);
+            } catch (err) {
+                console.error('Erro ao gerar relatório:', err);
+                alert('❌ Erro ao gerar relatório');
+            }
         }
 
         window.onclick = e => {
