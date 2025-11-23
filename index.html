@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Planner Premium ULTRA</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary: #6B46C1; --secondary: #EC4899; --success: #10B981; --danger: #EF4444; --dark: #1F2937; --light: #F9FAFB; --gray: #E5E7EB; }
@@ -15,6 +16,7 @@
         .auth-logo { text-align: center; margin-bottom: 1.5rem; }
         .auth-logo-icon { font-size: 3em; }
         .auth-logo h1 { font-size: 1.4em; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .trial-badge { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 0.8rem 0; display: inline-block; }
         .auth-tabs { display: flex; margin-bottom: 1.5rem; background: var(--gray); border-radius: 10px; padding: 4px; }
         .auth-tab { flex: 1; padding: 0.6rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 8px; color: #666; font-size: 0.9em; }
         .auth-tab.active { background: white; color: var(--primary); }
@@ -33,12 +35,33 @@
         .auth-error { background: #FEE2E2; color: #DC2626; }
         .auth-success { background: #D1FAE5; color: #059669; }
         
+        .trial-banner { padding: 1rem; text-align: center; font-weight: 700; font-size: 0.9em; }
+        .trial-banner.warning { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+        .trial-banner.danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        
+        .paywall-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 1rem; }
+        .paywall-overlay.active { display: flex; }
+        .paywall-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%; text-align: center; }
+        .paywall-icon { font-size: 4em; margin-bottom: 1rem; }
+        .paywall-title { font-size: 2em; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .paywall-text { color: #666; margin-bottom: 2rem; line-height: 1.6; }
+        .price-box { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .price-amount { font-size: 3em; font-weight: 800; color: var(--primary); }
+        .price-period { color: #666; font-size: 0.9em; }
+        .features-list { text-align: left; margin-bottom: 1.5rem; }
+        .feature-item { padding: 0.5rem 0; color: #333; font-weight: 600; }
+        .feature-item:before { content: "✅ "; margin-right: 0.5rem; }
+        .btn-subscribe { width: 100%; padding: 1.2rem; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1em; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 25px rgba(107, 70, 193, 0.3); }
+        .btn-subscribe:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(107, 70, 193, 0.4); }
+        
         .app-container { display: none; background: linear-gradient(135deg, #F9FAFB, #F3E8FF); min-height: 100vh; }
         .app-container.active { display: block; }
         .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
         .navbar-title { font-size: 1.2em; font-weight: 800; }
         .navbar-user { display: flex; align-items: center; gap: 0.5rem; }
         .user-badge { background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.8em; }
+        .subscription-badge { background: linear-gradient(135deg, #10B981, #059669); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; }
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
         .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem; }
@@ -98,7 +121,7 @@
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
                 <h1>Planner Premium ULTRA</h1>
-                <p style="color:#666; font-size:0.85em; margin-top:0.3rem;">Sistema SaaS Profissional</p>
+                <div class="trial-badge">🎁 7 dias grátis • Depois R$ 19,99/mês</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
@@ -119,7 +142,7 @@
                 <div class="form-group"><label>Email</label><input type="email" id="signupEmail" required></div>
                 <div class="form-group"><label>Senha (mín. 6)</label><input type="password" id="signupPassword" minlength="6" required></div>
                 <div class="form-group"><label>Confirmar Senha</label><input type="password" id="signupConfirm" required></div>
-                <button type="submit" class="btn-auth" id="signupBtn">Criar Conta</button>
+                <button type="submit" class="btn-auth" id="signupBtn">🎁 Começar Trial Grátis</button>
             </form>
 
             <form id="recoverForm" class="auth-form" onsubmit="handleRecover(event)">
@@ -130,10 +153,41 @@
         </div>
     </div>
 
+    <div class="paywall-overlay" id="paywallOverlay">
+        <div class="paywall-box">
+            <div class="paywall-icon">🔒</div>
+            <h1 class="paywall-title">Trial Expirado</h1>
+            <p class="paywall-text">
+                Seu período de teste de 7 dias terminou.<br>
+                Assine agora para continuar aproveitando todos os recursos!
+            </p>
+            <div class="price-box">
+                <div class="price-amount">R$ 19,99</div>
+                <div class="price-period">por mês</div>
+            </div>
+            <div class="features-list">
+                <div class="feature-item">Planners ilimitados</div>
+                <div class="feature-item">Sincronização na nuvem</div>
+                <div class="feature-item">Compartilhamento avançado</div>
+                <div class="feature-item">Notificações inteligentes</div>
+                <div class="feature-item">Suporte prioritário</div>
+            </div>
+            <button class="btn-subscribe" onclick="redirectToStripe()">
+                💳 Assinar Agora
+            </button>
+            <p style="color:#999; font-size:0.8em; margin-top:1rem;">
+                Pagamento seguro via Stripe • Cancele quando quiser
+            </p>
+        </div>
+    </div>
+
+    <div id="trialBanner" class="trial-banner" style="display:none;"></div>
+
     <div class="app-container" id="appContainer">
         <div class="navbar">
             <div class="navbar-title">✨ Planner Premium</div>
             <div class="navbar-user">
+                <span class="subscription-badge" id="subBadge">🎁 Trial</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
@@ -206,9 +260,9 @@
     </div>
 
     <script>
-        // 🔐 CREDENCIAIS SUPABASE (PRIVADAS - NÃO COMPARTILHAR)
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
+        const STRIPE_LINK = 'https://buy.stripe.com/test_6oE14q0lh7iW5sA9AA';
         
         let supabase = null;
         let currentUser = null;
@@ -223,7 +277,6 @@
             'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
 
-        // Inicialização
         async function init() {
             document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
             
@@ -237,7 +290,6 @@
         }
         init();
 
-        // Auth UI
         function showTab(t) {
             document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)||(t==='recover'&&i===2)));
             document.getElementById('loginForm').classList.toggle('active', t==='login');
@@ -263,7 +315,6 @@
             document.getElementById('authSuccess').style.display='none'; 
         }
 
-        // Signup
         async function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signupName').value.trim();
@@ -287,30 +338,38 @@
                 if (existing) {
                     showError('❌ Email já cadastrado!');
                     document.getElementById('signupBtn').disabled = false;
-                    document.getElementById('signupBtn').textContent = 'Criar Conta';
+                    document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
                     return;
                 }
                 
+                const trialEndDate = new Date();
+                trialEndDate.setDate(trialEndDate.getDate() + 7);
+                
                 const { data: user, error } = await supabase
                     .from('users')
-                    .insert([{ email, name, password: pass }])
+                    .insert([{ 
+                        email, 
+                        name, 
+                        password: pass,
+                        trial_end: trialEndDate.toISOString().split('T')[0],
+                        subscription_status: 'trial'
+                    }])
                     .select()
                     .single();
                 
                 if (error) throw error;
                 
-                showSuccess('✅ Conta criada! Entrando...');
-                setTimeout(() => loginUser(user), 1000);
+                showSuccess('✅ Conta criada! Trial de 7 dias ativado!');
+                setTimeout(() => loginUser(user), 1500);
                 
             } catch (err) {
                 console.error('Erro signup:', err);
                 showError('❌ Erro ao criar conta');
                 document.getElementById('signupBtn').disabled = false;
-                document.getElementById('signupBtn').textContent = 'Criar Conta';
+                document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
             }
         }
 
-        // Login
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
@@ -350,7 +409,6 @@
             }
         }
 
-        // Recuperar senha
         async function handleRecover(e) {
             e.preventDefault();
             const email = document.getElementById('recoverEmail').value.trim().toLowerCase();
@@ -395,8 +453,54 @@
             }
         }
 
+        function checkSubscriptionStatus(user) {
+            const today = new Date().toISOString().split('T')[0];
+            const trialEnd = user.trial_end;
+            const status = user.subscription_status;
+            
+            if (status === 'active') {
+                document.getElementById('subBadge').textContent = '✅ Premium';
+                document.getElementById('subBadge').style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                document.getElementById('trialBanner').style.display = 'none';
+                document.getElementById('paywallOverlay').classList.remove('active');
+                return true;
+            }
+            
+            if (status === 'trial' && trialEnd) {
+                const daysLeft = Math.ceil((new Date(trialEnd) - new Date(today)) / (1000 * 60 * 60 * 24));
+                
+                if (daysLeft <= 0) {
+                    document.getElementById('paywallOverlay').classList.add('active');
+                    return false;
+                }
+                
+                document.getElementById('subBadge').textContent = `🎁 Trial (${daysLeft}d)`;
+                
+                if (daysLeft <= 2) {
+                    const banner = document.getElementById('trialBanner');
+                    banner.textContent = `🔥 ÚLTIMO DIA GRÁTIS! Assine agora para não perder acesso`;
+                    banner.className = 'trial-banner danger';
+                    banner.style.display = 'block';
+                } else if (daysLeft <= 5) {
+                    const banner = document.getElementById('trialBanner');
+                    banner.textContent = `⏰ ${daysLeft} dias restantes do trial • Assine para continuar`;
+                    banner.className = 'trial-banner warning';
+                    banner.style.display = 'block';
+                }
+                
+                return true;
+            }
+            
+            document.getElementById('paywallOverlay').classList.add('active');
+            return false;
+        }
+
         async function loginUser(user) {
             currentUser = user;
+            
+            if (!checkSubscriptionStatus(user)) {
+                return;
+            }
             
             const { data: userPlanners } = await supabase
                 .from('planners')
@@ -417,15 +521,22 @@
             }
         }
 
+        function redirectToStripe() {
+            const link = `${STRIPE_LINK}?client_reference_id=${currentUser.email}`;
+            window.open(link, '_blank');
+        }
+
         function logout() {
             currentUser = null;
             planners = [];
             document.getElementById('appContainer').classList.remove('active');
             document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('paywallOverlay').classList.remove('active');
+            document.getElementById('trialBanner').style.display = 'none';
             document.getElementById('loginBtn').disabled = false;
             document.getElementById('loginBtn').textContent = 'Entrar';
             document.getElementById('signupBtn').disabled = false;
-            document.getElementById('signupBtn').textContent = 'Criar Conta';
+            document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
             showTab('login');
             hideMsg();
         }
