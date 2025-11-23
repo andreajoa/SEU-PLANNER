@@ -6,10 +6,42 @@
     <title>✨ Planner Premium ULTRA</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #6B46C1; --secondary: #EC4899; --success: #10B981; --danger: #EF4444; --dark: #1F2937; --light: #F9FAFB; --gray: #E5E7EB; }
+        :root { 
+            --primary: #6B46C1; --secondary: #EC4899; --success: #10B981; 
+            --danger: #EF4444; --warning: #F59E0B; --dark: #1F2937; 
+            --light: #F9FAFB; --gray: #E5E7EB; 
+        }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); color: var(--dark); min-height: 100vh; }
+        
+        /* Level Up Animation */
+        @keyframes levelUp {
+            0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti { position: fixed; width: 10px; height: 10px; z-index: 10000; pointer-events: none; }
+        
+        .level-up-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 9999; background: white; padding: 3rem; border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center; animation: levelUp 0.6s ease;
+        }
+        
+        .level-up-modal.active { display: block; }
+        .level-up-icon { font-size: 5em; margin-bottom: 1rem; }
+        .level-up-title { font-size: 2em; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
         .auth-box { background: white; border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
@@ -26,9 +58,6 @@
         .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.85em; }
         .form-group input, .form-group select { width: 100%; padding: 0.75rem; border: 2px solid var(--gray); border-radius: 8px; font-size: 1em; }
         .form-group input:focus { outline: none; border-color: var(--primary); }
-        .color-row { display: flex; gap: 0.5rem; align-items: center; }
-        .color-row input[type="color"] { width: 50px; height: 40px; border: none; border-radius: 6px; cursor: pointer; }
-        .color-preview { flex: 1; height: 40px; border-radius: 6px; border: 2px solid var(--gray); }
         .btn-auth { width: 100%; padding: 0.9rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1em; }
         .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-msg { padding: 0.7rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85em; display: none; }
@@ -45,27 +74,47 @@
         .paywall-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%; text-align: center; }
         .paywall-icon { font-size: 4em; margin-bottom: 1rem; }
         .paywall-title { font-size: 2em; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .paywall-text { color: #666; margin-bottom: 2rem; line-height: 1.6; }
         .price-box { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
         .price-amount { font-size: 3em; font-weight: 800; color: var(--primary); }
-        .price-period { color: #666; font-size: 0.9em; }
-        .features-list { text-align: left; margin-bottom: 1.5rem; }
-        .feature-item { padding: 0.5rem 0; color: #333; font-weight: 600; }
-        .feature-item:before { content: "✅ "; margin-right: 0.5rem; }
-        .btn-subscribe { width: 100%; padding: 1.2rem; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1em; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 25px rgba(107, 70, 193, 0.3); }
-        .btn-subscribe:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(107, 70, 193, 0.4); }
+        .btn-subscribe { width: 100%; padding: 1.2rem; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1em; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .app-container { display: none; background: linear-gradient(135deg, #F9FAFB, #F3E8FF); min-height: 100vh; }
         .app-container.active { display: block; }
         .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
         .navbar-title { font-size: 1.2em; font-weight: 800; }
-        .navbar-user { display: flex; align-items: center; gap: 0.5rem; }
-        .user-badge { background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.8em; }
-        .subscription-badge { background: linear-gradient(135deg, #10B981, #059669); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; }
+        .navbar-user { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .user-badge { background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; }
+        .level-badge { background: linear-gradient(135deg, #F59E0B, #D97706); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; cursor: pointer; }
+        .streak-badge { background: linear-gradient(135deg, #EF4444, #DC2626); padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 0.75em; font-weight: 700; }
         .btn-nav { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
         .btn-nav:hover { background: white; color: var(--primary); }
-        .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem; }
-        .welcome { background: white; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        
+        .tab-menu { display: flex; gap: 0.5rem; background: white; padding: 0.5rem; border-radius: 10px; margin: 1rem auto; max-width: 600px; }
+        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; font-size: 0.9em; }
+        .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+        .stat-icon { font-size: 2.5em; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2em; font-weight: 800; color: var(--primary); }
+        .stat-label { color: #666; font-size: 0.85em; margin-top: 0.3rem; }
+        
+        .xp-bar { background: var(--gray); border-radius: 20px; height: 30px; overflow: hidden; margin: 1rem 0; position: relative; }
+        .xp-fill { background: linear-gradient(135deg, #10B981, #059669); height: 100%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85em; }
+        
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; }
+        .achievement { background: white; border-radius: 10px; padding: 1rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .achievement.locked { opacity: 0.3; }
+        .achievement-icon { font-size: 2.5em; }
+        .achievement-name { font-size: 0.75em; font-weight: 600; margin-top: 0.3rem; }
+        
+        .chart-container { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+        .chart-title { font-size: 1.1em; font-weight: 700; margin-bottom: 1rem; }
+        
         .planner-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .planner-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; border-top: 4px solid; transition: transform 0.2s; }
         .planner-card:hover { transform: translateY(-3px); }
@@ -74,46 +123,37 @@
         .planner-title { font-size: 0.95em; font-weight: 700; margin-top: 0.3rem; }
         .planner-body { padding: 1rem; }
         .btn-criar { width: 100%; padding: 0.6rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
-        .meus-planners { background: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .meus-planners h2 { margin-bottom: 1rem; font-size: 1.1em; }
+        
         .planners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
         .planner-item { color: white; border-radius: 10px; padding: 1rem; }
         .planner-item-nome { font-weight: 700; margin-bottom: 0.2rem; }
         .planner-item-info { font-size: 0.75em; opacity: 0.9; margin-bottom: 0.6rem; }
         .planner-item-acoes { display: flex; gap: 0.3rem; }
         .planner-item-acoes button { flex: 1; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: 600; }
-        .planner-item-acoes button:hover { background: white; color: #333; }
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-        .modal-content { background: white; margin: 5% auto; padding: 1.5rem; border-radius: 12px; width: 90%; max-width: 500px; }
+        .modal-content { background: white; margin: 2% auto; padding: 1.5rem; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .modal-header h2 { font-size: 1.2em; }
         .close-modal { font-size: 1.5em; cursor: pointer; background: none; border: none; color: #999; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-        .form-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .btn-primario, .btn-secundario { flex: 1; padding: 0.6rem; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
-        .btn-primario { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
-        .btn-secundario { background: var(--gray); color: var(--dark); }
-        .contador { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0.8rem; border-radius: 8px; text-align: center; margin-bottom: 1rem; }
-        .contador-numero { font-size: 1.5em; font-weight: 700; }
+        
         .tarefa-item { background: var(--light); padding: 0.7rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; gap: 0.6rem; align-items: center; border-left: 3px solid var(--primary); }
-        .tarefa-item.concluida { opacity: 0.5; }
-        .tarefa-item.concluida .tarefa-titulo { text-decoration: line-through; }
         .tarefa-checkbox { width: 18px; height: 18px; cursor: pointer; }
         .tarefa-conteudo { flex: 1; }
         .tarefa-titulo { font-weight: 600; font-size: 0.9em; }
-        .tarefa-meta { font-size: 0.7em; color: #666; }
         .btn-del { padding: 0.2rem 0.5rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75em; }
-        .empty-msg { color: #999; text-align: center; padding: 1rem; font-size: 0.85em; }
+        
+        .btn-primario { padding: 0.8rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-secundario { padding: 0.8rem; background: var(--gray); color: var(--dark); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        
         .loading { text-align: center; padding: 2rem; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--gray); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="loading" id="loadingScreen">
         <div class="spinner"></div>
-        <p>Conectando ao servidor...</p>
+        <p>Inicializando sistemas...</p>
     </div>
 
     <div class="auth-container" id="authContainer" style="display:none;">
@@ -121,12 +161,11 @@
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
                 <h1>Planner Premium ULTRA</h1>
-                <div class="trial-badge">🎁 7 dias grátis • Depois R$ 19,99/mês</div>
+                <div class="trial-badge">🎁 7 dias grátis • R$ 19,99/mês</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
                 <button class="auth-tab" onclick="showTab('signup')">Criar Conta</button>
-                <button class="auth-tab" onclick="showTab('recover')">Recuperar</button>
             </div>
             <div id="authError" class="auth-msg auth-error"></div>
             <div id="authSuccess" class="auth-msg auth-success"></div>
@@ -141,14 +180,7 @@
                 <div class="form-group"><label>Nome Completo</label><input type="text" id="signupName" required></div>
                 <div class="form-group"><label>Email</label><input type="email" id="signupEmail" required></div>
                 <div class="form-group"><label>Senha (mín. 6)</label><input type="password" id="signupPassword" minlength="6" required></div>
-                <div class="form-group"><label>Confirmar Senha</label><input type="password" id="signupConfirm" required></div>
                 <button type="submit" class="btn-auth" id="signupBtn">🎁 Começar Trial Grátis</button>
-            </form>
-
-            <form id="recoverForm" class="auth-form" onsubmit="handleRecover(event)">
-                <p style="font-size:0.85em; color:#666; margin-bottom:1rem;">Digite seu email cadastrado. Enviaremos uma nova senha.</p>
-                <div class="form-group"><label>Email Cadastrado</label><input type="email" id="recoverEmail" required></div>
-                <button type="submit" class="btn-auth" id="recoverBtn">Enviar Nova Senha</button>
             </form>
         </div>
     </div>
@@ -157,28 +189,20 @@
         <div class="paywall-box">
             <div class="paywall-icon">🔒</div>
             <h1 class="paywall-title">Trial Expirado</h1>
-            <p class="paywall-text">
-                Seu período de teste de 7 dias terminou.<br>
-                Assine agora para continuar aproveitando todos os recursos!
-            </p>
+            <p style="color:#666; margin-bottom:2rem;">Assine agora para continuar!</p>
             <div class="price-box">
                 <div class="price-amount">R$ 19,99</div>
-                <div class="price-period">por mês</div>
+                <div style="color:#666; font-size:0.9em;">por mês</div>
             </div>
-            <div class="features-list">
-                <div class="feature-item">Planners ilimitados</div>
-                <div class="feature-item">Sincronização na nuvem</div>
-                <div class="feature-item">Compartilhamento avançado</div>
-                <div class="feature-item">Notificações inteligentes</div>
-                <div class="feature-item">Suporte prioritário</div>
-            </div>
-            <button class="btn-subscribe" onclick="redirectToStripe()">
-                💳 Assinar Agora
-            </button>
-            <p style="color:#999; font-size:0.8em; margin-top:1rem;">
-                Pagamento seguro via Stripe • Cancele quando quiser
-            </p>
+            <button class="btn-subscribe" onclick="redirectToStripe()">💳 Assinar Agora</button>
         </div>
+    </div>
+
+    <div class="level-up-modal" id="levelUpModal">
+        <div class="level-up-icon">🎉</div>
+        <h2 class="level-up-title">Level Up!</h2>
+        <p style="font-size:1.5em; margin:1rem 0;">Nível <span id="newLevel">2</span></p>
+        <button class="btn-primario" onclick="closeLevelUp()">Continuar</button>
     </div>
 
     <div id="trialBanner" class="trial-banner" style="display:none;"></div>
@@ -187,38 +211,89 @@
         <div class="navbar">
             <div class="navbar-title">✨ Planner Premium</div>
             <div class="navbar-user">
-                <span class="subscription-badge" id="subBadge">🎁 Trial</span>
+                <span class="level-badge" onclick="openTab('stats')" id="levelBadge">⭐ Nível 1</span>
+                <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
+                <button class="btn-nav" onclick="requestNotificationPermission()">🔔 Ativar</button>
+                <button class="btn-nav" onclick="syncToCalendar()">📅 Calendar</button>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
+
         <div class="container">
-            <div class="welcome">
-                <h1 style="font-size:1.3em;">Olá, <span id="welcomeName">User</span>! 👋</h1>
-                <p style="color:#666; font-size:0.85em;">Seus dados estão salvos na nuvem ☁️</p>
+            <div class="tab-menu">
+                <button class="tab-btn active" onclick="openTab('planners')">📋 Planners</button>
+                <button class="tab-btn" onclick="openTab('stats')">📊 Estatísticas</button>
+                <button class="tab-btn" onclick="openTab('achievements')">🏆 Conquistas</button>
             </div>
-            <h2 style="margin-bottom:0.8rem; font-size:1em;">Criar Novo Planner</h2>
-            <div class="planner-types">
-                <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
-                    <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
+
+            <div id="plannersTab" class="tab-content active">
+                <h2 style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
+                <div class="planner-types">
+                    <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
+                    <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
+                        <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
+                        <div class="planner-body"><button class="btn-criar">Criar</button></div>
+                    </div>
                 </div>
-                <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
-                    <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
-                </div>
-                <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
-                    <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
-                </div>
-                <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
-                    <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
-                    <div class="planner-body"><button class="btn-criar">Criar Agora</button></div>
+                <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <h2 style="margin-bottom:1rem;">📋 Meus Planners</h2>
+                    <div class="planners-grid" id="meusPlanners"></div>
                 </div>
             </div>
-            <div class="meus-planners">
-                <h2>📋 Meus Planners</h2>
-                <div class="planners-grid" id="meusPlanners"><p class="empty-msg">Carregando...</p></div>
+
+            <div id="statsTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value" id="statLevel">1</div>
+                        <div class="stat-label">Nível</div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpBar" style="width:0%;">0/100 XP</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Dias de Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="statCompleted">0</div>
+                        <div class="stat-label">Tarefas Concluídas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="statRate">0%</div>
+                        <div class="stat-label">Taxa de Conclusão</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">📊 Produtividade Semanal</h3>
+                    <canvas id="weeklyChart" height="80"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">🎯 Tarefas por Prioridade</h3>
+                    <canvas id="priorityChart" height="80"></canvas>
+                </div>
+            </div>
+
+            <div id="achievementsTab" class="tab-content">
+                <h2 style="margin-bottom:1rem;">🏆 Conquistas Desbloqueadas</h2>
+                <div class="achievements-grid" id="achievementsList"></div>
             </div>
         </div>
     </div>
@@ -226,36 +301,29 @@
     <div id="modalCriar" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2><span id="modalIcone"></span> <span id="modalTitulo">Novo</span></h2><button class="close-modal" onclick="fecharModal('modalCriar')">&times;</button></div>
-            <div class="form-group"><label>Nome do Planner *</label><input type="text" id="inputNome" placeholder="Ex: Metas de Janeiro"></div>
-            <div class="form-group"><label>Cor do Planner</label><div class="color-row"><input type="color" id="inputCor" value="#6B46C1" oninput="document.getElementById('colorPrev').style.background=this.value"><div class="color-preview" id="colorPrev" style="background:#6B46C1"></div></div></div>
-            <div class="form-row">
-                <div class="form-group"><label>Ícone</label><input type="text" id="inputIcone" maxlength="2" value="✨" placeholder="📋"></div>
-                <div class="form-group"><label>Alarme</label><input type="time" id="inputAlarme" value="09:00"></div>
-            </div>
+            <div class="form-group"><label>Nome *</label><input type="text" id="inputNome"></div>
             <div class="form-group"><label>Data de Início</label><input type="date" id="inputData"></div>
-            <div class="form-actions"><button class="btn-secundario" onclick="fecharModal('modalCriar')">Cancelar</button><button class="btn-primario" onclick="salvarPlanner()">Criar Planner</button></div>
+            <div style="display:flex; gap:0.5rem;">
+                <button class="btn-secundario" style="flex:1;" onclick="fecharModal('modalCriar')">Cancelar</button>
+                <button class="btn-primario" style="flex:1;" onclick="salvarPlanner()">Criar</button>
+            </div>
         </div>
     </div>
 
     <div id="modalVer" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2><span id="verIcone"></span> <span id="verNome">Planner</span></h2><button class="close-modal" onclick="fecharModal('modalVer')">&times;</button></div>
-            <div class="contador"><div class="contador-numero" id="contadorTarefas">0</div><div style="font-size:0.8em;">Tarefas Adicionadas</div></div>
-            <div id="alarmeBox" style="background:#FEF3C7; padding:0.6rem; border-radius:6px; margin-bottom:1rem; font-size:0.8em; display:none;">🔔 Alarme configurado para: <b id="alarmeHora"></b></div>
-            <div class="form-group"><label>Nova Tarefa</label><input type="text" id="inputTarefa" placeholder="Digite o título da tarefa"></div>
-            <div class="form-row">
-                <div class="form-group"><label>Prioridade</label><select id="inputPrio"><option value="baixa">🟢 Baixa</option><option value="media" selected>🟡 Média</option><option value="alta">🔴 Alta</option></select></div>
-                <div class="form-group"><label>Data</label><input type="date" id="inputDataT"></div>
+            <div class="form-group"><label>Nova Tarefa</label><input type="text" id="inputTarefa"></div>
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                <select id="inputPrio" style="flex:1; padding:0.7rem; border:2px solid #E5E7EB; border-radius:6px;">
+                    <option value="baixa">🟢 Baixa</option>
+                    <option value="media">🟡 Média</option>
+                    <option value="alta">🔴 Alta</option>
+                </select>
+                <input type="date" id="inputDataT" style="flex:1; padding:0.7rem; border:2px solid #E5E7EB; border-radius:6px;">
             </div>
-            <div class="form-group"><label>Hora do Lembrete</label><input type="time" id="inputHoraT"></div>
-            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="addTarefa()">+ Adicionar Tarefa</button>
+            <button class="btn-primario" style="width:100%; margin-bottom:1rem;" onclick="addTarefa()">+ Adicionar</button>
             <div id="listaTarefas"></div>
-            <div class="form-actions" style="margin-top:1rem;">
-                <button class="btn-secundario" onclick="shareWpp()">📱 WhatsApp</button>
-                <button class="btn-secundario" onclick="shareEmail()">📧 Email</button>
-                <button class="btn-primario" onclick="downloadTxt()">📥 Baixar</button>
-            </div>
-            <button class="btn-secundario" style="width:100%; margin-top:0.5rem;" onclick="fecharModal('modalVer')">Fechar</button>
         </div>
     </div>
 
@@ -263,12 +331,26 @@
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
         const STRIPE_LINK = 'https://buy.stripe.com/test_6oE14q0lh7iW5sA9AA';
+        const GOOGLE_API_KEY = 'AIzaSyBxrdKt4iMrDjSuOtem7VvPQ9nfjBzxxZA';
+        const GOOGLE_CLIENT_ID = '1040472412768-8hmfou831tpuatovf0dbg8cg9hh2enmh.apps.googleusercontent.com';
+        
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyA2-UyrlW8vxnzFXm8VT4tkXHORB3FZtIU",
+            authDomain: "planner-7ff4b.firebaseapp.com",
+            projectId: "planner-7ff4b",
+            storageBucket: "planner-7ff4b.firebasestorage.app",
+            messagingSenderId: "582409451256",
+            appId: "1:582409451256:web:ef3f75d6933cdb2f332d0d"
+        };
+        const VAPID_KEY = "oLoH76CHsjnvdhyMkduM4UPtf9E6oPlZRLYTpNl5_go";
         
         let supabase = null;
         let currentUser = null;
         let planners = [];
         let plannerAberto = null;
         let tipoAtual = '';
+        let gapiInited = false;
+        let firebaseInited = false;
         
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
@@ -276,25 +358,70 @@
             'habitos': { nome: 'Hábitos', icone: '🔥', cor: '#F59E0B' },
             'financeiro': { nome: 'Financeiro', icone: '💰', cor: '#8B5CF6' }
         };
+        
+        const achievements = [
+            { id: 'first_task', name: 'Primeira Tarefa', icon: '🎯', requirement: 1 },
+            { id: 'task_master', name: 'Mestre das Tarefas', icon: '👑', requirement: 10 },
+            { id: 'century', name: 'Centenário', icon: '💯', requirement: 100 },
+            { id: 'week_streak', name: 'Streak 7 Dias', icon: '🔥', requirement: 7 },
+            { id: 'month_streak', name: 'Streak 30 Dias', icon: '💪', requirement: 30 },
+            { id: 'early_bird', name: 'Madrugador', icon: '🌅', requirement: 1 },
+            { id: 'night_owl', name: 'Coruja', icon: '🦉', requirement: 1 },
+            { id: 'planner_pro', name: 'Planejador Pro', icon: '📋', requirement: 5 },
+            { id: 'speedster', name: 'Velocista', icon: '⚡', requirement: 1 },
+            { id: 'perfectionist', name: 'Perfeccionista', icon: '✨', requirement: 1 },
+            { id: 'social', name: 'Social', icon: '🤝', requirement: 1 },
+            { id: 'level_10', name: 'Nível 10', icon: '⭐', requirement: 10 }
+        ];
 
         async function init() {
             document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
             
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                await initFirebase();
+                await initGoogleAPI();
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('authContainer').style.display = 'flex';
             } catch (err) {
-                document.getElementById('loadingScreen').innerHTML = '<p style="color:#DC2626;">❌ Erro ao conectar com o servidor</p>';
+                console.error('Init error:', err);
+                document.getElementById('loadingScreen').innerHTML = '<p style="color:#DC2626;">❌ Erro ao conectar</p>';
             }
         }
+        
+        async function initFirebase() {
+            try {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                firebaseInited = true;
+                console.log('✅ Firebase inicializado');
+            } catch (err) {
+                console.warn('Firebase não disponível:', err);
+            }
+        }
+        
+        async function initGoogleAPI() {
+            try {
+                gapi.load('client:auth2', async () => {
+                    await gapi.client.init({
+                        apiKey: GOOGLE_API_KEY,
+                        clientId: GOOGLE_CLIENT_ID,
+                        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+                        scope: 'https://www.googleapis.com/auth/calendar.events'
+                    });
+                    gapiInited = true;
+                    console.log('✅ Google API inicializada');
+                });
+            } catch (err) {
+                console.warn('Google API não disponível:', err);
+            }
+        }
+        
         init();
 
         function showTab(t) {
-            document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)||(t==='recover'&&i===2)));
+            document.querySelectorAll('.auth-tab').forEach((el,i) => el.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1)));
             document.getElementById('loginForm').classList.toggle('active', t==='login');
             document.getElementById('signupForm').classList.toggle('active', t==='signup');
-            document.getElementById('recoverForm').classList.toggle('active', t==='recover');
             hideMsg();
         }
         
@@ -320,21 +447,14 @@
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const pass = document.getElementById('signupPassword').value;
-            const conf = document.getElementById('signupConfirm').value;
             
-            if (pass !== conf) { showError('❌ Senhas não coincidem!'); return; }
             if (pass.length < 6) { showError('❌ Senha deve ter no mínimo 6 caracteres!'); return; }
             
             document.getElementById('signupBtn').disabled = true;
-            document.getElementById('signupBtn').textContent = 'Criando conta...';
+            document.getElementById('signupBtn').textContent = 'Criando...';
             
             try {
-                const { data: existing } = await supabase
-                    .from('users')
-                    .select('email')
-                    .eq('email', email)
-                    .single();
-                
+                const { data: existing } = await supabase.from('users').select('email').eq('email', email).single();
                 if (existing) {
                     showError('❌ Email já cadastrado!');
                     document.getElementById('signupBtn').disabled = false;
@@ -345,23 +465,16 @@
                 const trialEndDate = new Date();
                 trialEndDate.setDate(trialEndDate.getDate() + 7);
                 
-                const { data: user, error } = await supabase
-                    .from('users')
-                    .insert([{ 
-                        email, 
-                        name, 
-                        password: pass,
-                        trial_end: trialEndDate.toISOString().split('T')[0],
-                        subscription_status: 'trial'
-                    }])
-                    .select()
-                    .single();
+                const { data: user, error } = await supabase.from('users').insert([{ 
+                    email, name, password: pass,
+                    trial_end: trialEndDate.toISOString().split('T')[0],
+                    subscription_status: 'trial',
+                    xp: 0, level: 1, streak: 0, last_activity: new Date().toISOString().split('T')[0]
+                }]).select().single();
                 
                 if (error) throw error;
-                
-                showSuccess('✅ Conta criada! Trial de 7 dias ativado!');
+                showSuccess('✅ Conta criada! 7 dias grátis ativados!');
                 setTimeout(() => loginUser(user), 1500);
-                
             } catch (err) {
                 console.error('Erro signup:', err);
                 showError('❌ Erro ao criar conta');
@@ -379,77 +492,25 @@
             document.getElementById('loginBtn').textContent = 'Entrando...';
             
             try {
-                const { data: user, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('email', email)
-                    .single();
-                
+                const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
                 if (error || !user) {
-                    showError('❌ Email não encontrado! Crie uma conta.');
+                    showError('❌ Email não encontrado!');
                     document.getElementById('loginBtn').disabled = false;
                     document.getElementById('loginBtn').textContent = 'Entrar';
                     return;
                 }
-                
                 if (user.password !== pass) {
                     showError('❌ Senha incorreta!');
                     document.getElementById('loginBtn').disabled = false;
                     document.getElementById('loginBtn').textContent = 'Entrar';
                     return;
                 }
-                
                 loginUser(user);
-                
             } catch (err) {
                 console.error('Erro login:', err);
                 showError('❌ Erro ao fazer login');
                 document.getElementById('loginBtn').disabled = false;
                 document.getElementById('loginBtn').textContent = 'Entrar';
-            }
-        }
-
-        async function handleRecover(e) {
-            e.preventDefault();
-            const email = document.getElementById('recoverEmail').value.trim().toLowerCase();
-            
-            document.getElementById('recoverBtn').disabled = true;
-            document.getElementById('recoverBtn').textContent = 'Enviando...';
-            
-            try {
-                const { data: user, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('email', email)
-                    .single();
-                
-                if (error || !user) {
-                    showError('❌ Email não encontrado!');
-                    document.getElementById('recoverBtn').disabled = false;
-                    document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
-                    return;
-                }
-                
-                const newPass = Math.random().toString(36).slice(-8);
-                
-                await supabase
-                    .from('users')
-                    .update({ password: newPass })
-                    .eq('email', email);
-                
-                const subject = 'Sua nova senha - Planner Premium ULTRA';
-                const body = `Olá ${user.name}!\n\nSua nova senha é: ${newPass}\n\nAcesse o Planner e faça login com esta senha.\n\nEquipe Planner Premium ULTRA`;
-                window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                
-                showSuccess(`✅ Nova senha gerada! Abrindo seu email...`);
-                document.getElementById('recoverBtn').disabled = false;
-                document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
-                
-            } catch (err) {
-                console.error('Erro recover:', err);
-                showError('❌ Erro ao recuperar senha');
-                document.getElementById('recoverBtn').disabled = false;
-                document.getElementById('recoverBtn').textContent = 'Enviar Nova Senha';
             }
         }
 
@@ -459,8 +520,6 @@
             const status = user.subscription_status;
             
             if (status === 'active') {
-                document.getElementById('subBadge').textContent = '✅ Premium';
-                document.getElementById('subBadge').style.background = 'linear-gradient(135deg, #10B981, #059669)';
                 document.getElementById('trialBanner').style.display = 'none';
                 document.getElementById('paywallOverlay').classList.remove('active');
                 return true;
@@ -468,62 +527,295 @@
             
             if (status === 'trial' && trialEnd) {
                 const daysLeft = Math.ceil((new Date(trialEnd) - new Date(today)) / (1000 * 60 * 60 * 24));
-                
                 if (daysLeft <= 0) {
                     document.getElementById('paywallOverlay').classList.add('active');
                     return false;
                 }
-                
-                document.getElementById('subBadge').textContent = `🎁 Trial (${daysLeft}d)`;
-                
                 if (daysLeft <= 2) {
                     const banner = document.getElementById('trialBanner');
-                    banner.textContent = `🔥 ÚLTIMO DIA GRÁTIS! Assine agora para não perder acesso`;
+                    banner.textContent = `🔥 ÚLTIMO DIA! Assine para não perder acesso`;
                     banner.className = 'trial-banner danger';
                     banner.style.display = 'block';
                 } else if (daysLeft <= 5) {
                     const banner = document.getElementById('trialBanner');
-                    banner.textContent = `⏰ ${daysLeft} dias restantes do trial • Assine para continuar`;
+                    banner.textContent = `⏰ ${daysLeft} dias restantes • Assine agora`;
                     banner.className = 'trial-banner warning';
                     banner.style.display = 'block';
                 }
-                
                 return true;
             }
-            
             document.getElementById('paywallOverlay').classList.add('active');
             return false;
         }
 
         async function loginUser(user) {
             currentUser = user;
+            if (!checkSubscriptionStatus(user)) return;
             
-            if (!checkSubscriptionStatus(user)) {
-                return;
-            }
+            await updateStreak();
             
-            const { data: userPlanners } = await supabase
-                .from('planners')
-                .select('*')
-                .eq('user_email', user.email);
-            
+            const { data: userPlanners } = await supabase.from('planners').select('*').eq('user_email', user.email);
             planners = userPlanners || [];
             
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').classList.add('active');
             document.getElementById('userName').textContent = user.name.split(' ')[0];
-            document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
             
+            updateGamification();
             renderPlanners();
+            renderAchievements();
+            renderCharts();
+        }
+
+        async function updateStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastActivity = currentUser.last_activity;
             
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
+            if (lastActivity !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                
+                let newStreak = currentUser.streak || 0;
+                if (lastActivity === yesterdayStr) {
+                    newStreak++;
+                } else if (lastActivity !== today) {
+                    newStreak = 1;
+                }
+                
+                await supabase.from('users').update({ 
+                    streak: newStreak, 
+                    last_activity: today 
+                }).eq('email', currentUser.email);
+                
+                currentUser.streak = newStreak;
+            }
+        }
+
+        async function addXP(amount) {
+            const newXP = (currentUser.xp || 0) + amount;
+            const currentLevel = currentUser.level || 1;
+            const xpForNextLevel = currentLevel * 100;
+            
+            let newLevel = currentLevel;
+            let finalXP = newXP;
+            
+            if (newXP >= xpForNextLevel) {
+                newLevel++;
+                finalXP = newXP - xpForNextLevel;
+                showLevelUp(newLevel);
+                checkAchievements();
+            }
+            
+            await supabase.from('users').update({ xp: finalXP, level: newLevel }).eq('email', currentUser.email);
+            currentUser.xp = finalXP;
+            currentUser.level = newLevel;
+            updateGamification();
+        }
+
+        function showLevelUp(level) {
+            document.getElementById('newLevel').textContent = level;
+            document.getElementById('levelUpModal').classList.add('active');
+            createConfetti();
+        }
+
+        function closeLevelUp() {
+            document.getElementById('levelUpModal').classList.remove('active');
+        }
+
+        function createConfetti() {
+            const colors = ['#EC4899', '#6B46C1', '#10B981', '#F59E0B', '#3B82F6'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animation = `confetti ${2 + Math.random() * 2}s linear forwards`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        function updateGamification() {
+            const level = currentUser.level || 1;
+            const xp = currentUser.xp || 0;
+            const streak = currentUser.streak || 0;
+            const xpForNextLevel = level * 100;
+            const xpPercent = (xp / xpForNextLevel) * 100;
+            
+            document.getElementById('levelBadge').textContent = `⭐ Nível ${level}`;
+            document.getElementById('streakBadge').textContent = `🔥 ${streak} dias`;
+            document.getElementById('statLevel').textContent = level;
+            document.getElementById('statStreak').textContent = streak;
+            document.getElementById('xpBar').style.width = xpPercent + '%';
+            document.getElementById('xpBar').textContent = `${xp}/${xpForNextLevel} XP`;
+        }
+
+        async function checkAchievements() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*');
+            const completed = tarefas?.filter(t => t.done).length || 0;
+            
+            const unlockedAchievements = [];
+            if (completed >= 1) unlockedAchievements.push('first_task');
+            if (completed >= 10) unlockedAchievements.push('task_master');
+            if (completed >= 100) unlockedAchievements.push('century');
+            if (currentUser.streak >= 7) unlockedAchievements.push('week_streak');
+            if (currentUser.streak >= 30) unlockedAchievements.push('month_streak');
+            if (currentUser.level >= 10) unlockedAchievements.push('level_10');
+            if (planners.length >= 5) unlockedAchievements.push('planner_pro');
+            
+            await supabase.from('users').update({ 
+                achievements: unlockedAchievements 
+            }).eq('email', currentUser.email);
+            
+            currentUser.achievements = unlockedAchievements;
+        }
+
+        function renderAchievements() {
+            const userAchievements = currentUser.achievements || [];
+            const html = achievements.map(a => {
+                const unlocked = userAchievements.includes(a.id);
+                return `
+                    <div class="achievement ${unlocked ? '' : 'locked'}">
+                        <div class="achievement-icon">${a.icon}</div>
+                        <div class="achievement-name">${a.name}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('achievementsList').innerHTML = html;
+        }
+
+        async function renderCharts() {
+            const { data: tarefas } = await supabase.from('tarefas').select('*');
+            if (!tarefas) return;
+            
+            const completed = tarefas.filter(t => t.done).length;
+            const total = tarefas.length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('statCompleted').textContent = completed;
+            document.getElementById('statRate').textContent = rate + '%';
+            
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                last7Days.push(d.toISOString().split('T')[0]);
+            }
+            
+            const weeklyData = last7Days.map(date => {
+                return tarefas.filter(t => t.done && t.data === date).length;
+            });
+            
+            new Chart(document.getElementById('weeklyChart'), {
+                type: 'line',
+                data: {
+                    labels: last7Days.map(d => new Date(d).toLocaleDateString('pt-BR', {weekday:'short'})),
+                    datasets: [{
+                        label: 'Tarefas Concluídas',
+                        data: weeklyData,
+                        borderColor: '#6B46C1',
+                        backgroundColor: 'rgba(107, 70, 193, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+            
+            const prioData = {
+                alta: tarefas.filter(t => t.prioridade === 'alta').length,
+                media: tarefas.filter(t => t.prioridade === 'media').length,
+                baixa: tarefas.filter(t => t.prioridade === 'baixa').length
+            };
+            
+            new Chart(document.getElementById('priorityChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Alta', 'Média', 'Baixa'],
+                    datasets: [{
+                        data: [prioData.alta, prioData.media, prioData.baixa],
+                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+        }
+
+        async function requestNotificationPermission() {
+            if (!firebaseInited) {
+                alert('❌ Firebase não está configurado');
+                return;
+            }
+            
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    alert('❌ Permissão negada');
+                    return;
+                }
+                
+                const messaging = firebase.messaging();
+                const token = await messaging.getToken({
+                    vapidKey: VAPID_KEY
+                });
+                
+                await supabase.from('users').update({ push_token: token }).eq('email', currentUser.email);
+                alert('✅ Notificações ativadas com sucesso!');
+                
+                messaging.onMessage((payload) => {
+                    console.log('Notificação recebida:', payload);
+                    new Notification(payload.notification.title, {
+                        body: payload.notification.body,
+                        icon: '/icon.png'
+                    });
+                });
+            } catch (err) {
+                console.error('Erro notificações:', err);
+                alert('❌ Erro: ' + err.message);
+            }
+        }
+
+        async function syncToCalendar() {
+            if (!gapiInited) {
+                alert('❌ Google Calendar não disponível');
+                return;
+            }
+            
+            try {
+                const authInstance = gapi.auth2.getAuthInstance();
+                if (!authInstance.isSignedIn.get()) {
+                    await authInstance.signIn();
+                }
+                
+                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+                
+                for (const tarefa of tarefas) {
+                    if (!tarefa.data || tarefa.done) continue;
+                    
+                    const event = {
+                        summary: tarefa.titulo,
+                        start: { date: tarefa.data },
+                        end: { date: tarefa.data }
+                    };
+                    
+                    await gapi.client.calendar.events.insert({
+                        calendarId: 'primary',
+                        resource: event
+                    });
+                }
+                
+                alert('✅ Tarefas sincronizadas com Google Calendar!');
+            } catch (err) {
+                console.error('Erro sync calendar:', err);
+                alert('❌ Erro ao sincronizar');
             }
         }
 
         function redirectToStripe() {
-            const link = `${STRIPE_LINK}?client_reference_id=${currentUser.email}`;
-            window.open(link, '_blank');
+            window.open(`${STRIPE_LINK}?client_reference_id=${currentUser.email}`, '_blank');
         }
 
         function logout() {
@@ -532,34 +824,41 @@
             document.getElementById('appContainer').classList.remove('active');
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('paywallOverlay').classList.remove('active');
-            document.getElementById('trialBanner').style.display = 'none';
-            document.getElementById('loginBtn').disabled = false;
-            document.getElementById('loginBtn').textContent = 'Entrar';
-            document.getElementById('signupBtn').disabled = false;
-            document.getElementById('signupBtn').textContent = '🎁 Começar Trial Grátis';
             showTab('login');
-            hideMsg();
+        }
+
+        function openTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'planners') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('plannersTab').classList.add('active');
+            } else if (tab === 'stats') {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('statsTab').classList.add('active');
+                renderCharts();
+            } else if (tab === 'achievements') {
+                document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+                document.getElementById('achievementsTab').classList.add('active');
+                renderAchievements();
+            }
         }
 
         async function renderPlanners() {
             const c = document.getElementById('meusPlanners');
             if (!planners.length) {
-                c.innerHTML = '<p class="empty-msg">Nenhum planner criado ainda. Crie seu primeiro!</p>';
+                c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
                 return;
             }
             
-            const plannersHtml = await Promise.all(planners.map(async p => {
-                const { data: tarefas } = await supabase
-                    .from('tarefas')
-                    .select('*')
-                    .eq('planner_id', p.id);
-                
-                const numTarefas = tarefas ? tarefas.length : 0;
-                
+            const html = await Promise.all(planners.map(async p => {
+                const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                const numTarefas = tarefas?.length || 0;
                 return `
-                    <div class="planner-item" style="background:linear-gradient(135deg,${p.cor},${p.cor}dd);">
-                        <div class="planner-item-nome">${p.icone} ${p.nome}</div>
-                        <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''} ${p.alarme ? '🔔'+p.alarme : ''}</div>
+                    <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
+                        <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
+                        <div class="planner-item-info">${numTarefas} tarefa${numTarefas !== 1 ? 's' : ''}</div>
                         <div class="planner-item-acoes">
                             <button onclick="abrirPlanner(${p.id})">Abrir</button>
                             <button onclick="deletarPlanner(${p.id})">Deletar</button>
@@ -567,8 +866,7 @@
                     </div>
                 `;
             }));
-            
-            c.innerHTML = plannersHtml.join('');
+            c.innerHTML = html.join('');
         }
 
         function criarPlanner(tipo) {
@@ -577,43 +875,28 @@
             document.getElementById('modalIcone').textContent = t.icone;
             document.getElementById('modalTitulo').textContent = 'Novo ' + t.nome;
             document.getElementById('inputNome').value = '';
-            document.getElementById('inputCor').value = t.cor;
-            document.getElementById('colorPrev').style.background = t.cor;
-            document.getElementById('inputIcone').value = t.icone;
-            document.getElementById('inputAlarme').value = '09:00';
             document.getElementById('modalCriar').style.display = 'block';
         }
 
         async function salvarPlanner() {
             const nome = document.getElementById('inputNome').value.trim();
-            if (!nome) {
-                alert('❌ Digite um nome para o planner!');
-                return;
-            }
+            if (!nome) { alert('❌ Digite um nome!'); return; }
             
             try {
-                const { data: newPlanner, error } = await supabase
-                    .from('planners')
-                    .insert([{
-                        user_email: currentUser.email,
-                        tipo: tipoAtual,
-                        nome: nome,
-                        icone: document.getElementById('inputIcone').value || '📋',
-                        cor: document.getElementById('inputCor').value,
-                        alarme: document.getElementById('inputAlarme').value
-                    }])
-                    .select()
-                    .single();
+                const { data: newPlanner, error } = await supabase.from('planners').insert([{
+                    user_email: currentUser.email,
+                    tipo: tipoAtual,
+                    nome: nome
+                }]).select().single();
                 
                 if (error) throw error;
-                
                 planners.push(newPlanner);
                 fecharModal('modalCriar');
                 renderPlanners();
-                
+                await addXP(50);
             } catch (err) {
-                console.error('Erro ao criar planner:', err);
-                alert('❌ Erro ao criar planner');
+                console.error('Erro:', err);
+                alert('❌ Erro ao criar');
             }
         }
 
@@ -622,25 +905,10 @@
             if (!p) return;
             
             plannerAberto = id;
-            document.getElementById('verIcone').textContent = p.icone;
+            document.getElementById('verIcone').textContent = tipos[p.tipo]?.icone || '📋';
             document.getElementById('verNome').textContent = p.nome;
             
-            const { data: tarefas } = await supabase
-                .from('tarefas')
-                .select('*')
-                .eq('planner_id', id)
-                .order('id', { ascending: true });
-            
-            const numTarefas = tarefas ? tarefas.length : 0;
-            document.getElementById('contadorTarefas').textContent = numTarefas;
-            
-            if (p.alarme) {
-                document.getElementById('alarmeBox').style.display = 'block';
-                document.getElementById('alarmeHora').textContent = p.alarme;
-            } else {
-                document.getElementById('alarmeBox').style.display = 'none';
-            }
-            
+            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', id).order('id');
             renderTarefas(tarefas || []);
             document.getElementById('modalVer').style.display = 'block';
         }
@@ -648,16 +916,14 @@
         function renderTarefas(tarefas) {
             const c = document.getElementById('listaTarefas');
             if (!tarefas.length) {
-                c.innerHTML = '<p class="empty-msg">Nenhuma tarefa adicionada ainda.</p>';
+                c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
                 return;
             }
-            
-            c.innerHTML = tarefas.map((t, i) => `
-                <div class="tarefa-item ${t.done ? 'concluida' : ''}" style="border-left-color:${t.prioridade==='alta'?'#EF4444':t.prioridade==='media'?'#F59E0B':'#10B981'};">
+            c.innerHTML = tarefas.map(t => `
+                <div class="tarefa-item">
                     <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
                     <div class="tarefa-conteudo">
-                        <div class="tarefa-titulo">${t.titulo}</div>
-                        <div class="tarefa-meta">${t.data ? '📅'+t.data : ''} ${t.hora ? '⏰'+t.hora : ''}</div>
+                        <div class="tarefa-titulo" style="${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${t.titulo}</div>
                     </div>
                     <button class="btn-del" onclick="deletarTarefa(${t.id})">✕</button>
                 </div>
@@ -666,96 +932,58 @@
 
         async function addTarefa() {
             const titulo = document.getElementById('inputTarefa').value.trim();
-            if (!titulo) {
-                alert('❌ Digite o título da tarefa!');
-                return;
-            }
+            if (!titulo) { alert('❌ Digite o título!'); return; }
             
             try {
-                const { data: newTarefa, error } = await supabase
-                    .from('tarefas')
-                    .insert([{
-                        planner_id: plannerAberto,
-                        titulo: titulo,
-                        prioridade: document.getElementById('inputPrio').value,
-                        data: document.getElementById('inputDataT').value,
-                        hora: document.getElementById('inputHoraT').value,
-                        done: false
-                    }])
-                    .select()
-                    .single();
-                
-                if (error) throw error;
+                await supabase.from('tarefas').insert([{
+                    planner_id: plannerAberto,
+                    titulo: titulo,
+                    prioridade: document.getElementById('inputPrio').value,
+                    data: document.getElementById('inputDataT').value,
+                    done: false
+                }]);
                 
                 document.getElementById('inputTarefa').value = '';
                 document.getElementById('inputDataT').value = '';
-                document.getElementById('inputHoraT').value = '';
-                
+                await addXP(10);
                 abrirPlanner(plannerAberto);
-                
             } catch (err) {
-                console.error('Erro ao adicionar tarefa:', err);
-                alert('❌ Erro ao adicionar tarefa');
+                console.error('Erro:', err);
+                alert('❌ Erro ao adicionar');
             }
         }
 
-        async function toggleTarefa(tarefaId) {
+        async function toggleTarefa(id) {
             try {
-                const { data: tarefa } = await supabase
-                    .from('tarefas')
-                    .select('done')
-                    .eq('id', tarefaId)
-                    .single();
-                
-                await supabase
-                    .from('tarefas')
-                    .update({ done: !tarefa.done })
-                    .eq('id', tarefaId);
-                
+                const { data: t } = await supabase.from('tarefas').select('done').eq('id', id).single();
+                await supabase.from('tarefas').update({ done: !t.done }).eq('id', id);
+                if (!t.done) await addXP(20);
+                await checkAchievements();
                 abrirPlanner(plannerAberto);
-                
             } catch (err) {
-                console.error('Erro ao marcar tarefa:', err);
+                console.error('Erro:', err);
             }
         }
 
-        async function deletarTarefa(tarefaId) {
-            if (!confirm('❌ Deletar esta tarefa?')) return;
-            
+        async function deletarTarefa(id) {
+            if (!confirm('Deletar?')) return;
             try {
-                await supabase
-                    .from('tarefas')
-                    .delete()
-                    .eq('id', tarefaId);
-                
+                await supabase.from('tarefas').delete().eq('id', id);
                 abrirPlanner(plannerAberto);
-                
             } catch (err) {
-                console.error('Erro ao deletar tarefa:', err);
-                alert('❌ Erro ao deletar tarefa');
+                console.error('Erro:', err);
             }
         }
 
         async function deletarPlanner(id) {
-            if (!confirm('❌ Deletar este planner e todas as suas tarefas?')) return;
-            
+            if (!confirm('Deletar planner?')) return;
             try {
-                await supabase
-                    .from('tarefas')
-                    .delete()
-                    .eq('planner_id', id);
-                
-                await supabase
-                    .from('planners')
-                    .delete()
-                    .eq('id', id);
-                
+                await supabase.from('tarefas').delete().eq('planner_id', id);
+                await supabase.from('planners').delete().eq('id', id);
                 planners = planners.filter(x => x.id !== id);
                 renderPlanners();
-                
             } catch (err) {
-                console.error('Erro ao deletar planner:', err);
-                alert('❌ Erro ao deletar planner');
+                console.error('Erro:', err);
             }
         }
 
@@ -763,76 +991,8 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        async function shareWpp() {
-            const p = planners.find(x => x.id === plannerAberto);
-            const { data: tarefas } = await supabase
-                .from('tarefas')
-                .select('*')
-                .eq('planner_id', plannerAberto);
-            
-            let m = `✨ *${p.icone} ${p.nome}*\n\n📋 Tarefas (${tarefas.length}):\n`;
-            tarefas.forEach(t => {
-                m += `${t.done?'✅':'⬜'} ${t.titulo}`;
-                if (t.data) m += ` (${t.data})`;
-                m += '\n';
-            });
-            if (p.alarme) m += `\n🔔 Alarme: ${p.alarme}`;
-            
-            window.open('https://wa.me/?text=' + encodeURIComponent(m), '_blank');
-        }
-
-        async function shareEmail() {
-            const p = planners.find(x => x.id === plannerAberto);
-            const { data: tarefas } = await supabase
-                .from('tarefas')
-                .select('*')
-                .eq('planner_id', plannerAberto);
-            
-            let b = `${p.icone} ${p.nome}\n\nTAREFAS (${tarefas.length}):\n\n`;
-            tarefas.forEach((t,i) => {
-                b += `${i+1}. [${t.done?'X':' '}] ${t.titulo}`;
-                if (t.data) b += ` - ${t.data}`;
-                if (t.hora) b += ` às ${t.hora}`;
-                b += '\n';
-            });
-            if (p.alarme) b += `\nAlarme configurado para: ${p.alarme}`;
-            
-            window.location.href = `mailto:?subject=${encodeURIComponent(p.nome+' - Planner Premium ULTRA')}&body=${encodeURIComponent(b)}`;
-        }
-
-        async function downloadTxt() {
-            const p = planners.find(x => x.id === plannerAberto);
-            const { data: tarefas } = await supabase
-                .from('tarefas')
-                .select('*')
-                .eq('planner_id', plannerAberto);
-            
-            let t = `═══════════════════════════════\n   ${p.icone} ${p.nome.toUpperCase()}\n═══════════════════════════════\n\n`;
-            if (p.alarme) t += `🔔 Alarme: ${p.alarme}\n`;
-            t += `\nTAREFAS (${tarefas.length}):\n─────────────────────────────\n\n`;
-            tarefas.forEach((x,i) => {
-                t += `${i+1}. ${x.done?'✅':'⬜'} ${x.titulo}\n`;
-                if (x.prioridade === 'alta') t += '   🔴 Prioridade Alta\n';
-                else if (x.prioridade === 'media') t += '   🟡 Prioridade Média\n';
-                else t += '   🟢 Prioridade Baixa\n';
-                if (x.data) t += `   📅 ${x.data}`;
-                if (x.hora) t += ` às ${x.hora}`;
-                if (x.data || x.hora) t += '\n';
-                t += '\n';
-            });
-            t += `\n═══════════════════════════════\n   Planner Premium ULTRA ✨\n   Criado em ${new Date().toLocaleDateString('pt-BR')}\n═══════════════════════════════`;
-            
-            const blob = new Blob([t], {type:'text/plain;charset=utf-8'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = p.nome.replace(/\s/g,'_') + '_' + new Date().toISOString().split('T')[0] + '.txt';
-            a.click();
-        }
-
         window.onclick = e => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-            }
+            if (e.target.classList.contains('modal')) e.target.style.display = 'none';
         };
     </script>
 </body>
