@@ -1266,38 +1266,102 @@
 }
 
         function setupPWAInstall() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-            }
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                const btn = document.getElementById('installBtn');
-                if (btn) btn.style.display = 'block';
+    console.log('🚀 Iniciando setup PWA...');
+    
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+                console.log('✅ Service Worker registrado:', reg);
+            })
+            .catch(err => {
+                console.error('❌ Erro no Service Worker:', err);
             });
-            window.addEventListener('appinstalled', () => {
-                const btn = document.getElementById('installBtn');
-                if (btn) btn.style.display = 'none';
-            });
-            const btn = document.getElementById('installBtn');
-            if (btn) {
-                btn.addEventListener('click', async () => {
-                    if (!deferredPrompt) return;
-                    btn.disabled = true;
-                    await deferredPrompt.prompt();
-                    await deferredPrompt.userChoice;
-                    deferredPrompt = null;
-                    btn.style.display = 'none';
-                    btn.disabled = false;
-                });
-            }
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            const tip = document.getElementById('iosInstallTip');
-            if (isIOS && !isStandalone && tip) {
-                tip.style.display = 'block';
-            }
+    }
+    
+    // Detectar evento de instalação
+    window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('🎉 Evento beforeinstallprompt disparado!');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        const btn = document.getElementById('installBtn');
+        if (btn) {
+            btn.style.display = 'block';
+            console.log('✅ Botão de instalação exibido!');
         }
+    });
+    
+    // Após instalação
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ App instalado com sucesso!');
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.style.display = 'none';
+        deferredPrompt = null;
+    });
+    
+    // Clique no botão
+    const btn = document.getElementById('installBtn');
+    if (btn) {
+        btn.addEventListener('click', async () => {
+            console.log('👆 Botão de instalação clicado!');
+            
+            if (!deferredPrompt) {
+                console.log('❌ deferredPrompt não disponível');
+                alert('⚠️ Instalação não disponível neste navegador. Tente pelo Chrome ou Edge.');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Instalando...';
+            
+            try {
+                await deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                console.log('Resultado da instalação:', outcome);
+                
+                if (outcome === 'accepted') {
+                    console.log('✅ Usuário aceitou a instalação');
+                } else {
+                    console.log('❌ Usuário recusou a instalação');
+                }
+                
+                deferredPrompt = null;
+                btn.style.display = 'none';
+            } catch (err) {
+                console.error('❌ Erro ao instalar:', err);
+                alert('❌ Erro ao instalar o app');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Instalar App';
+            }
+        });
+    }
+    
+    // Detectar iPhone/iPad
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        window.navigator.standalone === true;
+    
+    const tip = document.getElementById('iosInstallTip');
+    if (isIOS && !isStandalone && tip) {
+        tip.style.display = 'block';
+        console.log('📱 iPhone detectado - mostrando dica de instalação');
+    }
+    
+    // Forçar exibição do botão em desenvolvimento (REMOVER EM PRODUÇÃO)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setTimeout(() => {
+            const btn = document.getElementById('installBtn');
+            if (btn && !deferredPrompt) {
+                btn.style.display = 'block';
+                btn.textContent = '📱 Testar Instalação (Dev)';
+                console.log('🛠️ Modo desenvolvimento - botão sempre visível');
+            }
+        }, 2000);
+    }
+}
 
         async function handleLogin(e) {
     e.preventDefault();
