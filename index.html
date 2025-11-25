@@ -551,9 +551,10 @@
                     
                     <div style="background:var(--light); border-radius:10px; padding:1rem; margin-top:1.5rem;">
                         <label style="font-weight:600; display:block; margin-bottom:0.5rem;">Sua URL de Sincronização:</label>
-                        <div style="display:flex; gap:0.5rem;">
-                            <input type="text" id="gcalUrl" readonly style="flex:1; padding:0.7rem; border:2px solid var(--gray); border-radius:6px; font-family:monospace; font-size:0.85em;">
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                            <input type="text" id="gcalUrl" readonly style="flex:1; min-width:220px; padding:0.7rem; border:2px solid var(--gray); border-radius:6px; font-family:monospace; font-size:0.85em;">
                             <button class="btn-primario" onclick="copyGcalUrl()">📋 Copiar</button>
+                            <button class="btn-secundario" onclick="connectCalendarManual()">🔗 Conectar Calendar</button>
                         </div>
                     </div>
                 </div>
@@ -809,6 +810,10 @@
         let deferredPrompt = null;
         let alarmTimers = [];
         let calendarUrlPrivate = '';
+        let googleToken = null;
+        let googleConnected = false;
+        const GOOGLE_CLIENT_ID = window.GOOGLE_CLIENT_ID || '';
+        const OFFLINE_CAL_QUEUE_KEY = 'planner_ultra_offline_calendar';
         
         let tarefasCache = [];
         
@@ -872,7 +877,7 @@
                         done: t.done,
                         em_progresso: t.em_progresso
                     }]);
-                    if (error) remain.push(t);
+                    if (error) remain.push(t); else createCalendarEventForTask(t);
                 } catch (_) { remain.push(t); }
             }
             setOfflineTasks(remain);
@@ -1119,22 +1124,23 @@
         ];
 
         async function init() {
-    document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
-    document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
-    
-    try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        document.getElementById('loadingScreen').style.display = 'none';
-        const saved = loadSession();
-        if (saved) { loginUser(saved); } else { document.getElementById('authContainer').style.display = 'flex'; }
-        setupTagInput();
-        setupPWAInstall();
-        window.addEventListener('online', syncOfflineTasks);
-    } catch (err) {
-        console.error('Erro:', err);
-        alert('Erro ao conectar');
-    }
-}
+            document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
+            document.getElementById('novaTarefaData').value = new Date().toISOString().split('T')[0];
+            
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                document.getElementById('loadingScreen').style.display = 'none';
+                const saved = loadSession();
+                if (saved) { loginUser(saved); } else { document.getElementById('authContainer').style.display = 'flex'; }
+                setupTagInput();
+                setupPWAInstall();
+                window.addEventListener('online', syncOfflineTasks);
+                window.addEventListener('online', syncOfflineCalendar);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao conectar');
+            }
+        }
         
         init();
         window.addEventListener('load', () => {
@@ -1368,6 +1374,12 @@
         navigator.serviceWorker.register('/sw.js')
             .then(reg => {
                 console.log('✅ Service Worker registrado:', reg);
+                try {
+                    reg.update();
+                    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update(); });
+                    navigator.serviceWorker.addEventListener('controllerchange', () => { window.location.reload(); });
+                    navigator.serviceWorker.addEventListener('message', (e) => { if (e.data && e.data.type === 'SW_ACTIVATED') { reg.update(); } });
+                } catch (_) {}
             })
             .catch(err => {
                 console.error('❌ Erro no Service Worker:', err);
@@ -1467,22 +1479,15 @@
             btn.textContent = 'Entrar';
             return;
         }
-        const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
-        
+        const { data: user, error } = await supabase
+            .rpc('verify_login', { user_email: email, user_password: pass })
+            .single();
         if (error || !user) {
-            showError('❌ Email não encontrado!');
+            showError('❌ Email ou senha incorretos!');
             btn.disabled = false;
             btn.textContent = 'Entrar';
             return;
         }
-        
-        if (user.password !== pass) {
-            showError('❌ Senha incorreta!');
-            btn.disabled = false;
-            btn.textContent = 'Entrar';
-            return;
-        }
-        
         loginUser(user);
         
     } catch (err) {
@@ -1556,6 +1561,8 @@
             renderCalendar();
             renderTutoriais();
             updateGoogleCalendarUrl();
+            connectGoogleCalendarAuto();
+            autoConnectCalendarOnLogin();
         }
 
         async function updateStreak() {
@@ -2092,16 +2099,25 @@
         function playAlarm() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const o = ctx.createOscillator();
                 const g = ctx.createGain();
-                o.type = 'sine';
-                o.frequency.setValueAtTime(880, ctx.currentTime);
-                o.connect(g);
                 g.connect(ctx.destination);
-                g.gain.setValueAtTime(0.0001, ctx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.05);
-                o.start();
-                setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6); o.stop(ctx.currentTime + 0.7); }, 600);
+                let count = 0;
+                const beep = () => {
+                    const o = ctx.createOscillator();
+                    o.type = 'square';
+                    o.frequency.setValueAtTime(1200, ctx.currentTime);
+                    o.connect(g);
+                    g.gain.setValueAtTime(0.001, ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.8, ctx.currentTime + 0.05);
+                    o.start();
+                    setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3); o.stop(ctx.currentTime + 0.35); }, 300);
+                };
+                const iv = setInterval(() => {
+                    beep();
+                    try { navigator.vibrate([300,150,300]); } catch(_){}
+                    count++;
+                    if (count >= 20) clearInterval(iv);
+                }, 800);
             } catch (_) {}
         }
         async function scheduleTaskAlarms() {
@@ -2234,6 +2250,7 @@
                 await incrementPaperSaved(3);
                 abrirPlanner(plannerAberto);
                 renderPlanners();
+                createCalendarEventForTask(novaTarefa);
             } catch (err) {
                 console.error('Erro:', err);
                 alert('❌ Erro ao criar tarefa');
@@ -2609,6 +2626,76 @@
                 if (input) { input.value = calendarUrlPrivate; input.select(); document.execCommand('copy'); input.value = '********'; }
                 alert('✅ URL copiada! Cole no Google Calendar.');
             }
+        }
+        function connectCalendarManual() {
+            try {
+                if (!calendarUrlPrivate) { alert('❌ URL indisponível'); return; }
+                const url = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarUrlPrivate)}`;
+                window.open(url, '_blank');
+                localStorage.setItem('planner_ultra_calendar_connected', 'yes');
+            } catch (_) {}
+        }
+
+        function autoConnectCalendarOnLogin() {
+            try {
+                const domain = (currentUser.email || '').split('@')[1] || '';
+                const already = localStorage.getItem('planner_ultra_calendar_connected');
+                if (!calendarUrlPrivate) return;
+                if (already === 'yes') return;
+                if (domain.includes('gmail.com') || domain.includes('.google')) {
+                    const url = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarUrlPrivate)}`;
+                    window.open(url, '_blank');
+                    localStorage.setItem('planner_ultra_calendar_connected', 'yes');
+                }
+            } catch (_) {}
+        }
+
+        function getOfflineCalendarQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_CAL_QUEUE_KEY) || '[]'); } catch (_) { return []; } }
+        function setOfflineCalendarQueue(arr) { localStorage.setItem(OFFLINE_CAL_QUEUE_KEY, JSON.stringify(arr)); }
+        function addOfflineCalendarEvent(t) { const q = getOfflineCalendarQueue(); q.push(t); setOfflineCalendarQueue(q); }
+        async function loadGoogleScripts() {
+            if (!GOOGLE_CLIENT_ID) return false;
+            await new Promise(r => { if (window.google && window.google.accounts) return r(); const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.onload = r; document.head.appendChild(s); });
+            await new Promise(r => { if (window.gapi) return r(); const s = document.createElement('script'); s.src = 'https://apis.google.com/js/api.js'; s.onload = r; document.head.appendChild(s); });
+            await new Promise(r => gapi.load('client', r));
+            await gapi.client.init({ discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'] });
+            return true;
+        }
+        async function connectGoogleCalendarAuto() {
+            try {
+                const ok = await loadGoogleScripts();
+                if (!ok) return;
+                const existing = localStorage.getItem('planner_ultra_google_token');
+                if (existing) { googleToken = existing; googleConnected = true; gapi.client.setToken({ access_token: googleToken }); syncOfflineCalendar(); return; }
+                const tc = google.accounts.oauth2.initTokenClient({ client_id: GOOGLE_CLIENT_ID, scope: 'https://www.googleapis.com/auth/calendar.events', callback: t => { googleToken = t.access_token; googleConnected = true; localStorage.setItem('planner_ultra_google_token', googleToken); gapi.client.setToken({ access_token: googleToken }); syncOfflineCalendar(); } });
+                tc.requestAccessToken({ prompt: '' });
+            } catch (_) {}
+        }
+        async function createCalendarEventForTask(t) {
+            try {
+                if (!googleConnected || !t || !t.data || !t.hora) { addOfflineCalendarEvent(t); return; }
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const start = new Date(`${t.data}T${t.hora}:00`);
+                const end = new Date(start.getTime() + ((t.duracao || 30) * 60000));
+                const ev = {
+                    summary: t.titulo || 'Tarefa',
+                    description: t.descricao || '',
+                    start: { dateTime: start.toISOString(), timeZone: tz },
+                    end: { dateTime: end.toISOString(), timeZone: tz },
+                    reminders: { useDefault: true }
+                };
+                await gapi.client.calendar.events.insert({ calendarId: 'primary', resource: ev });
+            } catch (_) { addOfflineCalendarEvent(t); }
+        }
+        async function syncOfflineCalendar() {
+            if (!googleConnected) return;
+            const q = getOfflineCalendarQueue();
+            if (!q.length) return;
+            const remain = [];
+            for (const t of q) {
+                try { await createCalendarEventForTask(t); } catch(_) { remain.push(t); }
+            }
+            setOfflineCalendarQueue(remain);
         }
 
         function fecharModal(id) {
