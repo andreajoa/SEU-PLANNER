@@ -285,26 +285,26 @@
         <div class="auth-box">
             <div class="auth-logo">
                 <div class="auth-logo-icon">✨</div>
-                <h1>Planner Premium ULTRA</h1>
-                <div class="trial-badge">🎁 14 dias grátis • R$ 19,99/mês</div>
+                <h1 id="authLogoTitle">Planner Premium ULTRA</h1>
+                <div id="trialBadgeText" class="trial-badge">🎁 14 dias grátis • R$ 19,99/mês</div>
             </div>
             <div class="auth-tabs">
-                <button class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
-                <button class="auth-tab" onclick="showAuthTab('signup')">Criar Conta</button>
+                <button id="authTabLogin" class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
+                <button id="authTabSignup" class="auth-tab" onclick="showAuthTab('signup')">Criar Conta</button>
             </div>
             <div id="authError" class="auth-msg auth-error"></div>
             <div id="authSuccess" class="auth-msg auth-success"></div>
 
             <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
-                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
-                <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" required></div>
+                <div class="form-group"><label id="loginEmailLabel">Email</label><input type="email" id="loginEmail" required></div>
+                <div class="form-group"><label id="loginPasswordLabel">Senha</label><input type="password" id="loginPassword" required></div>
                 <button type="submit" class="btn-auth" id="loginBtn">Entrar</button>
             </form>
 
             <form id="signupForm" class="auth-form" onsubmit="handleSignup(event)">
-                <div class="form-group"><label>Nome Completo</label><input type="text" id="signupName" required></div>
-                <div class="form-group"><label>Email</label><input type="email" id="signupEmail" required></div>
-                <div class="form-group"><label>Senha (mín. 6)</label><input type="password" id="signupPassword" minlength="6" required></div>
+                <div class="form-group"><label id="signupNameLabel">Nome Completo</label><input type="text" id="signupName" required></div>
+                <div class="form-group"><label id="signupEmailLabel">Email</label><input type="email" id="signupEmail" required></div>
+                <div class="form-group"><label id="signupPasswordLabel">Senha (mín. 6)</label><input type="password" id="signupPassword" minlength="6" required></div>
                 <button type="submit" class="btn-auth" id="signupBtn">🎁 Começar Trial Grátis</button>
             </form>
         </div>
@@ -313,13 +313,13 @@
     <div class="paywall-overlay" id="paywallOverlay">
         <div class="paywall-box">
             <div class="paywall-icon">🔒</div>
-            <h1 class="paywall-title">Trial Expirado</h1>
-            <p style="color:#666; margin-bottom:2rem;">Assine agora para continuar!</p>
+            <h1 id="paywallTitle" class="paywall-title">Trial Expirado</h1>
+            <p id="paywallSubtext" style="color:#666; margin-bottom:2rem;">Assine agora para continuar!</p>
             <div class="price-box">
                 <div class="price-amount">R$ 19,99</div>
-                <div style="color:#666; font-size:0.9em;">por mês</div>
+                <div id="pricePerMonth" style="color:#666; font-size:0.9em;">por mês</div>
             </div>
-            <button class="btn-subscribe" onclick="redirectToStripe()">💳 Assinar Agora</button>
+            <button id="btnSubscribeNow" class="btn-subscribe" onclick="redirectToStripe()">💳 Assinar Agora</button>
         </div>
     </div>
 
@@ -334,10 +334,10 @@
     <div id="updateBanner" class="update-banner" style="display:none;"></div>
     
     <div class="eco-banner">
-        🌱 100% Digital • Zero Papel
+        <span id="ecoBannerText">🌱 100% Digital • Zero Papel</span>
         <div class="eco-stats">
-            <span class="eco-stat">📄 <span id="paperSaved">0</span> páginas economizadas</span>
-            <span class="eco-stat">🌳 <span id="treesSaved">0</span> árvores salvas</span>
+            <span class="eco-stat">📄 <span id="paperSaved">0</span> <span id="ecoPagesLabel">páginas economizadas</span></span>
+            <span class="eco-stat">🌳 <span id="treesSaved">0</span> <span id="ecoTreesLabel">árvores salvas</span></span>
         </div>
     </div>
 
@@ -375,19 +375,19 @@
                 <h2 id="headingCreatePlanner" style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
                 <div class="planner-types">
                     <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
-                        <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
+                <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div id="titleToDo" class="planner-title">To-Do</div></div>
                         <div class="planner-body"><button class="btn-criar">Criar</button></div>
                     </div>
                     <div class="planner-card" style="border-top-color:#3B82F6;" onclick="criarPlanner('projeto')">
-                        <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div class="planner-title">Projetos</div></div>
+                <div class="planner-header" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);"><div class="planner-icon">🏗️</div><div id="titleProjetos" class="planner-title">Projetos</div></div>
                         <div class="planner-body"><button class="btn-criar">Criar</button></div>
                     </div>
                     <div class="planner-card" style="border-top-color:#F59E0B;" onclick="criarPlanner('habitos')">
-                        <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div class="planner-title">Hábitos</div></div>
+                <div class="planner-header" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><div class="planner-icon">🔥</div><div id="titleHabitos" class="planner-title">Hábitos</div></div>
                         <div class="planner-body"><button class="btn-criar">Criar</button></div>
                     </div>
                     <div class="planner-card" style="border-top-color:#8B5CF6;" onclick="criarPlanner('financeiro')">
-                        <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div class="planner-title">Financeiro</div></div>
+                <div class="planner-header" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"><div class="planner-icon">💰</div><div id="titleFinanceiro" class="planner-title">Financeiro</div></div>
                         <div class="planner-body"><button class="btn-criar">Criar</button></div>
                     </div>
                 </div>
@@ -614,15 +614,15 @@
             <div id="kanbanView" class="tab-content">
                 <div class="kanban-board">
                     <div class="kanban-column">
-                        <div class="kanban-header">📋 A Fazer</div>
+                        <div id="kanbanHeaderTodo" class="kanban-header">📋 A Fazer</div>
                         <div id="kanbanTodo"></div>
                     </div>
                     <div class="kanban-column">
-                        <div class="kanban-header">🚀 Em Progresso</div>
+                        <div id="kanbanHeaderProgress" class="kanban-header">🚀 Em Progresso</div>
                         <div id="kanbanProgress"></div>
                     </div>
                     <div class="kanban-column">
-                        <div class="kanban-header">✅ Concluído</div>
+                        <div id="kanbanHeaderDone" class="kanban-header">✅ Concluído</div>
                         <div id="kanbanDone"></div>
                     </div>
                 </div>
@@ -808,6 +808,12 @@
                 appTitle: '✨ Planner Premium ULTRA',
                 logout: 'Sair',
                 subscribe: 'Assinar',
+                subscribeNow: '💳 Assinar Agora',
+                toDo: 'To-Do',
+                projects: 'Projetos',
+                habits: 'Hábitos',
+                finance: 'Financeiro',
+                createButton: 'Criar',
                 createPlanner: 'Criar Novo Planner',
                 meusPlanners: '📋 Meus Planners',
                 bibliotecaPremium: '📖 Biblioteca Premium (900+ Páginas)',
@@ -832,6 +838,9 @@
                 statRate: 'Taxa de Conclusão',
                 badgeLevel: 'Nível',
                 badgeDays: 'dias',
+                kanbanTodo: '📋 A Fazer',
+                kanbanProgress: '🚀 Em Progresso',
+                kanbanDone: '✅ Concluído',
                 msgFirstPlanner: 'Crie seu primeiro planner!',
                 msgNoLibraryPlanners: 'Nenhum planner criado da biblioteca',
                 msgNoTasks: 'Nenhuma tarefa criada',
@@ -852,12 +861,40 @@
                 chartWeeklyDataset: 'Tarefas Concluídas',
                 prioHigh: 'Alta/Urgente',
                 prioMedium: 'Média',
-                prioLow: 'Baixa'
+                prioLow: 'Baixa',
+                new: 'Novo',
+                authLoginTab: 'Entrar',
+                authSignupTab: 'Criar Conta',
+                trialBadge: '🎁 14 dias grátis • R$ 19,99/mês',
+                authEmail: 'Email',
+                authPassword: 'Senha',
+                authName: 'Nome Completo',
+                authPasswordMin: 'Senha (mín. 6)',
+                authLoginBtn: 'Entrar',
+                authSignupBtn: '🎁 Começar Trial Grátis',
+                paywallTitle: 'Trial Expirado',
+                paywallSub: 'Assine agora para continuar!',
+                perMonth: 'por mês',
+                ecoBannerText: '🌱 100% Digital • Zero Papel',
+                ecoPagesLabel: 'páginas economizadas',
+                ecoTreesLabel: 'árvores salvas',
+                installGuideTitle: 'Instalar no iPhone',
+                installGuideStep1: '1. Abra o menu Compartilhar do Safari (ícone ⬆️).',
+                installGuideStep2: '2. Toque em "Adicionar à Tela de Início".',
+                installGuideStep3: '3. Confirme.',
+                installGuideClose: 'Entendi',
+                installNow: 'Instalar agora'
             },
             en: {
                 appTitle: '✨ Planner Premium ULTRA',
                 logout: 'Log out',
                 subscribe: 'Subscribe',
+                subscribeNow: '💳 Subscribe Now',
+                toDo: 'To-Do',
+                projects: 'Projects',
+                habits: 'Habits',
+                finance: 'Finance',
+                createButton: 'Create',
                 createPlanner: 'Create New Planner',
                 meusPlanners: '📋 My Planners',
                 bibliotecaPremium: '📖 Premium Library (900+ Pages)',
@@ -882,6 +919,9 @@
                 statRate: 'Completion Rate',
                 badgeLevel: 'Level',
                 badgeDays: 'days',
+                kanbanTodo: '📋 To Do',
+                kanbanProgress: '🚀 In Progress',
+                kanbanDone: '✅ Done',
                 msgFirstPlanner: 'Create your first planner!',
                 msgNoLibraryPlanners: 'No library planners yet',
                 msgNoTasks: 'No tasks created',
@@ -902,12 +942,40 @@
                 chartWeeklyDataset: 'Completed Tasks',
                 prioHigh: 'High/Urgent',
                 prioMedium: 'Medium',
-                prioLow: 'Low'
+                prioLow: 'Low',
+                new: 'New',
+                authLoginTab: 'Log in',
+                authSignupTab: 'Create Account',
+                trialBadge: '🎁 14-day free • R$ 19.99/month',
+                authEmail: 'Email',
+                authPassword: 'Password',
+                authName: 'Full Name',
+                authPasswordMin: 'Password (min. 6)',
+                authLoginBtn: 'Log in',
+                authSignupBtn: '🎁 Start Free Trial',
+                paywallTitle: 'Trial Expired',
+                paywallSub: 'Subscribe now to continue!',
+                perMonth: 'per month',
+                ecoBannerText: '🌱 100% Digital • Zero Paper',
+                ecoPagesLabel: 'pages saved',
+                ecoTreesLabel: 'trees saved',
+                installGuideTitle: 'Install on iPhone',
+                installGuideStep1: '1. Open Safari Share menu (⬆️).',
+                installGuideStep2: '2. Tap “Add to Home Screen”.',
+                installGuideStep3: '3. Confirm.',
+                installGuideClose: 'Got it',
+                installNow: 'Install now'
             },
             es: {
                 appTitle: '✨ Planificador Premium ULTRA',
                 logout: 'Salir',
                 subscribe: 'Suscribirse',
+                subscribeNow: '💳 Suscribirse Ahora',
+                toDo: 'Pendientes',
+                projects: 'Proyectos',
+                habits: 'Hábitos',
+                finance: 'Finanzas',
+                createButton: 'Crear',
                 createPlanner: 'Crear Nuevo Planificador',
                 meusPlanners: '📋 Mis Planificadores',
                 bibliotecaPremium: '📖 Biblioteca Premium (900+ Páginas)',
@@ -932,6 +1000,9 @@
                 statRate: 'Tasa de Finalización',
                 badgeLevel: 'Nivel',
                 badgeDays: 'días',
+                kanbanTodo: '📋 Por hacer',
+                kanbanProgress: '🚀 En progreso',
+                kanbanDone: '✅ Hecho',
                 msgFirstPlanner: '¡Crea tu primer planificador!',
                 msgNoLibraryPlanners: 'Aún no hay planificadores de biblioteca',
                 msgNoTasks: 'No hay tareas creadas',
@@ -952,12 +1023,40 @@
                 chartWeeklyDataset: 'Tareas Completadas',
                 prioHigh: 'Alta/Urgente',
                 prioMedium: 'Media',
-                prioLow: 'Baja'
+                prioLow: 'Baja',
+                new: 'Nuevo',
+                authLoginTab: 'Iniciar sesión',
+                authSignupTab: 'Crear cuenta',
+                trialBadge: '🎁 14 días gratis • R$ 19,99/mes',
+                authEmail: 'Correo',
+                authPassword: 'Contraseña',
+                authName: 'Nombre completo',
+                authPasswordMin: 'Contraseña (mín. 6)',
+                authLoginBtn: 'Iniciar sesión',
+                authSignupBtn: '🎁 Comenzar Prueba Gratis',
+                paywallTitle: 'Prueba vencida',
+                paywallSub: '¡Suscríbete ahora para continuar!',
+                perMonth: 'por mes',
+                ecoBannerText: '🌱 100% Digital • Cero Papel',
+                ecoPagesLabel: 'páginas ahorradas',
+                ecoTreesLabel: 'árboles salvados',
+                installGuideTitle: 'Instalar en iPhone',
+                installGuideStep1: '1. Abre el menú Compartir de Safari (⬆️).',
+                installGuideStep2: '2. Pulsa “Añadir a pantalla de inicio”.',
+                installGuideStep3: '3. Confirma.',
+                installGuideClose: 'Entendido',
+                installNow: 'Instalar ahora'
             },
             fr: {
                 appTitle: '✨ Planner Premium ULTRA',
                 logout: 'Se déconnecter',
                 subscribe: 'S’abonner',
+                subscribeNow: '💳 S’abonner Maintenant',
+                toDo: 'À faire',
+                projects: 'Projets',
+                habits: 'Habitudes',
+                finance: 'Finances',
+                createButton: 'Créer',
                 createPlanner: 'Créer un nouveau planner',
                 meusPlanners: '📋 Mes Planners',
                 bibliotecaPremium: '📖 Bibliothèque Premium (900+ Pages)',
@@ -982,6 +1081,9 @@
                 statRate: 'Taux d’Achèvement',
                 badgeLevel: 'Niveau',
                 badgeDays: 'jours',
+                kanbanTodo: '📋 À faire',
+                kanbanProgress: '🚀 En cours',
+                kanbanDone: '✅ Terminé',
                 msgFirstPlanner: 'Créez votre premier planner !',
                 msgNoLibraryPlanners: 'Aucun planner bibliothèque pour le moment',
                 msgNoTasks: 'Aucune tâche créée',
@@ -1002,12 +1104,40 @@
                 chartWeeklyDataset: 'Tâches terminées',
                 prioHigh: 'Haute/Urgente',
                 prioMedium: 'Moyenne',
-                prioLow: 'Basse'
+                prioLow: 'Basse',
+                new: 'Nouveau',
+                authLoginTab: 'Se connecter',
+                authSignupTab: 'Créer un compte',
+                trialBadge: '🎁 14 jours gratuits • R$ 19,99/mois',
+                authEmail: 'E-mail',
+                authPassword: 'Mot de passe',
+                authName: 'Nom complet',
+                authPasswordMin: 'Mot de passe (min. 6)',
+                authLoginBtn: 'Se connecter',
+                authSignupBtn: '🎁 Démarrer l’essai gratuit',
+                paywallTitle: 'Essai expiré',
+                paywallSub: 'Abonnez-vous pour continuer !',
+                perMonth: 'par mois',
+                ecoBannerText: '🌱 100% Numérique • Zéro Papier',
+                ecoPagesLabel: 'pages économisées',
+                ecoTreesLabel: 'arbres sauvés',
+                installGuideTitle: 'Installer sur iPhone',
+                installGuideStep1: '1. Ouvrez le menu Partager de Safari (⬆️).',
+                installGuideStep2: '2. Appuyez sur “Ajouter à l’écran d’accueil”.',
+                installGuideStep3: '3. Confirmez.',
+                installGuideClose: 'Compris',
+                installNow: 'Installer maintenant'
             },
             de: {
                 appTitle: '✨ Planner Premium ULTRA',
                 logout: 'Abmelden',
                 subscribe: 'Abonnieren',
+                subscribeNow: '💳 Jetzt abonnieren',
+                toDo: 'Zu erledigen',
+                projects: 'Projekte',
+                habits: 'Gewohnheiten',
+                finance: 'Finanzen',
+                createButton: 'Erstellen',
                 createPlanner: 'Neuen Planer erstellen',
                 meusPlanners: '📋 Meine Planer',
                 bibliotecaPremium: '📖 Premium-Bibliothek (900+ Seiten)',
@@ -1032,6 +1162,9 @@
                 statRate: 'Abschlussrate',
                 badgeLevel: 'Level',
                 badgeDays: 'Tage',
+                kanbanTodo: '📋 Zu erledigen',
+                kanbanProgress: '🚀 In Arbeit',
+                kanbanDone: '✅ Erledigt',
                 msgFirstPlanner: 'Erstellen Sie Ihren ersten Planer!',
                 msgNoLibraryPlanners: 'Noch keine Bibliotheksplaner',
                 msgNoTasks: 'Keine Aufgaben erstellt',
@@ -1052,7 +1185,29 @@
                 chartWeeklyDataset: 'Abgeschlossene Aufgaben',
                 prioHigh: 'Hoch/Dringend',
                 prioMedium: 'Mittel',
-                prioLow: 'Niedrig'
+                prioLow: 'Niedrig',
+                new: 'Neu',
+                authLoginTab: 'Anmelden',
+                authSignupTab: 'Konto erstellen',
+                trialBadge: '🎁 14 Tage gratis • R$ 19,99/Monat',
+                authEmail: 'E-Mail',
+                authPassword: 'Passwort',
+                authName: 'Vollständiger Name',
+                authPasswordMin: 'Passwort (min. 6)',
+                authLoginBtn: 'Anmelden',
+                authSignupBtn: '🎁 Kostenlos testen',
+                paywallTitle: 'Testzeit abgelaufen',
+                paywallSub: 'Jetzt abonnieren, um fortzufahren!',
+                perMonth: 'pro Monat',
+                ecoBannerText: '🌱 100% Digital • Kein Papier',
+                ecoPagesLabel: 'gesparte Seiten',
+                ecoTreesLabel: 'gerettete Bäume',
+                installGuideTitle: 'Auf dem iPhone installieren',
+                installGuideStep1: '1. Safari Freigeben-Menü öffnen (⬆️).',
+                installGuideStep2: '2. Tippe auf „Zum Home-Bildschirm hinzufügen“.',
+                installGuideStep3: '3. Bestätigen.',
+                installGuideClose: 'Verstanden',
+                installNow: 'Jetzt installieren'
             }
         };
 
@@ -1083,6 +1238,38 @@
             setText('btnNovaTarefa', t.novaTarefaBtn);
             setText('btnExportCSV', t.exportCSV);
             setText('btnReportPDF', t.reportPDF);
+            setText('titleToDo', t.toDo);
+            setText('titleProjetos', t.projects);
+            setText('titleHabitos', t.habits);
+            setText('titleFinanceiro', t.finance);
+            document.querySelectorAll('.btn-criar').forEach(btn => { btn.textContent = t.createButton; });
+            setText('kanbanHeaderTodo', t.kanbanTodo);
+            setText('kanbanHeaderProgress', t.kanbanProgress);
+            setText('kanbanHeaderDone', t.kanbanDone);
+            setText('authLogoTitle', t.appTitle);
+            setText('trialBadgeText', t.trialBadge);
+            setText('authTabLogin', t.authLoginTab);
+            setText('authTabSignup', t.authSignupTab);
+            setText('loginEmailLabel', t.authEmail);
+            setText('loginPasswordLabel', t.authPassword);
+            setText('signupNameLabel', t.authName);
+            setText('signupEmailLabel', t.authEmail);
+            setText('signupPasswordLabel', t.authPasswordMin);
+            setText('loginBtn', t.authLoginBtn);
+            setText('signupBtn', t.authSignupBtn);
+            setText('paywallTitle', t.paywallTitle);
+            setText('paywallSubtext', t.paywallSub);
+            setText('pricePerMonth', t.perMonth);
+            setText('btnSubscribeNow', t.subscribeNow);
+            setText('ecoBannerText', t.ecoBannerText);
+            setText('ecoPagesLabel', t.ecoPagesLabel);
+            setText('ecoTreesLabel', t.ecoTreesLabel);
+            setText('installGuideTitle', t.installGuideTitle);
+            setText('installGuideStep1', t.installGuideStep1);
+            setText('installGuideStep2', t.installGuideStep2);
+            setText('installGuideStep3', t.installGuideStep3);
+            setText('closeInstallGuide', t.installGuideClose);
+            setText('installBtn', t.installNow);
             setText('labelLevel', t.statLevel);
             setText('labelStreak', t.statStreak);
             setText('labelCompleted', t.statCompleted);
@@ -1101,13 +1288,24 @@
                 };
                 const texts = map[currentLang] || tabKeys; btn.textContent = texts[idx];
             });
+            document.querySelectorAll('.view-switcher .view-btn').forEach((btn, idx) => {
+                const base = ['📋 Lista','📊 Kanban','📈 Timeline'];
+                const map = {
+                    'pt': base,
+                    'en': ['📋 List','📊 Kanban','📈 Timeline'],
+                    'es': ['📋 Lista','📊 Kanban','📈 Cronología'],
+                    'fr': ['📋 Liste','📊 Kanban','📈 Chronologie'],
+                    'de': ['📋 Liste','📊 Kanban','📈 Zeitstrahl']
+                };
+                const texts = map[currentLang] || base; btn.textContent = texts[idx];
+            });
         }
 
         function setLanguage(lang) {
             currentLang = lang;
             localStorage.setItem(LANG_KEY, currentLang);
             applyTranslations();
-            try { renderCharts(); renderCalendar(); renderAchievements(); } catch (_) {}
+            try { renderCharts(); renderCalendar(); renderAchievements(); updateGamification(); } catch (_) {}
         }
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
@@ -1875,14 +2073,26 @@
                 }
                 if (daysLeft <= 2) {
                     const banner = document.getElementById('trialBanner');
-                    banner.innerHTML = `🔥 ÚLTIMO DIA! <button class="btn-nav" style="margin-left:.5rem" onclick="redirectToStripe()">Assine agora</button>`;
+                    const lang = currentLang;
+                    const lastDay = ({ pt: '🔥 ÚLTIMO DIA!', en: '🔥 LAST DAY!', es: '🔥 ¡ÚLTIMO DÍA!', fr: '🔥 DERNIER JOUR !', de: '🔥 LETZTER TAG!' }[lang]) || '🔥 LAST DAY!';
+                    const btnText = (i18n[lang] && i18n[lang].subscribeNow) || 'Subscribe Now';
+                    banner.innerHTML = `${lastDay} <button class="btn-nav" style="margin-left:.5rem" onclick="redirectToStripe()">${btnText}</button>`;
                     banner.className = 'trial-banner danger';
                     banner.style.display = 'block';
                     banner.onclick = redirectToStripe;
                     if (navBtn) navBtn.style.display = 'inline-block';
                 } else if (daysLeft <= 5) {
                     const banner = document.getElementById('trialBanner');
-                    banner.innerHTML = `⏰ ${daysLeft} dias restantes • <button class="btn-nav" onclick="redirectToStripe()">Assine agora</button>`;
+                    const lang = currentLang;
+                    const daysTextFn = ({
+                        pt: (n) => `⏰ ${n} dias restantes • `,
+                        en: (n) => `⏰ ${n} days left • `,
+                        es: (n) => `⏰ ${n} días restantes • `,
+                        fr: (n) => `⏰ ${n} jours restants • `,
+                        de: (n) => `⏰ ${n} Tage übrig • `
+                    }[lang]) || ((n) => `⏰ ${n} days left • `);
+                    const btnText = (i18n[lang] && i18n[lang].subscribeNow) || 'Subscribe Now';
+                    banner.innerHTML = `${daysTextFn(daysLeft)}<button class="btn-nav" onclick="redirectToStripe()">${btnText}</button>`;
                     banner.className = 'trial-banner warning';
                     banner.style.display = 'block';
                     banner.onclick = redirectToStripe;
@@ -2012,8 +2222,8 @@
             const paperSaved = currentUser.paper_saved || 0;
             const treesSaved = Math.floor(paperSaved / 10000);
             
-            document.getElementById('paperSaved').textContent = paperSaved.toLocaleString('pt-BR');
-            document.getElementById('treesSaved').textContent = treesSaved;
+            document.getElementById('paperSaved').textContent = paperSaved.toLocaleString(getLocale());
+            document.getElementById('treesSaved').textContent = treesSaved.toLocaleString(getLocale());
         }
 
         async function incrementPaperSaved(pages = 1) {
@@ -2261,7 +2471,9 @@
             tipoAtual = tipo;
             const t = tipos[tipo];
             document.getElementById('modalIcone').textContent = t.icone;
-            document.getElementById('modalTitulo').textContent = 'Novo ' + t.nome;
+            const typeMap = { 'todo': 'toDo', 'projeto': 'projects', 'habitos': 'habits', 'financeiro': 'finance' };
+            const key = typeMap[tipo] || 'createPlanner';
+            document.getElementById('modalTitulo').textContent = `${tr('new')} ${tr(key)}`;
             document.getElementById('inputNome').value = '';
             document.getElementById('modalCriar').style.display = 'block';
         }
@@ -2520,7 +2732,7 @@
             
             const grouped = {};
             tarefas.forEach(t => {
-                const date = t.data ? formatDateBR(t.data) : 'Sem data';
+                const date = t.data ? formatDateBR(t.data) : tr('noDate');
                 if (!grouped[date]) grouped[date] = [];
                 grouped[date].push(t);
             });
@@ -3247,10 +3459,10 @@
     <button id="installBtn" class="install-btn" style="display:none;">Instalar agora</button>
     <div id="installGuide" class="install-guide" style="display:none;">
         <div class="install-guide-box">
-            <div class="install-guide-title">Instalar no iPhone</div>
-            <div class="install-guide-step">1. Abra o menu Compartilhar do Safari (ícone ⬆️).</div>
-            <div class="install-guide-step">2. Toque em "Adicionar à Tela de Início".</div>
-            <div class="install-guide-step">3. Confirme.</div>
+            <div id="installGuideTitle" class="install-guide-title">Instalar no iPhone</div>
+            <div id="installGuideStep1" class="install-guide-step">1. Abra o menu Compartilhar do Safari (ícone ⬆️).</div>
+            <div id="installGuideStep2" class="install-guide-step">2. Toque em "Adicionar à Tela de Início".</div>
+            <div id="installGuideStep3" class="install-guide-step">3. Confirme.</div>
             <div class="install-guide-actions">
                 <button id="closeInstallGuide" class="btn-primario">Entendi</button>
             </div>
