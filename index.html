@@ -348,8 +348,15 @@
                 <span class="level-badge" onclick="openTab('stats')" id="levelBadge">⭐ Nível 1</span>
                 <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
+                <select id="langSelect" class="btn-nav">
+                    <option value="pt">Português</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
                 <button id="subscribeNavBtn" class="btn-nav" onclick="redirectToStripe()" style="display:none;">Assinar</button>
-                <button class="btn-nav" onclick="logout()">Sair</button>
+                <button id="logoutBtn" class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
 
@@ -365,7 +372,7 @@
             </div>
 
             <div id="plannersTab" class="tab-content active">
-                <h2 style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
+                <h2 id="headingCreatePlanner" style="margin-bottom:0.8rem;">Criar Novo Planner</h2>
                 <div class="planner-types">
                     <div class="planner-card" style="border-top-color:#10B981;" onclick="criarPlanner('todo')">
                         <div class="planner-header" style="background:linear-gradient(135deg,#10B981,#059669);"><div class="planner-icon">✅</div><div class="planner-title">To-Do</div></div>
@@ -385,13 +392,13 @@
                     </div>
                 </div>
                 <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <h2 style="margin-bottom:1rem;">📋 Meus Planners</h2>
+                    <h2 id="headingMeusPlanners" style="margin-bottom:1rem;">📋 Meus Planners</h2>
                     <div class="planners-grid" id="meusPlanners"></div>
                 </div>
             </div>
 
             <div id="bibliotecaTab" class="tab-content">
-                <h2 style="margin-bottom:1rem;">📖 Biblioteca Premium (900+ Páginas)</h2>
+                <h2 id="headingBibliotecaPremium" style="margin-bottom:1rem;">📖 Biblioteca Premium (900+ Páginas)</h2>
                 <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom:1.5rem;">
                     <h3 style="margin-bottom:1rem;">📅 Planejamento Temporal</h3>
                     <div class="biblioteca-grid">
@@ -455,13 +462,13 @@
                 </div>
                 
                 <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <h2 style="margin-bottom:1rem;">📋 Meus Planners da Biblioteca</h2>
+                    <h2 id="headingBibliotecaMeus" style="margin-bottom:1rem;">📋 Meus Planners da Biblioteca</h2>
                     <div class="planners-grid" id="meusPlannersBiblioteca"></div>
                 </div>
             </div>
 
             <div id="tutoriaisTab" class="tab-content">
-                <h2 style="margin-bottom:1.5rem;">📚 Área de Membros - Tutoriais Exclusivos</h2>
+                <h2 id="headingTutoriais" style="margin-bottom:1.5rem;">📚 Área de Membros - Tutoriais Exclusivos</h2>
                 <div id="tutoriaisLista"></div>
             </div>
 
@@ -470,7 +477,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">⭐</div>
                         <div class="stat-value" id="statLevel">1</div>
-                        <div class="stat-label">Nível</div>
+                        <div id="labelLevel" class="stat-label">Nível</div>
                         <div class="xp-bar">
                             <div class="xp-fill" id="xpBar" style="width:0%;">0/100 XP</div>
                         </div>
@@ -478,42 +485,42 @@
                     <div class="stat-card">
                         <div class="stat-icon">🔥</div>
                         <div class="stat-value" id="statStreak">0</div>
-                        <div class="stat-label">Dias de Streak</div>
+                        <div id="labelStreak" class="stat-label">Dias de Streak</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <div class="stat-value" id="statCompleted">0</div>
-                        <div class="stat-label">Tarefas Concluídas</div>
+                        <div id="labelCompleted" class="stat-label">Tarefas Concluídas</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">📈</div>
                         <div class="stat-value" id="statRate">0%</div>
-                        <div class="stat-label">Taxa de Conclusão</div>
+                        <div id="labelRate" class="stat-label">Taxa de Conclusão</div>
                     </div>
                 </div>
                 
                 <div class="chart-container">
-                    <h3 class="chart-title">📊 Produtividade Semanal</h3>
+                    <h3 id="chartWeeklyTitle" class="chart-title">📊 Produtividade Semanal</h3>
                     <canvas id="weeklyChart" height="80"></canvas>
                 </div>
                 
                 <div class="chart-container">
-                    <h3 class="chart-title">🎯 Tarefas por Prioridade</h3>
+                    <h3 id="chartPriorityTitle" class="chart-title">🎯 Tarefas por Prioridade</h3>
                     <canvas id="priorityChart" height="80"></canvas>
                 </div>
             </div>
 
             <div id="achievementsTab" class="tab-content">
-                <h2 style="margin-bottom:1rem;">🏆 Conquistas Desbloqueadas</h2>
+                <h2 id="headingAchievements" style="margin-bottom:1rem;">🏆 Conquistas Desbloqueadas</h2>
                 <div class="achievements-grid" id="achievementsList"></div>
             </div>
 
             <div id="calendarTab" class="tab-content">
                 <div class="calendar-view">
                     <div class="calendar-header">
-                        <button class="btn-secundario" onclick="changeMonth(-1)">◀ Anterior</button>
+                        <button id="btnCalPrev" class="btn-secundario" onclick="changeMonth(-1)">◀ Anterior</button>
                         <h2 id="calendarTitle">Janeiro 2024</h2>
-                        <button class="btn-secundario" onclick="changeMonth(1)">Próximo ▶</button>
+                        <button id="btnCalNext" class="btn-secundario" onclick="changeMonth(1)">Próximo ▶</button>
                     </div>
                     <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
@@ -523,8 +530,8 @@
                 <div class="google-calendar-section">
                     <div class="gcal-header">
                         <div class="gcal-icon">📅</div>
-                        <h2>Integração Google Calendar</h2>
-                        <p style="color:#666; margin-top:0.5rem;">Sincronize suas tarefas com o Google Calendar</p>
+                        <h2 id="headingGoogleCalendar">Integração Google Calendar</h2>
+                        <p id="subheadingGoogleCalendar" style="color:#666; margin-top:0.5rem;">Sincronize suas tarefas com o Google Calendar</p>
                     </div>
                     
                     <div class="gcal-benefits">
@@ -554,11 +561,11 @@
                     </div>
                     
                     <div style="background:var(--light); border-radius:10px; padding:1rem; margin-top:1.5rem;">
-                        <label style="font-weight:600; display:block; margin-bottom:0.5rem;">Sua URL de Sincronização:</label>
+                        <label id="labelGcalSyncUrl" style="font-weight:600; display:block; margin-bottom:0.5rem;">Sua URL de Sincronização:</label>
                         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                             <input type="text" id="gcalUrl" readonly style="flex:1; min-width:220px; padding:0.7rem; border:2px solid var(--gray); border-radius:6px; font-family:monospace; font-size:0.85em;">
-                            <button class="btn-primario" onclick="copyGcalUrl()">📋 Copiar</button>
-                            <button class="btn-secundario" onclick="connectCalendarManual()">🔗 Conectar Calendar</button>
+                            <button id="btnCopyGcal" class="btn-primario" onclick="copyGcalUrl()">📋 Copiar</button>
+                            <button id="btnConnectGcal" class="btn-secundario" onclick="connectCalendarManual()">🔗 Conectar Calendar</button>
                         </div>
                     </div>
                 </div>
@@ -593,11 +600,11 @@
                 <button class="view-btn" onclick="switchView('timeline')">📈 Timeline</button>
             </div>
 
-            <button class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
+            <button id="btnNovaTarefa" class="btn-primario" style="width:100%; margin-bottom:1.5rem;" onclick="abrirModalNovaTarefa()">+ Nova Tarefa Avançada</button>
 
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-                <button class="btn-secundario" style="flex:1;" onclick="exportarExcel()">📥 Exportar Excel (CSV)</button>
-                <button class="btn-secundario" style="flex:1;" onclick="baixarRelatorioPDF()">📄 Relatório PDF</button>
+                <button id="btnExportCSV" class="btn-secundario" style="flex:1;" onclick="exportarExcel()">📥 Exportar Excel (CSV)</button>
+                <button id="btnReportPDF" class="btn-secundario" style="flex:1;" onclick="baixarRelatorioPDF()">📄 Relatório PDF</button>
             </div>
 
             <div id="listView" class="tab-content active">
@@ -795,9 +802,316 @@
     </div>
 
     <script>
+        const LANG_KEY = 'planner_ultra_lang';
+        const i18n = {
+            pt: {
+                appTitle: '✨ Planner Premium ULTRA',
+                logout: 'Sair',
+                subscribe: 'Assinar',
+                createPlanner: 'Criar Novo Planner',
+                meusPlanners: '📋 Meus Planners',
+                bibliotecaPremium: '📖 Biblioteca Premium (900+ Páginas)',
+                meusPlannersBiblio: '📋 Meus Planners da Biblioteca',
+                tutoriaisHeading: '📚 Área de Membros - Tutoriais Exclusivos',
+                achievementsHeading: '🏆 Conquistas Desbloqueadas',
+                weeklyChart: '📊 Produtividade Semanal',
+                priorityChart: '🎯 Tarefas por Prioridade',
+                calendarPrev: '◀ Anterior',
+                calendarNext: 'Próximo ▶',
+                googleHeading: 'Integração Google Calendar',
+                googleSub: 'Sincronize suas tarefas com o Google Calendar',
+                gcalSyncLabel: 'Sua URL de Sincronização:',
+                copy: '📋 Copiar',
+                connectCalendar: '🔗 Conectar Calendar',
+                novaTarefaBtn: '+ Nova Tarefa Avançada',
+                exportCSV: '📥 Exportar Excel (CSV)',
+                reportPDF: '📄 Relatório PDF',
+                statLevel: 'Nível',
+                statStreak: 'Dias de Streak',
+                statCompleted: 'Tarefas Concluídas',
+                statRate: 'Taxa de Conclusão',
+                badgeLevel: 'Nível',
+                badgeDays: 'dias',
+                msgFirstPlanner: 'Crie seu primeiro planner!',
+                msgNoLibraryPlanners: 'Nenhum planner criado da biblioteca',
+                msgNoTasks: 'Nenhuma tarefa criada',
+                msgNoTasksShort: 'Nenhuma tarefa',
+                alertNoPlannerOpen: '❌ Nenhum planner aberto!',
+                alertNoTasksToExport: '❌ Nenhuma tarefa para exportar!',
+                alertExportOk: '✅ Excel exportado com sucesso!',
+                alertExportErr: '❌ Erro ao exportar Excel',
+                alertNoTasksReport: '❌ Nenhuma tarefa para gerar relatório!',
+                alertReportOk: '✅ Relatório baixado! Abra o arquivo HTML e use Ctrl+P para salvar como PDF.',
+                alertReportErr: '❌ Erro ao gerar relatório',
+                confirmDeleteTask: 'Deletar esta tarefa?',
+                confirmDeletePlanner: 'Deletar planner e todas as tarefas?',
+                msgCopied: '✅ URL copiada! Cole no Google Calendar.',
+                msgUrlUnavailable: '❌ URL indisponível',
+                more: 'mais',
+                noDate: 'Sem data',
+                chartWeeklyDataset: 'Tarefas Concluídas',
+                prioHigh: 'Alta/Urgente',
+                prioMedium: 'Média',
+                prioLow: 'Baixa'
+            },
+            en: {
+                appTitle: '✨ Planner Premium ULTRA',
+                logout: 'Log out',
+                subscribe: 'Subscribe',
+                createPlanner: 'Create New Planner',
+                meusPlanners: '📋 My Planners',
+                bibliotecaPremium: '📖 Premium Library (900+ Pages)',
+                meusPlannersBiblio: '📋 My Library Planners',
+                tutoriaisHeading: '📚 Members Area - Exclusive Tutorials',
+                achievementsHeading: '🏆 Unlocked Achievements',
+                weeklyChart: '📊 Weekly Productivity',
+                priorityChart: '🎯 Tasks by Priority',
+                calendarPrev: '◀ Previous',
+                calendarNext: 'Next ▶',
+                googleHeading: 'Google Calendar Integration',
+                googleSub: 'Sync your tasks with Google Calendar',
+                gcalSyncLabel: 'Your Sync URL:',
+                copy: '📋 Copy',
+                connectCalendar: '🔗 Connect Calendar',
+                novaTarefaBtn: '+ New Advanced Task',
+                exportCSV: '📥 Export Excel (CSV)',
+                reportPDF: '📄 Report PDF',
+                statLevel: 'Level',
+                statStreak: 'Streak Days',
+                statCompleted: 'Completed Tasks',
+                statRate: 'Completion Rate',
+                badgeLevel: 'Level',
+                badgeDays: 'days',
+                msgFirstPlanner: 'Create your first planner!',
+                msgNoLibraryPlanners: 'No library planners yet',
+                msgNoTasks: 'No tasks created',
+                msgNoTasksShort: 'No tasks',
+                alertNoPlannerOpen: '❌ No planner open!',
+                alertNoTasksToExport: '❌ No tasks to export!',
+                alertExportOk: '✅ Excel exported successfully!',
+                alertExportErr: '❌ Error exporting CSV',
+                alertNoTasksReport: '❌ No tasks to generate report!',
+                alertReportOk: '✅ Report downloaded! Open HTML and use Ctrl+P to save as PDF.',
+                alertReportErr: '❌ Error generating report',
+                confirmDeleteTask: 'Delete this task?',
+                confirmDeletePlanner: 'Delete planner and all tasks?',
+                msgCopied: '✅ URL copied! Paste into Google Calendar.',
+                msgUrlUnavailable: '❌ URL unavailable',
+                more: 'more',
+                noDate: 'No date',
+                chartWeeklyDataset: 'Completed Tasks',
+                prioHigh: 'High/Urgent',
+                prioMedium: 'Medium',
+                prioLow: 'Low'
+            },
+            es: {
+                appTitle: '✨ Planificador Premium ULTRA',
+                logout: 'Salir',
+                subscribe: 'Suscribirse',
+                createPlanner: 'Crear Nuevo Planificador',
+                meusPlanners: '📋 Mis Planificadores',
+                bibliotecaPremium: '📖 Biblioteca Premium (900+ Páginas)',
+                meusPlannersBiblio: '📋 Mis Planificadores de la Biblioteca',
+                tutoriaisHeading: '📚 Área de Miembros - Tutoriales Exclusivos',
+                achievementsHeading: '🏆 Logros Desbloqueados',
+                weeklyChart: '📊 Productividad Semanal',
+                priorityChart: '🎯 Tareas por Prioridad',
+                calendarPrev: '◀ Anterior',
+                calendarNext: 'Siguiente ▶',
+                googleHeading: 'Integración con Google Calendar',
+                googleSub: 'Sincroniza tus tareas con Google Calendar',
+                gcalSyncLabel: 'Tu URL de Sincronización:',
+                copy: '📋 Copiar',
+                connectCalendar: '🔗 Conectar Calendario',
+                novaTarefaBtn: '+ Nueva Tarea Avanzada',
+                exportCSV: '📥 Exportar Excel (CSV)',
+                reportPDF: '📄 Informe PDF',
+                statLevel: 'Nivel',
+                statStreak: 'Días de Racha',
+                statCompleted: 'Tareas Completadas',
+                statRate: 'Tasa de Finalización',
+                badgeLevel: 'Nivel',
+                badgeDays: 'días',
+                msgFirstPlanner: '¡Crea tu primer planificador!',
+                msgNoLibraryPlanners: 'Aún no hay planificadores de biblioteca',
+                msgNoTasks: 'No hay tareas creadas',
+                msgNoTasksShort: 'No hay tareas',
+                alertNoPlannerOpen: '❌ ¡Ningún planificador abierto!',
+                alertNoTasksToExport: '❌ ¡No hay tareas para exportar!',
+                alertExportOk: '✅ ¡Excel exportado con éxito!',
+                alertExportErr: '❌ Error al exportar CSV',
+                alertNoTasksReport: '❌ ¡No hay tareas para generar informe!',
+                alertReportOk: '✅ Informe descargado. Abre el HTML y usa Ctrl+P para guardar como PDF.',
+                alertReportErr: '❌ Error al generar informe',
+                confirmDeleteTask: '¿Eliminar esta tarea?',
+                confirmDeletePlanner: '¿Eliminar el planificador y todas las tareas?',
+                msgCopied: '✅ ¡URL copiada! Pega en Google Calendar.',
+                msgUrlUnavailable: '❌ URL no disponible',
+                more: 'más',
+                noDate: 'Sin fecha',
+                chartWeeklyDataset: 'Tareas Completadas',
+                prioHigh: 'Alta/Urgente',
+                prioMedium: 'Media',
+                prioLow: 'Baja'
+            },
+            fr: {
+                appTitle: '✨ Planner Premium ULTRA',
+                logout: 'Se déconnecter',
+                subscribe: 'S’abonner',
+                createPlanner: 'Créer un nouveau planner',
+                meusPlanners: '📋 Mes Planners',
+                bibliotecaPremium: '📖 Bibliothèque Premium (900+ Pages)',
+                meusPlannersBiblio: '📋 Mes Planners de la Bibliothèque',
+                tutoriaisHeading: '📚 Espace Membres - Tutoriels Exclusifs',
+                achievementsHeading: '🏆 Succès Débloqués',
+                weeklyChart: '📊 Productivité Hebdomadaire',
+                priorityChart: '🎯 Tâches par Priorité',
+                calendarPrev: '◀ Précédent',
+                calendarNext: 'Suivant ▶',
+                googleHeading: 'Intégration Google Calendar',
+                googleSub: 'Synchronisez vos tâches avec Google Calendar',
+                gcalSyncLabel: 'Votre URL de Synchronisation :',
+                copy: '📋 Copier',
+                connectCalendar: '🔗 Connecter Calendar',
+                novaTarefaBtn: '+ Nouvelle Tâche Avancée',
+                exportCSV: '📥 Exporter Excel (CSV)',
+                reportPDF: '📄 Rapport PDF',
+                statLevel: 'Niveau',
+                statStreak: 'Jours de Série',
+                statCompleted: 'Tâches Terminées',
+                statRate: 'Taux d’Achèvement',
+                badgeLevel: 'Niveau',
+                badgeDays: 'jours',
+                msgFirstPlanner: 'Créez votre premier planner !',
+                msgNoLibraryPlanners: 'Aucun planner bibliothèque pour le moment',
+                msgNoTasks: 'Aucune tâche créée',
+                msgNoTasksShort: 'Aucune tâche',
+                alertNoPlannerOpen: '❌ Aucun planner ouvert !',
+                alertNoTasksToExport: '❌ Aucune tâche à exporter !',
+                alertExportOk: '✅ Excel exporté avec succès !',
+                alertExportErr: '❌ Erreur lors de l’export CSV',
+                alertNoTasksReport: '❌ Aucune tâche pour générer un rapport !',
+                alertReportOk: '✅ Rapport téléchargé. Ouvrez le HTML et utilisez Ctrl+P pour enregistrer en PDF.',
+                alertReportErr: '❌ Erreur lors de la génération du rapport',
+                confirmDeleteTask: 'Supprimer cette tâche ?',
+                confirmDeletePlanner: 'Supprimer le planner et toutes les tâches ?',
+                msgCopied: '✅ URL copiée ! Collez-la dans Google Calendar.',
+                msgUrlUnavailable: '❌ URL indisponible',
+                more: 'de plus',
+                noDate: 'Sans date',
+                chartWeeklyDataset: 'Tâches terminées',
+                prioHigh: 'Haute/Urgente',
+                prioMedium: 'Moyenne',
+                prioLow: 'Basse'
+            },
+            de: {
+                appTitle: '✨ Planner Premium ULTRA',
+                logout: 'Abmelden',
+                subscribe: 'Abonnieren',
+                createPlanner: 'Neuen Planer erstellen',
+                meusPlanners: '📋 Meine Planer',
+                bibliotecaPremium: '📖 Premium-Bibliothek (900+ Seiten)',
+                meusPlannersBiblio: '📋 Meine Bibliotheksplaner',
+                tutoriaisHeading: '📚 Mitgliederbereich – Exklusive Tutorials',
+                achievementsHeading: '🏆 Freigeschaltete Erfolge',
+                weeklyChart: '📊 Wöchentliche Produktivität',
+                priorityChart: '🎯 Aufgaben nach Priorität',
+                calendarPrev: '◀ Zurück',
+                calendarNext: 'Weiter ▶',
+                googleHeading: 'Google Kalender Integration',
+                googleSub: 'Synchronisieren Sie Ihre Aufgaben mit Google Kalender',
+                gcalSyncLabel: 'Ihre Synchronisierungs-URL:',
+                copy: '📋 Kopieren',
+                connectCalendar: '🔗 Kalender verbinden',
+                novaTarefaBtn: '+ Neue Erweiterte Aufgabe',
+                exportCSV: '📥 Excel exportieren (CSV)',
+                reportPDF: '📄 Bericht PDF',
+                statLevel: 'Level',
+                statStreak: 'Serie-Tage',
+                statCompleted: 'Abgeschlossene Aufgaben',
+                statRate: 'Abschlussrate',
+                badgeLevel: 'Level',
+                badgeDays: 'Tage',
+                msgFirstPlanner: 'Erstellen Sie Ihren ersten Planer!',
+                msgNoLibraryPlanners: 'Noch keine Bibliotheksplaner',
+                msgNoTasks: 'Keine Aufgaben erstellt',
+                msgNoTasksShort: 'Keine Aufgaben',
+                alertNoPlannerOpen: '❌ Kein Planer geöffnet!',
+                alertNoTasksToExport: '❌ Keine Aufgaben zum Exportieren!',
+                alertExportOk: '✅ Excel erfolgreich exportiert!',
+                alertExportErr: '❌ Fehler beim CSV-Export',
+                alertNoTasksReport: '❌ Keine Aufgaben für den Bericht!',
+                alertReportOk: '✅ Bericht heruntergeladen. Öffnen Sie die HTML-Datei und verwenden Sie Strg+P, um als PDF zu speichern.',
+                alertReportErr: '❌ Fehler beim Generieren des Berichts',
+                confirmDeleteTask: 'Diese Aufgabe löschen?',
+                confirmDeletePlanner: 'Planer und alle Aufgaben löschen?',
+                msgCopied: '✅ URL kopiert! In Google Kalender einfügen.',
+                msgUrlUnavailable: '❌ URL nicht verfügbar',
+                more: 'mehr',
+                noDate: 'Kein Datum',
+                chartWeeklyDataset: 'Abgeschlossene Aufgaben',
+                prioHigh: 'Hoch/Dringend',
+                prioMedium: 'Mittel',
+                prioLow: 'Niedrig'
+            }
+        };
+
+        let currentLang = localStorage.getItem(LANG_KEY) || 'pt';
+        function getLocale() {
+            return ({ pt: 'pt-BR', en: 'en-US', es: 'es-ES', fr: 'fr-FR', de: 'de-DE' }[currentLang]) || 'pt-BR';
+        }
+        function tr(k) { const t = i18n[currentLang] || i18n.pt; return (t[k] !== undefined ? t[k] : (i18n.pt[k] !== undefined ? i18n.pt[k] : k)); }
+
+        function applyTranslations() {
+            const t = i18n[currentLang] || i18n.pt;
+            const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+            setText('headingCreatePlanner', t.createPlanner);
+            setText('headingMeusPlanners', t.meusPlanners);
+            setText('headingBibliotecaPremium', t.bibliotecaPremium);
+            setText('headingBibliotecaMeus', t.meusPlannersBiblio);
+            setText('headingTutoriais', t.tutoriaisHeading);
+            setText('headingAchievements', t.achievementsHeading);
+            setText('chartWeeklyTitle', t.weeklyChart);
+            setText('chartPriorityTitle', t.priorityChart);
+            setText('btnCalPrev', t.calendarPrev);
+            setText('btnCalNext', t.calendarNext);
+            setText('headingGoogleCalendar', t.googleHeading);
+            setText('subheadingGoogleCalendar', t.googleSub);
+            setText('labelGcalSyncUrl', t.gcalSyncLabel);
+            setText('btnCopyGcal', t.copy);
+            setText('btnConnectGcal', t.connectCalendar);
+            setText('btnNovaTarefa', t.novaTarefaBtn);
+            setText('btnExportCSV', t.exportCSV);
+            setText('btnReportPDF', t.reportPDF);
+            setText('labelLevel', t.statLevel);
+            setText('labelStreak', t.statStreak);
+            setText('labelCompleted', t.statCompleted);
+            setText('labelRate', t.statRate);
+            const titleEl = document.querySelector('.navbar-title'); if (titleEl) titleEl.textContent = t.appTitle;
+            const subBtn = document.getElementById('subscribeNavBtn'); if (subBtn) subBtn.textContent = t.subscribe;
+            const logoutBtn = document.getElementById('logoutBtn'); if (logoutBtn) logoutBtn.textContent = t.logout;
+            document.querySelectorAll('.tab-menu .tab-btn').forEach((btn, idx) => {
+                const tabKeys = ['📋 Planners','📖 Biblioteca','📚 Tutoriais','📊 Stats','🏆 Conquistas','📅 Calendário','🔗 Google'];
+                const map = {
+                    'pt': tabKeys,
+                    'en': ['📋 Planners','📖 Library','📚 Tutorials','📊 Stats','🏆 Achievements','📅 Calendar','🔗 Google'],
+                    'es': ['📋 Planificadores','📖 Biblioteca','📚 Tutoriales','📊 Estadísticas','🏆 Logros','📅 Calendario','🔗 Google'],
+                    'fr': ['📋 Planners','📖 Bibliothèque','📚 Tutoriels','📊 Statistiques','🏆 Succès','📅 Calendrier','🔗 Google'],
+                    'de': ['📋 Planer','📖 Bibliothek','📚 Tutorials','📊 Statistik','🏆 Erfolge','📅 Kalender','🔗 Google']
+                };
+                const texts = map[currentLang] || tabKeys; btn.textContent = texts[idx];
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem(LANG_KEY, currentLang);
+            applyTranslations();
+            try { renderCharts(); renderCalendar(); renderAchievements(); } catch (_) {}
+        }
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
-        const STRIPE_LINK = 'https://buy.stripe.com/test_6oE14q0lh7iW5sA9AA';
+        const STRIPE_LINK = 'https://buy.stripe.com/00w8wPer71rq9zw2Em2VG00';
         
         let supabase = null;
         let currentUser = null;
@@ -1162,6 +1476,12 @@
                 window.addEventListener('online', syncOfflineTasks);
                 window.addEventListener('online', syncOfflineCalendar);
                 checkAppVersion();
+                const sel = document.getElementById('langSelect');
+                if (sel) {
+                    sel.value = currentLang;
+                    sel.addEventListener('change', (e) => setLanguage(e.target.value));
+                }
+                applyTranslations();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
@@ -1680,8 +2000,8 @@
             const xpForNextLevel = level * 100;
             const xpPercent = (xp / xpForNextLevel) * 100;
             
-            document.getElementById('levelBadge').textContent = `⭐ Nível ${level}`;
-            document.getElementById('streakBadge').textContent = `🔥 ${streak} dias`;
+            document.getElementById('levelBadge').textContent = `⭐ ${tr('badgeLevel')} ${level}`;
+            document.getElementById('streakBadge').textContent = `🔥 ${streak} ${tr('badgeDays')}`;
             document.getElementById('statLevel').textContent = level;
             document.getElementById('statStreak').textContent = streak;
             document.getElementById('xpBar').style.width = xpPercent + '%';
@@ -1766,9 +2086,9 @@
             new Chart(document.getElementById('weeklyChart'), {
                 type: 'line',
                 data: {
-                    labels: last7Days.map(d => new Date(d).toLocaleDateString('pt-BR', {weekday:'short'})),
+                    labels: last7Days.map(d => new Date(d).toLocaleDateString(getLocale(), {weekday:'short'})),
                     datasets: [{
-                        label: 'Tarefas Concluídas',
+                        label: tr('chartWeeklyDataset'),
                         data: weeklyData,
                         borderColor: '#6B46C1',
                         backgroundColor: 'rgba(107, 70, 193, 0.1)',
@@ -1788,7 +2108,7 @@
             new Chart(document.getElementById('priorityChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Alta/Urgente', 'Média', 'Baixa'],
+                    labels: [tr('prioHigh'), tr('prioMedium'), tr('prioLow')],
                     datasets: [{
                         data: [prioData.alta, prioData.media, prioData.baixa],
                         backgroundColor: ['#EF4444', '#F59E0B', '#10B981']
@@ -1832,8 +2152,8 @@
             const biblioPlannersEl = document.getElementById('meusPlannersBiblioteca');
             
             if (!planners.length) {
-                c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
-                if (biblioPlannersEl) biblioPlannersEl.innerHTML = '<p style="text-align:center;color:#999;">Nenhum planner criado da biblioteca</p>';
+                c.innerHTML = `<p style="text-align:center;color:#999;">${tr('msgFirstPlanner')}</p>`;
+                if (biblioPlannersEl) biblioPlannersEl.innerHTML = `<p style="text-align:center;color:#999;">${tr('msgNoLibraryPlanners')}</p>`;
                 return;
             }
             
@@ -1843,7 +2163,7 @@
             
             // Renderizar planners normais
             if (plannersNormais.length === 0) {
-                c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
+                c.innerHTML = `<p style="text-align:center;color:#999;">${tr('msgFirstPlanner')}</p>`;
             } else {
                 const htmlNormais = await Promise.all(plannersNormais.map(async p => {
                     let numServer = 0;
@@ -1870,7 +2190,7 @@
             // Renderizar planners da biblioteca
             if (biblioPlannersEl) {
                 if (plannersBiblioteca.length === 0) {
-                    biblioPlannersEl.innerHTML = '<p style="text-align:center;color:#999;">Nenhum planner criado da biblioteca</p>';
+                    biblioPlannersEl.innerHTML = `<p style="text-align:center;color:#999;">${tr('msgNoLibraryPlanners')}</p>`;
                 } else {
                     const htmlBiblioteca = await Promise.all(plannersBiblioteca.map(async p => {
                         let numServer = 0;
@@ -2014,7 +2334,7 @@
         async function renderTarefas(tarefas) {
             const c = document.getElementById('listaTarefas');
             if (!tarefas.length) {
-                c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa criada</p>';
+                c.innerHTML = `<p style="text-align:center;color:#999;">${tr('msgNoTasks')}</p>`;
                 return;
             }
             tarefasCache = tarefas;
@@ -2120,12 +2440,12 @@
         }
 
         function renderKanbanCards(tarefas) {
-            if (!tarefas.length) return '<p style="color:#999;font-size:0.85em;">Nenhuma tarefa</p>';
+            if (!tarefas.length) return `<p style="color:#999;font-size:0.85em;">${tr('msgNoTasksShort')}</p>`;
             
             return tarefas.map(t => `
                 <div class="kanban-card" onclick="abrirDetalheTarefa('${t.id}')">
                     <div style="font-weight:700; margin-bottom:0.5rem;">${t.titulo}</div>
-                    <div style="font-size:0.85em; color:#666;">${t.data ? formatDateBR(t.data) : 'Sem data'}</div>
+                    <div style="font-size:0.85em; color:#666;">${t.data ? formatDateBR(t.data) : tr('noDate')}</div>
                 </div>
             `).join('');
         }
@@ -2194,7 +2514,7 @@
             const offlineAll = getOfflineTasks();
             tarefas = [...tarefas, ...offlineAll.filter(t => t.planner_id === plannerAberto)];
             if (!tarefas || !tarefas.length) {
-                document.getElementById('timelineContainer').innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
+                document.getElementById('timelineContainer').innerHTML = `<p style="text-align:center;color:#999;">${tr('msgNoTasksShort')}</p>`;
                 return;
             }
             
@@ -2326,7 +2646,7 @@
         }
 
         async function deletarTarefa(id) {
-            if (!confirm('Deletar esta tarefa?')) return;
+            if (!confirm(tr('confirmDeleteTask'))) return;
             try {
                 if (String(id).startsWith('local-')) {
                     const arr = getOfflineTasks().filter(x => x.id !== id);
@@ -2345,7 +2665,7 @@
         }
 
         async function deletarPlanner(id) {
-            if (!confirm('Deletar planner e todas as tarefas?')) return;
+            if (!confirm(tr('confirmDeletePlanner'))) return;
             try {
                 await supabase.from('tarefas').delete().eq('planner_id', id);
                 await supabase.from('planners').delete().eq('id', id);
@@ -2357,8 +2677,8 @@
         }
 
         async function renderCalendar() {
-            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            document.getElementById('calendarTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            const titleStr = new Date(currentYear, currentMonth, 1).toLocaleDateString(getLocale(), { month: 'long', year: 'numeric' });
+            document.getElementById('calendarTitle').textContent = titleStr.charAt(0).toUpperCase() + titleStr.slice(1);
             
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -2373,7 +2693,12 @@
             const offlineAll = getOfflineTasks();
             tarefas = [...tarefas, ...offlineAll];
             
-            let html = '<div class="calendar-day-header">Dom</div><div class="calendar-day-header">Seg</div><div class="calendar-day-header">Ter</div><div class="calendar-day-header">Qua</div><div class="calendar-day-header">Qui</div><div class="calendar-day-header">Sex</div><div class="calendar-day-header">Sáb</div>';
+            const week = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(2024, 0, 7 + i);
+                week.push(d.toLocaleDateString(getLocale(), { weekday: 'short' }));
+            }
+            let html = week.map(w => `<div class="calendar-day-header">${w}</div>`).join('');
             
             for (let i = 0; i < firstDay; i++) {
                 html += '<div class="calendar-day"></div>';
@@ -2387,7 +2712,7 @@
                     <div class="calendar-day">
                         <div class="calendar-day-number">${day}</div>
                         ${dayTasks.slice(0, 3).map(t => `<div class="calendar-task" title="${t.titulo}">${t.titulo.substring(0, 15)}</div>`).join('')}
-                        ${dayTasks.length > 3 ? `<div style="font-size:0.7em; color:#666;">+${dayTasks.length - 3} mais</div>` : ''}
+                        ${dayTasks.length > 3 ? `<div style="font-size:0.7em; color:#666;">+${dayTasks.length - 3} ${tr('more')}</div>` : ''}
                     </div>
                 `;
             }
@@ -2659,16 +2984,16 @@
         }
 
         function copyGcalUrl() {
-            try { navigator.clipboard.writeText(calendarUrlPrivate).then(()=>alert('✅ URL copiada! Cole no Google Calendar.')); }
+            try { navigator.clipboard.writeText(calendarUrlPrivate).then(()=>alert(tr('msgCopied'))); }
             catch(_) {
                 const input = document.getElementById('gcalUrl');
                 if (input) { input.value = calendarUrlPrivate; input.select(); document.execCommand('copy'); input.value = '********'; }
-                alert('✅ URL copiada! Cole no Google Calendar.');
+                alert(tr('msgCopied'));
             }
         }
         function connectCalendarManual() {
             try {
-                if (!calendarUrlPrivate) { alert('❌ URL indisponível'); return; }
+                if (!calendarUrlPrivate) { alert(tr('msgUrlUnavailable')); return; }
                 const url = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarUrlPrivate)}`;
                 window.open(url, '_blank');
                 localStorage.setItem('planner_ultra_calendar_connected', 'yes');
@@ -2743,7 +3068,7 @@
 
         async function exportarExcel() {
             if (!plannerAberto) {
-                alert('❌ Nenhum planner aberto!');
+                alert(tr('alertNoPlannerOpen'));
                 return;
             }
 
@@ -2751,7 +3076,7 @@
                 const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
                 
                 if (!tarefas || tarefas.length === 0) {
-                    alert('❌ Nenhuma tarefa para exportar!');
+                    alert(tr('alertNoTasksToExport'));
                     return;
                 }
 
@@ -2787,17 +3112,17 @@
                 link.click();
                 document.body.removeChild(link);
 
-                alert('✅ Excel exportado com sucesso!');
+                alert(tr('alertExportOk'));
                 await incrementPaperSaved(tarefas.length);
             } catch (err) {
                 console.error('Erro ao exportar:', err);
-                alert('❌ Erro ao exportar Excel');
+                alert(tr('alertExportErr'));
             }
         }
 
         async function baixarRelatorioPDF() {
             if (!plannerAberto) {
-                alert('❌ Nenhum planner aberto!');
+                alert(tr('alertNoPlannerOpen'));
                 return;
             }
 
@@ -2806,7 +3131,7 @@
                 const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
                 
                 if (!tarefas || tarefas.length === 0) {
-                    alert('❌ Nenhuma tarefa para gerar relatório!');
+                    alert(tr('alertNoTasksReport'));
                     return;
                 }
 
@@ -2907,11 +3232,11 @@
                 link.click();
                 document.body.removeChild(link);
 
-                alert('✅ Relatório baixado! Abra o arquivo HTML e use Ctrl+P para salvar como PDF.');
+                alert(tr('alertReportOk'));
                 await incrementPaperSaved(5);
             } catch (err) {
                 console.error('Erro ao gerar relatório:', err);
-                alert('❌ Erro ao gerar relatório');
+                alert(tr('alertReportErr'));
             }
         }
 
