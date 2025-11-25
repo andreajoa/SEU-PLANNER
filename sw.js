@@ -39,34 +39,39 @@ self.addEventListener('activate', event => {
     })
   );
   self.clients.claim();
+  self.clients.matchAll({ type: 'window' }).then(clients => {
+    clients.forEach(client => client.postMessage({ type: 'SW_ACTIVATED' }));
+  });
 });
 
 // Fetch - estratégia Network First (sempre tenta rede primeiro)
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('/index.html')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(()=>{});
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        // Se a resposta é válida, cachear
-        if (response && response.status === 200) {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        // Se falhar (offline), buscar do cache
-        return caches.match(event.request).then(response => {
-          if (response) {
-            return response;
+    caches.match(event.request).then(cached => {
+      const fetchPromise = fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(()=>{});
           }
-          // Se não estiver no cache, retornar página offline
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
-      })
+          return response;
+        })
+        .catch(() => cached);
+      return cached || fetchPromise;
+    })
   );
 });
 
