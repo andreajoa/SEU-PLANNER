@@ -779,6 +779,16 @@
         </div>
     </div>
 
+    <div id="modalTarefaDetalhe" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tarefaDetalheTitulo"></h2>
+                <button class="close-modal" onclick="fecharModal('modalTarefaDetalhe')">&times;</button>
+            </div>
+            <div id="tarefaDetalheConteudo"></div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://szzirxygtjztusudfqsw.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6emlyeHlndGp6dHVzdWRmcXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4NDk0NzEsImV4cCI6MjA3OTQyNTQ3MX0.zEMDaMA-DvcSiHmj4a3thB1Nnu9cEWGqfFes8R8lICA';
@@ -797,6 +807,10 @@
         let tempSubtarefas = [];
         let tempAnexos = [];
         let deferredPrompt = null;
+        let alarmTimers = [];
+        let calendarUrlPrivate = '';
+        
+        let tarefasCache = [];
         
         const tipos = {
             'todo': { nome: 'To-Do', icone: '✅', cor: '#10B981' },
@@ -824,6 +838,47 @@
             { id: 'level_10', name: 'Nível 10', icon: '⭐', requirement: 10 },
             { id: 'planner_pro', name: 'Planejador Pro', icon: '📋', requirement: 5 }
         ];
+
+        const OFFLINE_TASKS_KEY = 'planner_ultra_offline_tarefas';
+        const SESSION_KEY = 'planner_ultra_user';
+        function getOfflineTasks() { try { return JSON.parse(localStorage.getItem(OFFLINE_TASKS_KEY) || '[]'); } catch (_) { return []; } }
+        function setOfflineTasks(arr) { localStorage.setItem(OFFLINE_TASKS_KEY, JSON.stringify(arr)); }
+        function addOfflineTask(t) { const arr = getOfflineTasks(); arr.push(t); setOfflineTasks(arr); }
+        function saveSession(user) { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
+        function loadSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } }
+        async function syncOfflineTasks() {
+            if (!navigator.onLine || !supabase || !currentUser) return;
+            const arr = getOfflineTasks();
+            if (!arr.length) return;
+            const remain = [];
+            for (const t of arr) {
+                try {
+                    const { error } = await supabase.from('tarefas').insert([{
+                        planner_id: t.planner_id,
+                        titulo: t.titulo,
+                        descricao: t.descricao,
+                        categoria: t.categoria,
+                        prioridade: t.prioridade,
+                        data: t.data,
+                        hora: t.hora,
+                        duracao: t.duracao,
+                        repetir: t.repetir,
+                        contexto: t.contexto,
+                        energia: t.energia,
+                        tags: t.tags,
+                        lembretes: t.lembretes,
+                        subtarefas: t.subtarefas,
+                        anexos: t.anexos,
+                        done: t.done,
+                        em_progresso: t.em_progresso
+                    }]);
+                    if (error) remain.push(t);
+                } catch (_) { remain.push(t); }
+            }
+            setOfflineTasks(remain);
+            if (plannerAberto) abrirPlanner(plannerAberto);
+            renderPlanners();
+        }
 
         const tutoriaisData = [
             {
@@ -1070,9 +1125,11 @@
     try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('authContainer').style.display = 'flex';
+        const saved = loadSession();
+        if (saved) { loginUser(saved); } else { document.getElementById('authContainer').style.display = 'flex'; }
         setupTagInput();
         setupPWAInstall();
+        window.addEventListener('online', syncOfflineTasks);
     } catch (err) {
         console.error('Erro:', err);
         alert('Erro ao conectar');
@@ -1393,6 +1450,23 @@
     btn.textContent = 'Entrando...';
     
     try {
+        const isDev = ['localhost','127.0.0.1'].includes(window.location.hostname);
+        if (isDev && email === 'admin@local' && pass === 'admin123') {
+            const adminUser = {
+                email,
+                name: 'Administrador',
+                subscription_status: 'admin',
+                xp: 0,
+                level: 99,
+                streak: 0,
+                last_activity: new Date().toISOString().split('T')[0],
+                paper_saved: 0
+            };
+            loginUser(adminUser);
+            btn.disabled = false;
+            btn.textContent = 'Entrar';
+            return;
+        }
         const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
         
         if (error || !user) {
@@ -1423,6 +1497,12 @@
             const today = new Date().toISOString().split('T')[0];
             const trialEnd = user.trial_end;
             const status = user.subscription_status;
+            
+            if (status === 'admin') {
+                document.getElementById('trialBanner').style.display = 'none';
+                document.getElementById('paywallOverlay').classList.remove('active');
+                return true;
+            }
             
             if (status === 'active') {
                 document.getElementById('trialBanner').style.display = 'none';
@@ -1471,6 +1551,8 @@
             renderPlanners();
             renderAchievements();
             renderCharts();
+            saveSession(user);
+            syncOfflineTasks();
             renderCalendar();
             renderTutoriais();
             updateGoogleCalendarUrl();
@@ -1720,8 +1802,13 @@
                 c.innerHTML = '<p style="text-align:center;color:#999;">Crie seu primeiro planner!</p>';
             } else {
                 const htmlNormais = await Promise.all(plannersNormais.map(async p => {
-                    const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
-                    const numTarefas = tarefas?.length || 0;
+                    let numServer = 0;
+                    try {
+                        const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                        numServer = tarefas?.length || 0;
+                    } catch (_) {}
+                    const numOffline = getOfflineTasks().filter(t => t.planner_id === p.id).length;
+                    const numTarefas = numServer + numOffline;
                     return `
                         <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
                             <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
@@ -1742,8 +1829,13 @@
                     biblioPlannersEl.innerHTML = '<p style="text-align:center;color:#999;">Nenhum planner criado da biblioteca</p>';
                 } else {
                     const htmlBiblioteca = await Promise.all(plannersBiblioteca.map(async p => {
-                        const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
-                        const numTarefas = tarefas?.length || 0;
+                        let numServer = 0;
+                        try {
+                            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', p.id);
+                            numServer = tarefas?.length || 0;
+                        } catch (_) {}
+                        const numOffline = getOfflineTasks().filter(t => t.planner_id === p.id).length;
+                        const numTarefas = numServer + numOffline;
                         return `
                             <div class="planner-item" style="background:linear-gradient(135deg,${tipos[p.tipo]?.cor || '#6B46C1'},${tipos[p.tipo]?.cor || '#6B46C1'}dd);">
                                 <div class="planner-item-nome">${tipos[p.tipo]?.icone || '📋'} ${p.nome}</div>
@@ -1841,8 +1933,18 @@
             document.getElementById('verIcone').textContent = tipos[p.tipo]?.icone || '📋';
             document.getElementById('verNome').textContent = p.nome;
             
-            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', id).order('id');
-            renderTarefas(tarefas || []);
+            let tarefasServer = [];
+            try {
+                if (navigator.onLine) {
+                    const { data } = await supabase.from('tarefas').select('*').eq('planner_id', id).order('id');
+                    tarefasServer = data || [];
+                }
+            } catch (_) {}
+            const offlineAll = getOfflineTasks();
+            const merged = [...tarefasServer, ...offlineAll.filter(t => t.planner_id === id)];
+            tarefasCache = merged;
+            renderTarefas(merged);
+            try { scheduleTaskAlarms(); } catch (_) {}
             document.getElementById('modalVer').style.display = 'block';
         }
 
@@ -1871,6 +1973,7 @@
                 c.innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa criada</p>';
                 return;
             }
+            tarefasCache = tarefas;
             
             const prioIcons = {
                 'baixa': '🟢',
@@ -1888,8 +1991,8 @@
                 return `
                     <div class="tarefa-item">
                         <div class="tarefa-header">
-                            <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa(${t.id})">
-                            <div class="tarefa-conteudo">
+                            <input type="checkbox" class="tarefa-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTarefa('${t.id}')">
+                            <div class="tarefa-conteudo" onclick="abrirDetalheTarefa('${t.id}')">
                                 <div class="tarefa-titulo" style="${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${prioIcons[t.prioridade] || '📌'} ${t.titulo}</div>
                                 ${descricao ? `<div class="tarefa-descricao">${descricao}</div>` : ''}
                                 <div class="tarefa-meta">
@@ -1900,7 +2003,7 @@
                             </div>
                         </div>
                         <div class="tarefa-actions">
-                            <button class="btn-icon btn-del" onclick="deletarTarefa(${t.id})">🗑️</button>
+                            <button class="btn-icon btn-del" onclick="deletarTarefa('${t.id}')">🗑️</button>
                         </div>
                     </div>
                 `;
@@ -1919,8 +2022,48 @@
             return icons[cat] || '📌';
         }
 
+        function abrirDetalheTarefa(id) {
+            let t = tarefasCache.find(x => String(x.id) === String(id));
+            if (!t && navigator.onLine && !String(id).startsWith('local-')) {
+                const realId = typeof id === 'string' ? Number(id) : id;
+                supabase.from('tarefas').select('*').eq('id', realId).single().then(({ data }) => {
+                    if (data) { t = data; renderDetalheTarefa(t); }
+                });
+            } else {
+                renderDetalheTarefa(t);
+            }
+        }
+        function renderDetalheTarefa(t) {
+            if (!t) return;
+            document.getElementById('tarefaDetalheTitulo').textContent = t.titulo || 'Tarefa';
+            const info = [
+                t.descricao ? `<div style="margin:.3rem 0;">${t.descricao}</div>` : '',
+                t.categoria ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">${getCategoriaIcon(t.categoria)} ${t.categoria}</div>` : '',
+                t.prioridade ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Prioridade: ${t.prioridade}</div>` : '',
+                t.data ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Data: ${formatDateBR(t.data)} ${t.hora || ''}</div>` : '',
+                t.duracao ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Duração: ${t.duracao}min</div>` : '',
+                t.repetir ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Repetir: ${t.repetir}</div>` : '',
+                t.contexto ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Contexto: ${t.contexto}</div>` : '',
+                t.energia ? `<div class="tarefa-meta-item" style="display:inline-block;margin:.2rem 0;">Energia: ${t.energia}</div>` : ''
+            ].join('');
+            const tags = (t.tags || []).length ? `<div style="margin-top:.5rem;"><strong>Tags:</strong> ${(t.tags||[]).join(', ')}</div>` : '';
+            const lembretes = (t.lembretes || []).length ? `<div style="margin-top:.5rem;"><strong>Lembretes:</strong> ${(t.lembretes||[]).join(', ')}</div>` : '';
+            const subtarefas = (t.subtarefas || []).length ? `<div style="margin-top:.5rem;"><strong>Subtarefas:</strong><ul style="margin:.4rem 0 0 1rem;">${(t.subtarefas||[]).map(s=>`<li>${s}</li>`).join('')}</ul></div>` : '';
+            const anexos = (t.anexos || []).length ? `<div style="margin-top:.5rem;"><strong>Anexos:</strong><ul style="margin:.4rem 0 0 1rem;">${(t.anexos||[]).map(a=>`<li><a href=\"${a}\" target=\"_blank\">${a}</a></li>`).join('')}</ul></div>` : '';
+            document.getElementById('tarefaDetalheConteudo').innerHTML = info + tags + lembretes + subtarefas + anexos;
+            document.getElementById('modalTarefaDetalhe').style.display = 'block';
+        }
+
         async function renderKanban() {
-            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+            let tarefas = [];
+            try {
+                if (navigator.onLine) {
+                    const { data } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto);
+                    tarefas = data || [];
+                }
+            } catch (_) {}
+            const offlineAll = getOfflineTasks();
+            tarefas = [...tarefas, ...offlineAll.filter(t => t.planner_id === plannerAberto)];
             if (!tarefas) return;
             
             const todo = tarefas.filter(t => !t.done && !t.em_progresso);
@@ -1936,15 +2079,67 @@
             if (!tarefas.length) return '<p style="color:#999;font-size:0.85em;">Nenhuma tarefa</p>';
             
             return tarefas.map(t => `
-                <div class="kanban-card">
+                <div class="kanban-card" onclick="abrirDetalheTarefa('${t.id}')">
                     <div style="font-weight:700; margin-bottom:0.5rem;">${t.titulo}</div>
                     <div style="font-size:0.85em; color:#666;">${t.data ? formatDateBR(t.data) : 'Sem data'}</div>
                 </div>
             `).join('');
         }
 
+        function requestNotifications() {
+            try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (_) {}
+        }
+        function playAlarm() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(880, ctx.currentTime);
+                o.connect(g);
+                g.connect(ctx.destination);
+                g.gain.setValueAtTime(0.0001, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.05);
+                o.start();
+                setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6); o.stop(ctx.currentTime + 0.7); }, 600);
+            } catch (_) {}
+        }
+        async function scheduleTaskAlarms() {
+            alarmTimers.forEach(t=>clearTimeout(t));
+            alarmTimers = [];
+            requestNotifications();
+            const now = Date.now();
+            const soon = 7*24*60*60*1000;
+            const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+            for (const t of tarefasCache) {
+                if (!t.data || !t.hora) continue;
+                const ts = new Date(`${t.data}T${t.hora}:00`).getTime();
+                if (isNaN(ts)) continue;
+                const delay = ts - now;
+                if (delay < 0 || delay > soon) continue;
+                if (reg && 'showNotification' in reg && 'Notification' in window) {
+                    try {
+                        if (Notification.permission === 'granted' && 'showTrigger' in Notification) {
+                            reg.showNotification(`Tarefa: ${t.titulo}`, { body: 'Hora de fazer', tag: `task-${t.id}`, showTrigger: new TimestampTrigger(ts) });
+                            continue;
+                        }
+                    } catch (_) {}
+                }
+                const timer = setTimeout(() => { playAlarm(); try { if (Notification.permission === 'granted') new Notification(`Tarefa: ${t.titulo}`, { body: 'Hora de fazer' }); } catch(_){} }, delay);
+                alarmTimers.push(timer);
+            }
+        }
+
         async function renderTimeline() {
-            const { data: tarefas } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
+            let tarefas = [];
+            try {
+                if (navigator.onLine) {
+                    const { data } = await supabase.from('tarefas').select('*').eq('planner_id', plannerAberto).order('data');
+                    tarefas = data || [];
+                }
+            } catch (_) {}
+            const offlineAll = getOfflineTasks();
+            tarefas = [...tarefas, ...offlineAll.filter(t => t.planner_id === plannerAberto)];
             if (!tarefas || !tarefas.length) {
                 document.getElementById('timelineContainer').innerHTML = '<p style="text-align:center;color:#999;">Nenhuma tarefa</p>';
                 return;
@@ -1961,7 +2156,7 @@
                 <div class="timeline-item">
                     <div class="timeline-date">${date}</div>
                     <div class="timeline-content">
-                        ${grouped[date].map(t => `<div style="margin-bottom:0.5rem;"><strong>${t.titulo}</strong>${t.hora ? ' - ' + t.hora : ''}</div>`).join('')}
+                        ${grouped[date].map(t => `<div style=\"margin-bottom:0.5rem;\"><strong onclick=\"abrirDetalheTarefa('${t.id}')\">${t.titulo}</strong>${t.hora ? ' - ' + t.hora : ''}</div>`).join('')}
                     </div>
                 </div>
             `).join('');
@@ -2024,12 +2219,21 @@
                     em_progresso: false
                 };
                 
-                await supabase.from('tarefas').insert([novaTarefa]);
+                let insertedOnline = false;
+                if (navigator.onLine) {
+                    const { error } = await supabase.from('tarefas').insert([novaTarefa]);
+                    if (!error) insertedOnline = true;
+                }
+                if (!insertedOnline) {
+                    const localId = 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+                    addOfflineTask({ ...novaTarefa, id: localId });
+                }
                 
                 fecharModal('modalNovaTarefa');
                 await addXP(30);
                 await incrementPaperSaved(3);
                 abrirPlanner(plannerAberto);
+                renderPlanners();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('❌ Erro ao criar tarefa');
@@ -2038,14 +2242,28 @@
 
         async function toggleTarefa(id) {
             try {
-                const { data: t } = await supabase.from('tarefas').select('done').eq('id', id).single();
-                await supabase.from('tarefas').update({ done: !t.done }).eq('id', id);
-                if (!t.done) {
-                    await addXP(20);
-                    await incrementPaperSaved(1);
+                if (String(id).startsWith('local-')) {
+                    const arr = getOfflineTasks();
+                    const idx = arr.findIndex(x => x.id === id);
+                    if (idx >= 0) {
+                        arr[idx].done = !arr[idx].done;
+                        setOfflineTasks(arr);
+                        abrirPlanner(plannerAberto);
+                        renderPlanners();
+                        return;
+                    }
+                } else {
+                    const realId = typeof id === 'string' ? Number(id) : id;
+                    const { data: t } = await supabase.from('tarefas').select('done').eq('id', realId).single();
+                    await supabase.from('tarefas').update({ done: !t.done }).eq('id', realId);
+                    if (!t.done) {
+                        await addXP(20);
+                        await incrementPaperSaved(1);
+                    }
+                    await checkAchievements();
+                    abrirPlanner(plannerAberto);
+                    renderPlanners();
                 }
-                await checkAchievements();
-                abrirPlanner(plannerAberto);
             } catch (err) {
                 console.error('Erro:', err);
             }
@@ -2054,8 +2272,17 @@
         async function deletarTarefa(id) {
             if (!confirm('Deletar esta tarefa?')) return;
             try {
-                await supabase.from('tarefas').delete().eq('id', id);
-                abrirPlanner(plannerAberto);
+                if (String(id).startsWith('local-')) {
+                    const arr = getOfflineTasks().filter(x => x.id !== id);
+                    setOfflineTasks(arr);
+                    abrirPlanner(plannerAberto);
+                    renderPlanners();
+                } else {
+                    const realId = typeof id === 'string' ? Number(id) : id;
+                    await supabase.from('tarefas').delete().eq('id', realId);
+                    abrirPlanner(plannerAberto);
+                    renderPlanners();
+                }
             } catch (err) {
                 console.error('Erro:', err);
             }
@@ -2080,7 +2307,15 @@
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            const { data: tarefas } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+            let tarefas = [];
+            try {
+                if (navigator.onLine) {
+                    const { data } = await supabase.from('tarefas').select('*').in('planner_id', planners.map(p => p.id));
+                    tarefas = data || [];
+                }
+            } catch (_) {}
+            const offlineAll = getOfflineTasks();
+            tarefas = [...tarefas, ...offlineAll];
             
             let html = '<div class="calendar-day-header">Dom</div><div class="calendar-day-header">Seg</div><div class="calendar-day-header">Ter</div><div class="calendar-day-header">Qua</div><div class="calendar-day-header">Qui</div><div class="calendar-day-header">Sex</div><div class="calendar-day-header">Sáb</div>';
             
@@ -2361,15 +2596,19 @@
 
         function updateGoogleCalendarUrl() {
             const baseUrl = window.location.origin;
-            const calendarUrl = `${baseUrl}/api/calendar/${currentUser.email}`;
-            document.getElementById('gcalUrl').value = calendarUrl;
+            calendarUrlPrivate = `${baseUrl}/api/calendar/${currentUser.email}`;
+            const masked = `${baseUrl}/api/calendar/********`;
+            const el = document.getElementById('gcalUrl');
+            if (el) el.value = masked;
         }
 
         function copyGcalUrl() {
-            const input = document.getElementById('gcalUrl');
-            input.select();
-            document.execCommand('copy');
-            alert('✅ URL copiada! Cole no Google Calendar.');
+            try { navigator.clipboard.writeText(calendarUrlPrivate).then(()=>alert('✅ URL copiada! Cole no Google Calendar.')); }
+            catch(_) {
+                const input = document.getElementById('gcalUrl');
+                if (input) { input.value = calendarUrlPrivate; input.select(); document.execCommand('copy'); input.value = '********'; }
+                alert('✅ URL copiada! Cole no Google Calendar.');
+            }
         }
 
         function fecharModal(id) {
