@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+    <script defer src="https://va.vercel-scripts.com/v1/script.js" data-token="__VERCEL_ANALYTICS_TOKEN__"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,6 +74,7 @@
         .trial-banner.warning { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
         .trial-banner.danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        .update-banner { padding: 1rem; text-align: center; font-weight: 700; font-size: 0.9em; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         
         .eco-banner { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem; text-align: center; font-weight: 600; }
         .eco-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 0.5rem; }
@@ -329,6 +331,7 @@
     </div>
 
     <div id="trialBanner" class="trial-banner" style="display:none;"></div>
+    <div id="updateBanner" class="update-banner" style="display:none;"></div>
     
     <div class="eco-banner">
         🌱 100% Digital • Zero Papel
@@ -345,6 +348,7 @@
                 <span class="level-badge" onclick="openTab('stats')" id="levelBadge">⭐ Nível 1</span>
                 <span class="streak-badge" id="streakBadge">🔥 0 dias</span>
                 <span class="user-badge">👤 <span id="userName">User</span></span>
+                <button id="subscribeNavBtn" class="btn-nav" onclick="redirectToStripe()" style="display:none;">Assinar</button>
                 <button class="btn-nav" onclick="logout()">Sair</button>
             </div>
         </div>
@@ -844,6 +848,27 @@
             { id: 'planner_pro', name: 'Planejador Pro', icon: '📋', requirement: 5 }
         ];
 
+        const APP_VERSION = '1.1.0';
+        function trackAdminEvent(name, data) {
+            try {
+                if (!currentUser || currentUser.subscription_status !== 'admin') return;
+                if (window.va && typeof window.va.track === 'function') {
+                    window.va.track(name, data || {});
+                }
+            } catch (_) {}
+        }
+        function checkAppVersion() {
+            const prev = localStorage.getItem('planner_ultra_version');
+            if (prev && prev !== APP_VERSION) {
+                const b = document.getElementById('updateBanner');
+                if (b) {
+                    b.innerHTML = `✨ Planner ULTRA atualizado para v${APP_VERSION} • melhorias de desempenho e novos recursos <button class="btn-nav" style="margin-left:.5rem" onclick="closeUpdateBanner()">Fechar</button>`;
+                    b.style.display = 'block';
+                }
+            }
+            localStorage.setItem('planner_ultra_version', APP_VERSION);
+        }
+        function closeUpdateBanner() { const b = document.getElementById('updateBanner'); if (b) b.style.display = 'none'; }
         const OFFLINE_TASKS_KEY = 'planner_ultra_offline_tarefas';
         const SESSION_KEY = 'planner_ultra_user';
         function getOfflineTasks() { try { return JSON.parse(localStorage.getItem(OFFLINE_TASKS_KEY) || '[]'); } catch (_) { return []; } }
@@ -1136,6 +1161,7 @@
                 setupPWAInstall();
                 window.addEventListener('online', syncOfflineTasks);
                 window.addEventListener('online', syncOfflineCalendar);
+                checkAppVersion();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao conectar');
@@ -1475,6 +1501,7 @@
                 paper_saved: 0
             };
             loginUser(adminUser);
+            trackAdminEvent('login', { plan: 'admin', dev: true });
             btn.disabled = false;
             btn.textContent = 'Entrar';
             return;
@@ -1489,6 +1516,7 @@
             return;
         }
         loginUser(user);
+        trackAdminEvent('login', { plan: user.subscription_status });
         
     } catch (err) {
         console.error('Erro:', err);
@@ -1502,16 +1530,19 @@
             const today = new Date().toISOString().split('T')[0];
             const trialEnd = user.trial_end;
             const status = user.subscription_status;
+            const navBtn = document.getElementById('subscribeNavBtn');
             
             if (status === 'admin') {
                 document.getElementById('trialBanner').style.display = 'none';
                 document.getElementById('paywallOverlay').classList.remove('active');
+                if (navBtn) navBtn.style.display = 'none';
                 return true;
             }
             
             if (status === 'active') {
                 document.getElementById('trialBanner').style.display = 'none';
                 document.getElementById('paywallOverlay').classList.remove('active');
+                if (navBtn) navBtn.style.display = 'none';
                 return true;
             }
             
@@ -1519,22 +1550,28 @@
                 const daysLeft = Math.ceil((new Date(trialEnd) - new Date(today)) / (1000 * 60 * 60 * 24));
                 if (daysLeft <= 0) {
                     document.getElementById('paywallOverlay').classList.add('active');
+                    if (navBtn) navBtn.style.display = 'inline-block';
                     return false;
                 }
                 if (daysLeft <= 2) {
                     const banner = document.getElementById('trialBanner');
-                    banner.textContent = `🔥 ÚLTIMO DIA! Assine para não perder acesso`;
+                    banner.innerHTML = `🔥 ÚLTIMO DIA! <button class="btn-nav" style="margin-left:.5rem" onclick="redirectToStripe()">Assine agora</button>`;
                     banner.className = 'trial-banner danger';
                     banner.style.display = 'block';
+                    banner.onclick = redirectToStripe;
+                    if (navBtn) navBtn.style.display = 'inline-block';
                 } else if (daysLeft <= 5) {
                     const banner = document.getElementById('trialBanner');
-                    banner.textContent = `⏰ ${daysLeft} dias restantes • Assine agora`;
+                    banner.innerHTML = `⏰ ${daysLeft} dias restantes • <button class="btn-nav" onclick="redirectToStripe()">Assine agora</button>`;
                     banner.className = 'trial-banner warning';
                     banner.style.display = 'block';
+                    banner.onclick = redirectToStripe;
+                    if (navBtn) navBtn.style.display = 'inline-block';
                 }
                 return true;
             }
             document.getElementById('paywallOverlay').classList.add('active');
+            if (navBtn) navBtn.style.display = 'inline-block';
             return false;
         }
 
@@ -2245,6 +2282,8 @@
                     addOfflineTask({ ...novaTarefa, id: localId });
                 }
                 
+                trackAdminEvent('task_created', { priority: prioridade, online: insertedOnline });
+
                 fecharModal('modalNovaTarefa');
                 await addXP(30);
                 await incrementPaperSaved(3);
