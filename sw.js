@@ -1,115 +1,173 @@
-// Service Worker para Planner Premium ULTRA PWA
-const CACHE_NAME = 'planner-ultra-v1';
+// Service Worker for Planner Premium ULTRA PWA
+
+const CACHE_NAME = 'planner-ultra-v1.0.0';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json',
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js'
+  '/auth.html',
+  '/task-create.html',
+  '/stats.html',
+  '/calendar.html',
+  '/subscription.html',
+  '/achievements.html',
+  '/js/auth.js',
+  '/js/gamification.js',
+  'https://cdn.tailwindcss.com?plugins=forms,container-queries',
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
+  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',
+  'https://cdn.jsdelivr.net/npm/chart.js',
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
 ];
 
-// Instalação - cachear recursos
+// Install event - cache static assets
 self.addEventListener('install', event => {
-  console.log('✅ Service Worker instalado');
+  console.log('Service Worker: Installing...');
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('📦 Cache aberto');
+        console.log('Service Worker: Caching files');
         return cache.addAll(urlsToCache);
       })
-      .catch(err => console.error('❌ Erro ao cachear:', err))
+      .catch(error => {
+        console.error('Service Worker: Error caching files', error);
+      })
   );
-  self.skipWaiting();
 });
 
-// Ativação - limpar cache antigo
+// Fetch event - serve cached content when offline
+self.addEventListener('fetch', event => {
+  // Don't cache certain requests (like API calls)
+  if (event.request.url.includes('/api/') || 
+      event.request.url.includes('supabase') ||
+      event.request.url.includes('googleapis') ||
+      event.request.url.includes('gstatic')) {
+    // Handle API requests separately
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // If we get a valid response, return it
+          if (response.status === 200) {
+            return response;
+          }
+          
+          // Otherwise, try to get from cache
+          return caches.match(event.request)
+            .then(cacheResponse => {
+              return cacheResponse || response;
+            });
+        })
+        .catch(() => {
+          // If network fails, try cache
+          return caches.match(event.request)
+            .then(response => {
+              if (response) {
+                return response;
+              }
+              
+              // If not in cache, return offline page for HTML requests
+              if (event.request.destination === 'document') {
+                return caches.match('/index.html');
+              }
+              
+              // For other requests, return error
+              return new Response('Offline', { status: 503 });
+            });
+        })
+    );
+  } else {
+    // For static assets, try cache first then network
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          // Return cached version if available
+          if (response) {
+            return response;
+          }
+          
+          // Otherwise, fetch from network
+          return fetch(event.request)
+            .then(networkResponse => {
+              // Add to cache for future requests
+              if (networkResponse.status === 200) {
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME)
+                  .then(cache => {
+                    cache.put(event.request, responseToCache);
+                  });
+              }
+              
+              return networkResponse;
+            })
+            .catch(() => {
+              // If network fails, return offline page for HTML requests
+              if (event.request.destination === 'document') {
+                return caches.match('/index.html');
+              }
+              
+              // For other requests, return error
+              return new Response('Offline', { status: 503 });
+            });
+        })
+    );
+  }
+});
+
+// Activate event - clean up old caches
 self.addEventListener('activate', event => {
-  console.log('🔄 Service Worker ativado');
+  console.log('Service Worker: Activating...');
+  
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Removendo cache antigo:', cacheName);
+            console.log('Service Worker: Deleting old cache', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
-  self.clients.claim();
-  self.clients.matchAll({ type: 'window' }).then(clients => {
-    clients.forEach(client => client.postMessage({ type: 'SW_ACTIVATED' }));
-  });
+  
+  // Take control of all clients immediately
+  return self.clients.claim();
 });
 
-// Fetch - estratégia Network First (sempre tenta rede primeiro)
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('/index.html')) {
-    event.respondWith(
-      fetch(event.request, { cache: 'no-store' })
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(()=>{});
-          return response;
-        })
-        .catch(() => caches.match('/index.html'))
-    );
-    return;
+// Listen for message events from the main thread
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      const fetchPromise = fetch(event.request)
-        .then(response => {
-          if (response && response.status === 200) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(()=>{});
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || fetchPromise;
-    })
-  );
 });
 
-// Notificações Push
+// Push notification handler (future implementation)
 self.addEventListener('push', event => {
+  console.log('Service Worker: Push event received');
+  
   const options = {
-    body: event.data ? event.data.text() : '📋 Nova atualização no seu planner!',
-    icon: '/icon-192.png',
-    badge: '/icon-72.png',
-    vibrate: [200, 100, 200],
-    tag: 'planner-notification',
-    requireInteraction: false
+    body: event.data ? event.data.text() : 'Nova notificação',
+    icon: '/assets/icon-192.png',
+    badge: '/assets/badge-72.png',
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    }
   };
-
+  
   event.waitUntil(
-    self.registration.showNotification('✨ Planner Premium ULTRA', options)
+    self.registration.showNotification('Planner ULTRA', options)
   );
 });
 
-// Clique na notificação
+// Notification click handler
 self.addEventListener('notificationclick', event => {
+  console.log('Service Worker: Notification click received');
+  
   event.notification.close();
+  
   event.waitUntil(
     clients.openWindow('/')
   );
 });
-
-// Sincronização em background (quando voltar online)
-self.addEventListener('sync', event => {
-  if (event.tag === 'sync-tarefas') {
-    event.waitUntil(syncTarefas());
-  }
-});
-
-async function syncTarefas() {
-  console.log('🔄 Sincronizando tarefas...');
-  // Aqui você pode adicionar lógica para sincronizar dados offline
-  // com o Supabase quando voltar online
-}
-
-console.log('🚀 Service Worker carregado com sucesso!');
