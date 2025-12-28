@@ -2558,7 +2558,32 @@
         
 
 
-document.addEventListener("DOMContentLoaded",async()=>{try{const e=document.getElementById("lang-select");if(e)e.value=currentLang;const t=localStorage.getItem("planner_ultra_user");if(t){currentUser=JSON.parse(t);await initializeApp()}else showAuthScreen()}finally{setTimeout(()=>{document.getElementById("loading-screen").classList.add("hidden")},500)}}); async function initializeApp(){showMainApp();if(!Array.isArray(planners))planners=[];if(!Array.isArray(tasks))tasks=[];const e=localStorage.getItem("planner_ultra_planners");const t=localStorage.getItem("planner_ultra_tasks");if(e)planners=JSON.parse(e);if(t)tasks=JSON.parse(t);if(planners.length===0){planners=[{id:"p1",user_id:currentUser.id,name:"Meu Planner",created_at:new Date().toISOString()}];localStorage.setItem("planner_ultra_planners",JSON.stringify(planners))}currentPlanner=planners[0]}
+// FORCE OPEN - Esconde loading IMEDIATAMENTE
+setTimeout(() => {
+    const loading = document.getElementById('loading-screen');
+    if (loading) loading.style.display = 'none';
+    const auth = document.getElementById('auth-screen');
+    if (auth) auth.style.display = 'flex';
+    console.log('FORCED OPEN');
+}, 100);
+
+// Inicialização básica
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('auth-screen').style.display = 'flex';
+    }, 200);
+});
+
+// Função de inicialização simples
+async function initializeApp() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    planners = [{id:'p1', user_id: currentUser.id, name: 'Meu Planner'}];
+    tasks = [];
+    currentPlanner = planners[0];
+}
+
     </script>
 </body>
 </html>
