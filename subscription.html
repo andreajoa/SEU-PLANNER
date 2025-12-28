@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Planner Premium ULTRA - Assinatura</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c47c2",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#17141e",
+                        "card-light": "#ffffff",
+                        "card-dark": "#23202e",
+                        "text-primary-light": "#131018",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-light": "#6a5c8a",
+                        "text-secondary-dark": "#a098b5",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "1.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hiding for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col antialiased transition-colors duration-300">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-800/50">
+        <div class="flex items-center gap-4">
+            <button id="back-btn" class="size-10 flex items-center justify-center rounded-full bg-white dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 transition hover:bg-gray-50 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </button>
+            <h1 class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">Assinatura</h1>
+        </div>
+        <button id="help-btn" class="flex size-10 items-center justify-center rounded-full bg-white dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 transition hover:bg-gray-50 dark:hover:bg-gray-800">
+            <span class="material-symbols-outlined text-[24px]">help</span>
+        </button>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-24 space-y-6">
+        <!-- Trial Status Banner -->
+        <div id="trial-banner" class="hidden rounded-2xl bg-gradient-to-r from-primary to-purple-600 p-4 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-2xl">timer</span>
+                    <div>
+                        <h3 class="font-bold">Trial Ativo</h3>
+                        <p class="text-sm opacity-90">Faltam <span id="trial-days-left">0</span> dias para o fim do trial</p>
+                    </div>
+                </div>
+                <button id="upgrade-btn" class="px-4 py-2 bg-white text-primary rounded-lg font-bold hover:bg-gray-100 transition-colors">
+                    Upgrade
+                </button>
+            </div>
+        </div>
+        
+        <!-- Subscription Plans -->
+        <div class="space-y-4">
+            <h2 class="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Planos Disponíveis</h2>
+            
+            <!-- Monthly Plan -->
+            <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800 border-2 border-primary">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Plano Mensal</h3>
+                    <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">Mais Popular</span>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-4xl font-black text-primary">R$ 19,99</span>
+                        <span class="text-text-secondary-light dark:text-text-secondary-dark">/mês</span>
+                    </div>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">Acesso completo a todas as funcionalidades</p>
+                </div>
+                
+                <ul class="space-y-3 mb-6">
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">900+ modelos de planejamento</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Sistema de gamificação completo</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Integração com Google Calendar</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Relatórios e estatísticas avançadas</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Suporte prioritário</span>
+                    </li>
+                </ul>
+                
+                <button id="subscribe-monthly-btn" class="w-full py-3.5 px-4 border border-transparent rounded-xl text-base font-bold text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-primary/30 transform active:scale-[0.98] transition-all duration-200">
+                    Assinar Agora
+                </button>
+            </div>
+            
+            <!-- Annual Plan -->
+            <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Plano Anual</h3>
+                    <span class="px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium">Economize 20%</span>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-text-primary-light dark:text-text-primary-dark">R$ 191,88</span>
+                        <span class="text-text-secondary-light dark:text-text-secondary-dark">/ano</span>
+                    </div>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">R$ 15,99/mês (faturamento anual)</p>
+                </div>
+                
+                <ul class="space-y-3 mb-6">
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Todos os benefícios do plano mensal</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Desconto de 20% no preço total</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Fatura única anual</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm">Cancelamento a qualquer momento</span>
+                    </li>
+                </ul>
+                
+                <button id="subscribe-annual-btn" class="w-full py-3.5 px-4 border border-transparent rounded-xl text-base font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-primary/30 transform active:scale-[0.98] transition-all duration-200">
+                    Assinar Anualmente
+                </button>
+            </div>
+        </div>
+        
+        <!-- Features Comparison -->
+        <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+            <h2 class="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">O que você ganha</h2>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col items-center text-center p-4">
+                    <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">auto_graph</span>
+                    </div>
+                    <h3 class="font-bold text-text-primary-light dark:text-text-primary-dark">Estatísticas</h3>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">Acompanhe seu progresso</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-4">
+                    <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">emoji_events</span>
+                    </div>
+                    <h3 class="font-bold text-text-primary-light dark:text-text-primary-dark">Conquistas</h3>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">Gamificação completa</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-4">
+                    <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">calendar_month</span>
+                    </div>
+                    <h3 class="font-bold text-text-primary-light dark:text-text-primary-dark">Calendário</h3>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">Integração Google Calendar</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-4">
+                    <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
+                    </div>
+                    <h3 class="font-bold text-text-primary-light dark:text-text-primary-dark">Modelos</h3>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">900+ modelos exclusivos</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+            <h2 class="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Perguntas Frequentes</h2>
+            
+            <div class="space-y-4">
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <button class="flex items-center justify-between w-full text-left">
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Como funciona o período de teste?</h3>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <p class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">Você tem 14 dias grátis para experimentar todas as funcionalidades do Planner Premium ULTRA. Após esse período, sua assinatura será cobrada automaticamente, a menos que você cancele antes.</p>
+                </div>
+                
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <button class="flex items-center justify-between w-full text-left">
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Posso cancelar a qualquer momento?</h3>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <p class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">Sim, você pode cancelar sua assinatura a qualquer momento. Após o cancelamento, você continuará tendo acesso ao plano pago até o final do período pago.</p>
+                </div>
+                
+                <div>
+                    <button class="flex items-center justify-between w-full text-left">
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Como faço para reativar minha assinatura?</h3>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <p class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">Se você cancelou sua assinatura, basta selecionar novamente um dos planos e concluir o processo de pagamento para reativar.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-card-dark/95 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800 pb-safe pt-2">
+        <div class="flex justify-around items-end h-16 pb-2">
+            <a class="group flex flex-col items-center gap-1 w-full" href="index.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">home</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Home</span>
+            </a>
+            <a class="group flex flex-col items-center gap-1 w-full" href="calendar.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">calendar_month</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Calendário</span>
+            </a>
+            <a class="group flex flex-col items-center gap-1 w-full" href="stats.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">bar_chart</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Estatísticas</span>
+            </a>
+            <a class="group flex flex-col items-center gap-1 w-full" href="achievements.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">emoji_events</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Conquistas</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p class="text-gray-700 dark:text-gray-200">Processando pagamento...</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Subscription management system
+        class SubscriptionManager {
+            constructor() {
+                this.user = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.loadUserData();
+                this.updateUI();
+            }
+            
+            bindEvents() {
+                // Back button
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+                
+                // Help button
+                document.getElementById('help-btn').addEventListener('click', () => {
+                    // In a real app, this would open help/support
+                    alert('Central de ajuda será implementado');
+                });
+                
+                // Upgrade button
+                document.getElementById('upgrade-btn').addEventListener('click', () => {
+                    this.showSubscriptionOptions();
+                });
+                
+                // Subscribe monthly button
+                document.getElementById('subscribe-monthly-btn').addEventListener('click', () => {
+                    this.initiateSubscription('monthly');
+                });
+                
+                // Subscribe annual button
+                document.getElementById('subscribe-annual-btn').addEventListener('click', () => {
+                    this.initiateSubscription('annual');
+                });
+            }
+            
+            // Load user data
+            loadUserData() {
+                // In a real app, this would fetch user data from Supabase
+                // For now, we'll use localStorage as a mock
+                const user = localStorage.getItem('planner_user');
+                if (user) {
+                    this.user = JSON.parse(user);
+                }
+            }
+            
+            // Update UI based on subscription status
+            updateUI() {
+                if (!this.user) return;
+                
+                const trialBanner = document.getElementById('trial-banner');
+                const upgradeBtn = document.getElementById('upgrade-btn');
+                
+                // Check if user is on trial
+                if (this.user.subscription_status === 'trial') {
+                    const trialEndDate = new Date(this.user.trial_end_date);
+                    const today = new Date();
+                    const daysLeft = Math.ceil((trialEndDate - today) / (1000 * 60 * 60 * 24));
+                    
+                    document.getElementById('trial-days-left').textContent = daysLeft;
+                    trialBanner.classList.remove('hidden');
+                    
+                    // If trial is expired, show paywall
+                    if (daysLeft <= 0) {
+                        this.showPaywall();
+                    }
+                } else if (this.user.subscription_status === 'expired') {
+                    this.showPaywall();
+                } else if (this.user.subscription_status === 'active') {
+                    // User has active subscription, hide trial banner
+                    trialBanner.classList.add('hidden');
+                }
+            }
+            
+            // Show subscription options
+            showSubscriptionOptions() {
+                // Scroll to subscription plans
+                document.querySelector('.space-y-4').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Show paywall
+            showPaywall() {
+                // Create paywall overlay
+                const paywall = document.createElement('div');
+                paywall.id = 'paywall-overlay';
+                paywall.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4';
+                paywall.innerHTML = `
+                    <div class="bg-white dark:bg-background-dark rounded-2xl p-6 max-w-sm w-full text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-2">Trial Expirado</h2>
+                        <p class="text-text-secondary-light dark:text-text-secondary-dark mb-6">
+                            Sua produtividade atingiu o limite gratuito. Desbloqueie o <span class="text-primary font-bold">ULTRA</span> para continuar evoluindo.
+                        </p>
+                        <button id="paywall-subscribe-btn" class="w-full py-3.5 px-4 border border-transparent rounded-xl text-base font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-primary/30 transform active:scale-[0.98] transition-all duration-200 mb-4">
+                            Assinar Agora
+                        </button>
+                        <button id="paywall-close-btn" class="w-full py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-xl text-base font-medium text-text-primary-light dark:text-text-primary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            Fechar
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(paywall);
+                
+                // Add event listeners
+                document.getElementById('paywall-subscribe-btn').addEventListener('click', () => {
+                    this.initiateSubscription('monthly');
+                    paywall.remove();
+                });
+                
+                document.getElementById('paywall-close-btn').addEventListener('click', () => {
+                    paywall.remove();
+                });
+            }
+            
+            // Initiate subscription process
+            async initiateSubscription(planType) {
+                // Show loading
+                document.getElementById('loading-overlay').classList.remove('hidden');
+                
+                try {
+                    // In a real app, this would integrate with Stripe
+                    // For now, we'll simulate the process
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Simulate successful subscription
+                    if (this.user) {
+                        this.user.subscription_status = 'active';
+                        this.user.subscription_type = planType;
+                        this.user.subscription_start_date = new Date().toISOString();
+                        
+                        if (planType === 'annual') {
+                            this.user.subscription_end_date = new Date();
+                            this.user.subscription_end_date.setFullYear(this.user.subscription_end_date.getFullYear() + 1);
+                        } else {
+                            this.user.subscription_end_date = new Date();
+                            this.user.subscription_end_date.setMonth(this.user.subscription_end_date.getMonth() + 1);
+                        }
+                        
+                        localStorage.setItem('planner_user', JSON.stringify(this.user));
+                    }
+                    
+                    // Show success message
+                    alert(`Assinatura ${planType === 'annual' ? 'anual' : 'mensal'} ativada com sucesso!`);
+                    
+                    // Update UI
+                    this.updateUI();
+                    
+                    // Redirect to main app
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Subscription error:', error);
+                    alert('Erro ao processar assinatura: ' + error.message);
+                } finally {
+                    // Hide loading
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }
+            }
+        }
+        
+        // Initialize subscription manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            new SubscriptionManager();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Planner Premium ULTRA - Calendário</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c47c2",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#17141e",
+                        "card-light": "#ffffff",
+                        "card-dark": "#23202e",
+                        "text-primary-light": "#131018",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-light": "#6a5c8a",
+                        "text-secondary-dark": "#a098b5",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "1.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hiding for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col antialiased transition-colors duration-300">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-800/50">
+        <div class="flex items-center gap-4">
+            <button id="back-btn" class="size-10 flex items-center justify-center rounded-full bg-white dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 transition hover:bg-gray-50 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </button>
+            <h1 class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">Calendário</h1>
+        </div>
+        <button id="settings-btn" class="flex size-10 items-center justify-center rounded-full bg-white dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 transition hover:bg-gray-50 dark:hover:bg-gray-800">
+            <span class="material-symbols-outlined text-[24px]">settings</span>
+        </button>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-24 space-y-6">
+        <!-- Google Calendar Integration Card -->
+        <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="size-12 rounded-xl bg-gradient-to-br from-[#4285F4] to-[#34A853] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-2xl">calendar_month</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Google Calendar</h2>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Sincronize suas tarefas com o Google Calendar</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                    <span class="material-symbols-outlined text-blue-500 text-xl mt-0.5">info</span>
+                    <p class="text-sm text-text-primary-light dark:text-text-primary-dark">As tarefas com data definida serão automaticamente adicionadas ao seu calendário Google.</p>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">URL do Calendário</label>
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            id="calendar-url" 
+                            readonly 
+                            class="flex-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 px-4 text-text-primary-light dark:text-text-primary-dark placeholder-text-secondary-light dark:placeholder-text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary sm:text-sm transition-all"
+                            placeholder="Sua URL do calendário aparecerá aqui"
+                        />
+                        <button id="copy-url-btn" class="px-4 py-3 bg-primary text-white rounded-xl font-medium hover:opacity-90 transition-opacity">
+                            <span class="material-symbols-outlined text-[20px]">content_copy</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <button id="connect-calendar-btn" class="w-full py-3.5 px-4 border border-transparent rounded-xl text-base font-bold text-white bg-gradient-to-r from-[#4285F4] to-[#34A853] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4285F4] shadow-lg shadow-[#4285F4]/30 transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    Conectar Google Calendar
+                </button>
+                
+                <div class="pt-4">
+                    <h3 class="font-bold text-text-primary-light dark:text-text-primary-dark mb-3">Como conectar no seu dispositivo:</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+                            <div class="size-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">1</div>
+                            <p class="text-sm text-text-primary-light dark:text-text-primary-dark">Copie a URL do calendário acima</p>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+                            <div class="size-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">2</div>
+                            <p class="text-sm text-text-primary-light dark:text-text-primary-dark">Abra o aplicativo Google Calendar no seu dispositivo</p>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+                            <div class="size-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">3</div>
+                            <p class="text-sm text-text-primary-light dark:text-text-primary-dark">Vá para "Configurações" > "Adicionar calendário" > "Adicionar por URL"</p>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+                            <div class="size-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">4</div>
+                            <p class="text-sm text-text-primary-light dark:text-text-primary-dark">Cole a URL e salve</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sync Status Card -->
+        <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+            <h2 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Status de Sincronização</h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/30 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 rounded-xl bg-green-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-green-500">check_circle</span>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Tarefas Sincronizadas</h3>
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Última sincronização: Hoje, 10:30</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium">Ativo</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/30 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark" id="synced-tasks-count">0</div>
+                        <div class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Tarefas Sincronizadas</div>
+                    </div>
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/30 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark" id="pending-sync-count">0</div>
+                        <div class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Pendentes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Task Sync Settings -->
+        <div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none ring-1 ring-gray-100 dark:ring-gray-800">
+            <h2 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Configurações de Sincronização</h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Sincronizar novas tarefas</h3>
+                        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Adicionar automaticamente novas tarefas ao calendário</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="sync-new-tasks" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Atualizar tarefas existentes</h3>
+                        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Manter o calendário atualizado com alterações</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="sync-updates" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-medium text-text-primary-light dark:text-text-primary-dark">Sincronizar status de conclusão</h3>
+                        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Marcar eventos como concluídos no calendário</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="sync-completion" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-card-dark/95 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800 pb-safe pt-2">
+        <div class="flex justify-around items-end h-16 pb-2">
+            <a class="group flex flex-col items-center gap-1 w-full" href="index.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">home</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Home</span>
+            </a>
+            <!-- Active Calendar Tab -->
+            <a class="relative -top-6 group flex flex-col items-center justify-center w-full" href="#">
+                <div class="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/40 ring-4 ring-white dark:ring-background-dark transform transition-transform group-active:scale-95">
+                    <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                </div>
+                <span class="mt-1 text-[10px] font-bold text-primary">Calendário</span>
+            </a>
+            <a class="group flex flex-col items-center gap-1 w-full" href="stats.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">bar_chart</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Estatísticas</span>
+            </a>
+            <a class="group flex flex-col items-center gap-1 w-full" href="achievements.html">
+                <span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[28px]">emoji_events</span>
+                <span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Conquistas</span>
+            </a>
+        </div>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Google Calendar Integration
+        class CalendarIntegration {
+            constructor() {
+                this.calendarUrl = null;
+                this.isConnected = false;
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.loadCalendarData();
+            }
+            
+            bindEvents() {
+                // Back button
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+                
+                // Settings button
+                document.getElementById('settings-btn').addEventListener('click', () => {
+                    // In a real app, this would open calendar settings
+                    alert('Configurações do calendário será implementado');
+                });
+                
+                // Connect calendar button
+                document.getElementById('connect-calendar-btn').addEventListener('click', () => {
+                    this.connectCalendar();
+                });
+                
+                // Copy URL button
+                document.getElementById('copy-url-btn').addEventListener('click', () => {
+                    this.copyCalendarUrl();
+                });
+                
+                // Sync settings toggles
+                document.getElementById('sync-new-tasks').addEventListener('change', (e) => {
+                    this.updateSyncSetting('syncNewTasks', e.target.checked);
+                });
+                
+                document.getElementById('sync-updates').addEventListener('change', (e) => {
+                    this.updateSyncSetting('syncUpdates', e.target.checked);
+                });
+                
+                document.getElementById('sync-completion').addEventListener('change', (e) => {
+                    this.updateSyncSetting('syncCompletion', e.target.checked);
+                });
+            }
+            
+            // Load calendar data
+            loadCalendarData() {
+                // In a real app, this would fetch calendar data from Supabase
+                // For now, we'll use localStorage as a mock
+                const calendarData = JSON.parse(localStorage.getItem('calendar_integration') || '{}');
+                
+                if (calendarData.url) {
+                    this.calendarUrl = calendarData.url;
+                    this.isConnected = calendarData.isConnected || false;
+                    document.getElementById('calendar-url').value = this.calendarUrl;
+                    document.getElementById('connect-calendar-btn').textContent = 'Calendário Conectado';
+                    document.getElementById('connect-calendar-btn').disabled = true;
+                    document.getElementById('connect-calendar-btn').classList.remove('bg-gradient-to-r', 'from-[#4285F4]', 'to-[#34A853]');
+                    document.getElementById('connect-calendar-btn').classList.add('bg-gray-300', 'dark:bg-gray-600', 'cursor-not-allowed');
+                } else {
+                    // Generate a mock calendar URL
+                    const user = localStorage.getItem('planner_user');
+                    if (user) {
+                        const userData = JSON.parse(user);
+                        this.calendarUrl = `webcal://planner-ultra.com/calendar/${userData.email.replace('@', '_at_')}.ics`;
+                        document.getElementById('calendar-url').value = this.calendarUrl;
+                    }
+                }
+                
+                // Update sync counts
+                this.updateSyncCounts();
+            }
+            
+            // Connect to Google Calendar
+            connectCalendar() {
+                // In a real app, this would initiate the OAuth flow with Google
+                // For now, we'll simulate the connection
+                alert('Em uma implementação real, isso iniciaria o processo de autenticação do Google Calendar.');
+                
+                // Simulate successful connection
+                this.isConnected = true;
+                
+                // Update UI
+                document.getElementById('connect-calendar-btn').textContent = 'Calendário Conectado';
+                document.getElementById('connect-calendar-btn').disabled = true;
+                document.getElementById('connect-calendar-btn').classList.remove('bg-gradient-to-r', 'from-[#4285F4]', 'to-[#34A853]');
+                document.getElementById('connect-calendar-btn').classList.add('bg-gray-300', 'dark:bg-gray-600', 'cursor-not-allowed');
+                
+                // Save to localStorage
+                localStorage.setItem('calendar_integration', JSON.stringify({
+                    url: this.calendarUrl,
+                    isConnected: true,
+                    connectedAt: new Date().toISOString()
+                }));
+                
+                // Show success message
+                this.showNotification('Calendário conectado com sucesso!', 'success');
+            }
+            
+            // Copy calendar URL to clipboard
+            async copyCalendarUrl() {
+                const urlInput = document.getElementById('calendar-url');
+                const url = urlInput.value;
+                
+                if (!url) {
+                    this.showNotification('Nenhuma URL de calendário disponível', 'error');
+                    return;
+                }
+                
+                try {
+                    await navigator.clipboard.writeText(url);
+                    this.showNotification('URL copiada para a área de transferência!', 'success');
+                } catch (err) {
+                    console.error('Failed to copy URL: ', err);
+                    this.showNotification('Falha ao copiar URL. Por favor, copie manualmente.', 'error');
+                }
+            }
+            
+            // Update sync counts display
+            updateSyncCounts() {
+                // In a real app, this would fetch actual sync counts from the backend
+                // For now, we'll use mock data
+                const tasks = JSON.parse(localStorage.getItem('planner_tasks') || '[]');
+                const tasksWithDates = tasks.filter(task => task.data); // Tasks with dates are eligible for calendar sync
+                
+                document.getElementById('synced-tasks-count').textContent = tasksWithDates.length;
+                document.getElementById('pending-sync-count').textContent = 0; // Mock pending count
+            }
+            
+            // Update sync setting
+            updateSyncSetting(settingName, value) {
+                // In a real app, this would save the setting to the backend
+                // For now, we'll save to localStorage
+                const settings = JSON.parse(localStorage.getItem('calendar_settings') || '{}');
+                settings[settingName] = value;
+                localStorage.setItem('calendar_settings', JSON.stringify(settings));
+                
+                this.showNotification(`Configuração "${settingName}" atualizada`, 'info');
+            }
+            
+            // Show notification
+            showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' :
+                    type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                }`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 3000);
+            }
+        }
+        
+        // Initialize calendar integration when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            new CalendarIntegration();
+        });
+    </script>
+</body>
+</html>

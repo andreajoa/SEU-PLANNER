@@ -1,0 +1,21 @@
+# Backups
+*.backup
+
+# Mac
+.DS_Store
+
+# Temp files
+fix-append.js
+
+# Node modules (if any)
+node_modules/
+
+# Vercel
+.vercel
+
+# Editor
+.vscode/
+.idea/
+
+# Duplicated stitch folders (not needed)
+stitch_main_dashboard*/

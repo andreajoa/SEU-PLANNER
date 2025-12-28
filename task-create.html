@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>Planner Premium ULTRA - Nova Tarefa</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c47c2",
+                        "primary-dark": "#56389c",
+                        "background-light": "#ffffff",
+                        "background-offset": "#f7f6f8",
+                        "background-dark": "#17141e",
+                        "background-dark-offset": "#231f2b",
+                        "text-main": "#131018",
+                        "text-muted": "#6a5c8a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'glow': '0 10px 25px -5px rgba(108, 71, 194, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Hide scrollbar for clean mobile UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none
+        }
+        /* Custom checkbox style */
+        .custom-checkbox:checked {
+            background-color: #6c47c2;
+            border-color: #6c47c2;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAZ87z35obhwyMr8fYCbX2ALsoOVbozM1LbQSGUNrEb1gvG6qqDXeSJjS1T5y2sKILkncEowrZqi0ep6RH01JNys30XRBHulmQc5fAsXphuaa-4RlE5R8CBfTYhqy7nqW9xk15u3qWNYkEYjYwRXyCqILpWERzN2XbYe76fe1Qxmz0oddn91OVrjWQ0X4-DLDTbtv7FQX63dRmh3vud3W9UACfDCRtyzAQWlHaHQIXZmUBLfyr6PfQmPqqJTfHttlhDYhXwJrt60Uap)
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white h-[100dvh] flex flex-col overflow-hidden selection:bg-primary/20 antialiased">
+    <!-- Top App Bar -->
+    <header class="flex items-center justify-between px-4 pt-4 pb-2 shrink-0 bg-background-light dark:bg-background-dark z-20">
+        <button id="close-btn" aria-label="Close" class="size-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-text-main dark:text-white">
+            <span class="material-symbols-outlined text-[28px] font-medium">close</span>
+        </button>
+        <h2 class="text-lg font-bold tracking-tight opacity-0 sm:opacity-100 transition-opacity">Nova Tarefa</h2>
+        <button id="clear-btn" class="h-10 px-2 flex items-center justify-center font-bold text-text-muted hover:text-primary transition-colors text-sm">
+            Limpar
+        </button>
+    </header>
+    
+    <!-- Scrollable Form Area -->
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-36 px-5">
+        <!-- Primary Inputs -->
+        <div class="pt-2 pb-6">
+            <input id="task-title" class="w-full bg-transparent border-0 border-b border-transparent focus:border-gray-200 dark:focus:border-gray-700 focus:ring-0 text-3xl font-extrabold placeholder:text-gray-300 dark:placeholder:text-gray-600 px-0 py-3 transition-colors text-text-main dark:text-white" placeholder="Título da Tarefa..." type="text"/>
+            <textarea id="task-description" class="w-full mt-2 bg-transparent border-0 focus:ring-0 text-base text-text-main dark:text-gray-300 placeholder:text-text-muted/60 px-0 min-h-[80px] resize-none leading-relaxed" placeholder="Adicione detalhes, links ou notas..."></textarea>
+        </div>
+        
+        <!-- Metadata Section (Card style) -->
+        <div class="space-y-5">
+            <!-- Category & Priority Row -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-text-muted">Categoria</label>
+                    <div class="relative group">
+                        <select id="task-category" class="w-full appearance-none bg-background-offset dark:bg-background-dark-offset border border-transparent hover:border-primary/20 dark:border-white/5 rounded-xl py-3.5 pl-3 pr-8 text-sm font-semibold text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer shadow-sm">
+                            <option value="Trabalho">💼 Trabalho</option>
+                            <option value="Pessoal">🏠 Pessoal</option>
+                            <option value="Saúde">💊 Saúde</option>
+                            <option value="Estudos">🎓 Estudos</option>
+                            <option value="Finanças">💰 Finanças</option>
+                            <option value="Outro">❓ Outro</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-xl">expand_more</span>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-text-muted">Prioridade</label>
+                    <div class="relative group">
+                        <select id="task-priority" class="w-full appearance-none bg-background-offset dark:bg-background-dark-offset border border-transparent hover:border-primary/20 dark:border-white/5 rounded-xl py-3.5 pl-3 pr-8 text-sm font-semibold text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer shadow-sm">
+                            <option value="Crítica">⚡ Crítica</option>
+                            <option value="Urgente">🔥 Urgente</option>
+                            <option value="Alta">🔴 Alta</option>
+                            <option value="Média">🟡 Média</option>
+                            <option value="Baixa">🟢 Baixa</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-xl">expand_more</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Time Grid -->
+            <div class="grid grid-cols-3 gap-3">
+                <button id="select-date" class="relative flex flex-col items-center justify-center gap-1.5 bg-background-offset dark:bg-background-dark-offset p-3 rounded-xl border border-transparent hover:border-primary/30 transition-all active:scale-95 group">
+                    <span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">calendar_month</span>
+                    <span class="text-xs font-bold text-text-main dark:text-white">Data</span>
+                    <span id="date-display" class="absolute top-1.5 right-1.5 size-1.5 bg-primary rounded-full"></span>
+                </button>
+                <button id="select-time" class="flex flex-col items-center justify-center gap-1.5 bg-background-offset dark:bg-background-dark-offset p-3 rounded-xl border border-transparent hover:border-primary/30 transition-all active:scale-95 group">
+                    <span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">schedule</span>
+                    <span class="text-xs font-bold text-text-main dark:text-white">Horário</span>
+                </button>
+                <button id="select-duration" class="flex flex-col items-center justify-center gap-1.5 bg-background-offset dark:bg-background-dark-offset p-3 rounded-xl border border-transparent hover:border-primary/30 transition-all active:scale-95 group">
+                    <span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">timelapse</span>
+                    <span class="text-xs font-bold text-text-main dark:text-white">Duração</span>
+                </button>
+            </div>
+            
+            <!-- Tags Input -->
+            <div class="space-y-2">
+                <label class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white">
+                    <span class="material-symbols-outlined text-lg text-primary">sell</span>
+                    Tags
+                </label>
+                <div id="tags-container" class="flex flex-wrap items-center gap-2 min-h-[48px] rounded-xl bg-background-offset dark:bg-background-dark-offset p-2 border border-transparent focus-within:border-primary/30 focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                    <!-- Tags will be added here dynamically -->
+                    <input id="tag-input" class="bg-transparent border-none focus:ring-0 text-sm p-0 w-16 placeholder:text-text-muted dark:placeholder:text-gray-500 dark:text-white" placeholder="+ Tag" type="text"/>
+                </div>
+            </div>
+            
+            <!-- Context Selection -->
+            <div class="space-y-2">
+                <label class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white">
+                    <span class="material-symbols-outlined text-lg text-primary">location_on</span>
+                    Contexto
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" data-context="Qualquer lugar" class="context-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Qualquer lugar</button>
+                    <button type="button" data-context="Casa" class="context-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Casa</button>
+                    <button type="button" data-context="Escritório" class="context-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Escritório</button>
+                    <button type="button" data-context="Online" class="context-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Online</button>
+                </div>
+            </div>
+            
+            <!-- Energy Level -->
+            <div class="space-y-2">
+                <label class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white">
+                    <span class="material-symbols-outlined text-lg text-primary">bolt</span>
+                    Nível de Energia
+                </label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-energy="Baixa" class="energy-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center gap-1">
+                        😊 Baixa
+                    </button>
+                    <button type="button" data-energy="Média" class="energy-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center gap-1">
+                        ⚡ Média
+                    </button>
+                    <button type="button" data-energy="Alta" class="energy-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center gap-1">
+                        🔥 Alta
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Subtasks (Gamified) -->
+            <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white">
+                        <span class="material-symbols-outlined text-lg text-primary">checklist_rtl</span>
+                        Subtarefas
+                    </label>
+                    <span id="subtasks-count" class="text-[10px] font-bold tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-md">
+                        0/0 CONCLUÍDAS
+                    </span>
+                </div>
+                <div id="subtasks-container" class="space-y-0.5 rounded-xl overflow-hidden bg-background-offset dark:bg-background-dark-offset border border-transparent dark:border-white/5">
+                    <!-- Subtasks will be added here dynamically -->
+                    <button id="add-subtask-btn" class="w-full flex items-center gap-2 p-3 text-sm font-semibold text-text-muted hover:text-primary hover:bg-white dark:hover:bg-white/5 transition-all">
+                        <span class="material-symbols-outlined text-xl">add_circle</span>
+                        Adicionar etapa
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Repeat Options -->
+            <div class="space-y-2">
+                <label class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white">
+                    <span class="material-symbols-outlined text-lg text-primary">repeat</span>
+                    Repetir
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" data-repeat="Nenhum" class="repeat-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Nenhum</button>
+                    <button type="button" data-repeat="Diário" class="repeat-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Diário</button>
+                    <button type="button" data-repeat="Semanal" class="repeat-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Semanal</button>
+                    <button type="button" data-repeat="Mensal" class="repeat-btn py-2.5 px-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-text-main dark:text-white bg-background-offset dark:bg-background-dark-offset hover:bg-gray-100 dark:hover:bg-gray-700">Mensal</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Sticky Footer CTA -->
+    <div class="fixed bottom-0 left-0 w-full p-4 pb-6 bg-gradient-to-t from-background-light via-background-light/95 to-transparent dark:from-background-dark dark:via-background-dark/95 z-30">
+        <button id="save-task-btn" class="w-full relative group overflow-hidden rounded-2xl shadow-glow transition-transform active:scale-[0.98]">
+            <!-- Gradient Background -->
+            <div class="absolute inset-0 bg-gradient-to-r from-primary to-[#8b5cf6] transition-opacity duration-300 group-hover:opacity-90"></div>
+            <!-- Button Content -->
+            <div class="relative flex items-center justify-between px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-white fill-1">save</span>
+                    <span class="text-white font-bold text-lg tracking-wide">Salvar Tarefa</span>
+                </div>
+                <!-- Gamification Badge -->
+                <div class="flex items-center gap-1 bg-white/20 backdrop-blur-md rounded-lg px-2.5 py-1 text-xs font-extrabold text-white border border-white/10 shadow-sm">
+                    <span class="material-symbols-outlined text-sm">bolt</span>
+                    +10 XP
+                </div>
+            </div>
+        </button>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p class="text-gray-700 dark:text-gray-200">Salvando tarefa...</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/gamification.js"></script>
+    <script src="js/offline.js"></script>
+    <script>
+        // Task management system
+        class TaskManager {
+            constructor() {
+                this.currentTags = [];
+                this.currentSubtasks = [];
+                this.selectedDate = null;
+                this.selectedTime = null;
+                this.selectedDuration = null;
+                this.selectedContext = null;
+                this.selectedEnergy = null;
+                this.selectedRepeat = 'Nenhum';
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.loadCurrentPlanner();
+            }
+            
+            bindEvents() {
+                // Close button
+                document.getElementById('close-btn').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+                
+                // Clear button
+                document.getElementById('clear-btn').addEventListener('click', () => {
+                    this.clearForm();
+                });
+                
+                // Add tag functionality
+                const tagInput = document.getElementById('tag-input');
+                tagInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.addTag(tagInput.value.trim());
+                        tagInput.value = '';
+                    }
+                });
+                
+                // Add subtask functionality
+                document.getElementById('add-subtask-btn').addEventListener('click', () => {
+                    this.addSubtask();
+                });
+                
+                // Context selection
+                document.querySelectorAll('.context-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.context-btn').forEach(b => {
+                            b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                        });
+                        e.target.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+                        this.selectedContext = e.target.dataset.context;
+                    });
+                });
+                
+                // Energy level selection
+                document.querySelectorAll('.energy-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.energy-btn').forEach(b => {
+                            b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                        });
+                        e.target.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+                        this.selectedEnergy = e.target.dataset.energy;
+                    });
+                });
+                
+                // Repeat selection
+                document.querySelectorAll('.repeat-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.repeat-btn').forEach(b => {
+                            b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                        });
+                        e.target.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+                        this.selectedRepeat = e.target.dataset.repeat;
+                    });
+                });
+                
+                // Save task button
+                document.getElementById('save-task-btn').addEventListener('click', () => {
+                    this.saveTask();
+                });
+                
+                // Date selection
+                document.getElementById('select-date').addEventListener('click', () => {
+                    // In a real app, this would open a date picker
+                    const date = prompt('Selecione a data (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+                    if (date) {
+                        this.selectedDate = date;
+                        document.getElementById('date-display').textContent = date;
+                        document.getElementById('date-display').classList.remove('hidden');
+                    }
+                });
+                
+                // Time selection
+                document.getElementById('select-time').addEventListener('click', () => {
+                    // In a real app, this would open a time picker
+                    const time = prompt('Selecione o horário (HH:MM):', '09:00');
+                    if (time) {
+                        this.selectedTime = time;
+                    }
+                });
+                
+                // Duration selection
+                document.getElementById('select-duration').addEventListener('click', () => {
+                    // In a real app, this would open a duration picker
+                    const duration = prompt('Duração em minutos:', '60');
+                    if (duration && !isNaN(duration)) {
+                        this.selectedDuration = parseInt(duration);
+                    }
+                });
+            }
+            
+            loadCurrentPlanner() {
+                // In a real app, we would get the current planner from localStorage or URL params
+                // For now, we'll use a default planner
+                this.currentPlannerId = 1;
+            }
+            
+            addTag(tag) {
+                if (tag && !this.currentTags.includes(tag)) {
+                    this.currentTags.push(tag);
+                    this.renderTags();
+                }
+            }
+            
+            removeTag(tag) {
+                this.currentTags = this.currentTags.filter(t => t !== tag);
+                this.renderTags();
+            }
+            
+            renderTags() {
+                const container = document.getElementById('tags-container');
+                const tagInput = document.getElementById('tag-input');
+                
+                // Remove existing tag elements (but keep the input)
+                const existingTags = container.querySelectorAll('.tag-chip');
+                existingTags.forEach(tag => tag.remove());
+                
+                // Add tags back
+                this.currentTags.forEach(tag => {
+                    const tagElement = document.createElement('div');
+                    tagElement.className = 'tag-chip flex items-center gap-1 bg-primary text-white pl-3 pr-2 py-1 rounded-full text-xs font-bold shadow-sm';
+                    tagElement.innerHTML = `
+                        #${tag}
+                        <button class="remove-tag-btn hover:bg-white/20 rounded-full p-0.5 transition-colors">
+                            <span class="material-symbols-outlined text-[14px] leading-none">close</span>
+                        </button>
+                    `;
+                    
+                    container.insertBefore(tagElement, tagInput);
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-tag-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const tagElement = e.target.closest('.tag-chip');
+                        const tagText = tagElement.textContent.trim().substring(1); // Remove '#'
+                        this.removeTag(tagText);
+                    });
+                });
+            }
+            
+            addSubtask() {
+                const title = prompt('Título da subtarefa:');
+                if (title) {
+                    const subtask = {
+                        id: Date.now(), // Simple ID generation
+                        title: title,
+                        completed: false
+                    };
+                    this.currentSubtasks.push(subtask);
+                    this.renderSubtasks();
+                }
+            }
+            
+            toggleSubtask(id) {
+                const subtask = this.currentSubtasks.find(st => st.id === id);
+                if (subtask) {
+                    subtask.completed = !subtask.completed;
+                    this.renderSubtasks();
+                }
+            }
+            
+            removeSubtask(id) {
+                this.currentSubtasks = this.currentSubtasks.filter(st => st.id !== id);
+                this.renderSubtasks();
+            }
+            
+            renderSubtasks() {
+                const container = document.getElementById('subtasks-container');
+                const addBtn = document.getElementById('add-subtask-btn');
+                
+                // Remove existing subtask elements (but keep the add button)
+                const existingSubtasks = container.querySelectorAll('.subtask-item');
+                existingSubtasks.forEach(st => st.remove());
+                
+                // Add subtasks back
+                this.currentSubtasks.forEach(subtask => {
+                    const subtaskElement = document.createElement('div');
+                    subtaskElement.className = 'subtask-item group flex items-start gap-3 p-3 hover:bg-white dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
+                    subtaskElement.innerHTML = `
+                        <div class="relative flex items-center pt-0.5">
+                            <input type="checkbox" class="custom-checkbox size-5 rounded-md border-2 border-gray-300 dark:border-gray-600 focus:ring-0 cursor-pointer transition-all" ${subtask.completed ? 'checked' : ''}>
+                        </div>
+                        <span class="text-sm font-medium text-text-main dark:text-gray-200 group-hover:text-primary transition-colors ${subtask.completed ? 'line-through text-gray-400' : ''}">${subtask.title}</span>
+                        <button class="remove-subtask-btn ml-auto text-gray-400 hover:text-red-500">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                    `;
+                    
+                    container.insertBefore(subtaskElement, addBtn);
+                });
+                
+                // Add event listeners to checkboxes
+                document.querySelectorAll('.subtask-item input[type="checkbox"]').forEach((checkbox, index) => {
+                    checkbox.addEventListener('change', () => {
+                        this.toggleSubtask(this.currentSubtasks[index].id);
+                    });
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-subtask-btn').forEach((btn, index) => {
+                    btn.addEventListener('click', () => {
+                        this.removeSubtask(this.currentSubtasks[index].id);
+                    });
+                });
+                
+                // Update subtasks count
+                const completedCount = this.currentSubtasks.filter(st => st.completed).length;
+                document.getElementById('subtasks-count').textContent = `${completedCount}/${this.currentSubtasks.length} CONCLUÍDAS`;
+            }
+            
+            clearForm() {
+                if (confirm('Tem certeza que deseja limpar o formulário?')) {
+                    document.getElementById('task-title').value = '';
+                    document.getElementById('task-description').value = '';
+                    document.getElementById('task-category').value = 'Pessoal';
+                    document.getElementById('task-priority').value = 'Média';
+                    
+                    this.currentTags = [];
+                    this.currentSubtasks = [];
+                    this.selectedDate = null;
+                    this.selectedTime = null;
+                    this.selectedDuration = null;
+                    this.selectedContext = null;
+                    this.selectedEnergy = null;
+                    this.selectedRepeat = 'Nenhum';
+                    
+                    this.renderTags();
+                    this.renderSubtasks();
+                    
+                    // Reset selections
+                    document.querySelectorAll('.context-btn').forEach(b => {
+                        b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                    });
+                    document.querySelectorAll('.energy-btn').forEach(b => {
+                        b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                    });
+                    document.querySelectorAll('.repeat-btn').forEach(b => {
+                        b.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                    });
+                    
+                    document.getElementById('date-display').classList.add('hidden');
+                }
+            }
+            
+            async saveTask() {
+                const title = document.getElementById('task-title').value.trim();
+                if (!title) {
+                    alert('Por favor, informe o título da tarefa');
+                    return;
+                }
+                
+                // Show loading
+                document.getElementById('loading-overlay').classList.remove('hidden');
+                
+                try {
+                    // Prepare task data
+                    const taskData = {
+                        planner_id: this.currentPlannerId,
+                        titulo: title,
+                        descricao: document.getElementById('task-description').value.trim(),
+                        categoria: document.getElementById('task-category').value,
+                        prioridade: document.getElementById('task-priority').value,
+                        data: this.selectedDate,
+                        hora: this.selectedTime,
+                        duracao: this.selectedDuration,
+                        repetir: this.selectedRepeat,
+                        contexto: this.selectedContext,
+                        energia: this.selectedEnergy,
+                        tags: this.currentTags,
+                        subtarefas: this.currentSubtasks,
+                        done: false,
+                        em_progresso: false
+                    };
+                    
+                    // Check if we're online
+                    if (navigator.onLine) {
+                        // In a real app, we would save to Supabase
+                        // For now, we'll save to localStorage as a mock
+                        let tasks = JSON.parse(localStorage.getItem('planner_tasks') || '[]');
+                        taskData.id = Date.now(); // Simple ID generation
+                        taskData.created_at = new Date().toISOString();
+                        tasks.push(taskData);
+                        localStorage.setItem('planner_tasks', JSON.stringify(tasks));
+                        
+                        // Award XP for creating a task
+                        const xpResult = gamification.awardTaskCompletionXp();
+                        
+                        // Show success message
+                        alert(`Tarefa "${title}" salva com sucesso! +${xpResult.xpAdded} XP`);
+                    } else {
+                        // We're offline, queue the operation
+                        taskData.id = Date.now(); // Simple ID generation
+                        taskData.created_at = new Date().toISOString();
+                        
+                        const operation = {
+                            type: 'create_task',
+                            data: taskData
+                        };
+                        
+                        offlineSupport.queueOperation(operation);
+                        
+                        // Award XP for creating a task
+                        const xpResult = gamification.awardTaskCompletionXp();
+                        
+                        // Show offline success message
+                        alert(`Tarefa "${title}" salva localmente! Será sincronizada quando você estiver online. +${xpResult.xpAdded} XP`);
+                    }
+                    
+                    // Redirect back to main page
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Error saving task:', error);
+                    alert('Erro ao salvar tarefa: ' + error.message);
+                } finally {
+                    // Hide loading
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }
+            }
+        }
+        
+        // Initialize task manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new TaskManager();
+        });
+    </script>
+</body>
+</html>

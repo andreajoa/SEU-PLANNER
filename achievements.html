@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Planner Premium ULTRA - Conquistas</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c47c2",
+                        "primary-light": "#8a6fd4",
+                        "background-light": "#f9f9fb",
+                        "background-dark": "#131018",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e1b24",
+                        "text-main-light": "#131018",
+                        "text-main-dark": "#ffffff",
+                        "text-sub-light": "#6a5c8a",
+                        "text-sub-dark": "#9ca3af",
+                        "border-light": "#d8d4e2",
+                        "border-dark": "#2d2a35",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hide for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200">
+    <div class="relative flex h-auto min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark overflow-x-hidden shadow-xl">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 flex items-center bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm p-4 pb-2 justify-between border-b border-transparent dark:border-border-dark">
+            <button id="back-btn" class="flex size-10 shrink-0 items-center justify-center rounded-full active:bg-gray-100 dark:active:bg-white/10 transition-colors text-text-main-light dark:text-text-main-dark">
+                <span class="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+            <h2 class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Conquistas</h2>
+        </header>
+        
+        <!-- Progress Section -->
+        <div class="flex flex-col gap-3 px-6 py-4">
+            <div class="flex gap-6 justify-between items-end">
+                <p class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-normal" id="achievements-completed">0/7 Desbloqueadas</p>
+                <p class="text-text-sub-light dark:text-text-sub-dark text-sm font-medium leading-normal" id="achievements-percent">0%</p>
+            </div>
+            <div class="relative h-4 w-full rounded-full bg-border-light dark:bg-border-dark overflow-hidden">
+                <div id="achievements-progress" class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-primary to-primary-light transition-all duration-1000 ease-out" style="width: 0%;"></div>
+                <!-- Shine effect -->
+                <div class="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" style="width: 0%;"></div>
+            </div>
+            <p class="text-text-sub-light dark:text-text-sub-dark text-xs font-normal leading-normal text-center mt-1">Continue completando tarefas para subir de nível!</p>
+        </div>
+        
+        <!-- Achievements Grid -->
+        <main class="flex-1 p-4" id="achievements-grid">
+            <!-- Achievements will be populated dynamically -->
+            <div class="text-center py-8 text-text-sub-light dark:text-text-sub-dark">
+                Carregando conquistas...
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <nav class="sticky bottom-0 border-t border-border-light dark:border-border-dark bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 pb-6 pt-2">
+            <div class="flex gap-2">
+                <a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-sub-light dark:text-text-sub-dark hover:text-primary dark:hover:text-primary transition-colors" href="index.html">
+                    <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0, 'wght' 400;">check_circle</span>
+                    <p class="text-[10px] font-medium leading-normal tracking-[0.015em]">Hoje</p>
+                </a>
+                <a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-sub-light dark:text-text-sub-dark hover:text-primary dark:hover:text-primary transition-colors" href="calendar.html">
+                    <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0, 'wght' 400;">calendar_today</span>
+                    <p class="text-[10px] font-medium leading-normal tracking-[0.015em]">Calendário</p>
+                </a>
+                <a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-sub-light dark:text-text-sub-dark hover:text-primary dark:hover:text-primary transition-colors" href="stats.html">
+                    <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0, 'wght' 400;">bar_chart</span>
+                    <p class="text-[10px] font-medium leading-normal tracking-[0.015em]">Estatísticas</p>
+                </a>
+                <a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+                    <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1, 'wght' 600;">emoji_events</span>
+                    <p class="text-[10px] font-bold leading-normal tracking-[0.015em]">Conquistas</p>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/gamification.js"></script>
+    <script>
+        // Achievements page
+        class AchievementsPage {
+            constructor() {
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.loadAchievements();
+            }
+            
+            bindEvents() {
+                // Back button
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+            }
+            
+            // Load and display achievements
+            loadAchievements() {
+                if (typeof gamification !== 'undefined') {
+                    const allAchievements = gamification.getAllAchievements();
+                    const userStats = gamification.getUserStats();
+                    
+                    // Update progress
+                    document.getElementById('achievements-completed').textContent = `${userStats.unlockedAchievements.length}/${allAchievements.length} Desbloqueadas`;
+                    const percent = allAchievements.length > 0 ? Math.round((userStats.unlockedAchievements.length / allAchievements.length) * 100) : 0;
+                    document.getElementById('achievements-percent').textContent = `${percent}%`;
+                    document.getElementById('achievements-progress').style.width = `${percent}%`;
+                    
+                    // Render achievements grid
+                    this.renderAchievements(allAchievements);
+                } else {
+                    // Fallback if gamification system not loaded
+                    this.renderFallbackAchievements();
+                }
+            }
+            
+            // Render achievements grid
+            renderAchievements(achievements) {
+                const container = document.getElementById('achievements-grid');
+                container.innerHTML = '<div class="grid grid-cols-3 gap-3"></div>';
+                const grid = container.querySelector('.grid');
+                
+                achievements.forEach(achievement => {
+                    const achievementCard = document.createElement('div');
+                    achievementCard.className = `group relative flex flex-col items-center gap-2 rounded-xl border ${
+                        achievement.unlocked 
+                            ? 'border-primary/20 bg-card-light dark:bg-card-dark' 
+                            : 'border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark opacity-60 grayscale'
+                    } p-3 text-center active:scale-95 transition-all duration-200`;
+                    
+                    if (achievement.unlocked) {
+                        achievementCard.innerHTML = `
+                            <div class="absolute top-2 right-2 text-primary">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full ${
+                                achievement.id === 'week_streak' || achievement.id === 'month_streak' 
+                                    ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' 
+                                    : 'bg-primary/10 text-primary'
+                            }">
+                                <span class="text-2xl">${achievement.icon}</span>
+                            </div>
+                            <h3 class="text-xs font-bold leading-tight text-text-main-light dark:text-text-main-dark">${achievement.name}</h3>
+                        `;
+                    } else {
+                        achievementCard.innerHTML = `
+                            <div class="absolute top-2 right-2 text-text-sub-light dark:text-text-sub-dark">
+                                <span class="material-symbols-outlined text-[16px]">lock</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400">
+                                <span class="text-2xl opacity-50">${achievement.icon}</span>
+                            </div>
+                            <h3 class="text-xs font-medium leading-tight text-text-sub-light dark:text-text-sub-dark">${achievement.name}</h3>
+                        `;
+                    }
+                    
+                    grid.appendChild(achievementCard);
+                });
+                
+                // Add empty slots to maintain grid alignment if needed
+                const remainingSlots = (3 - (achievements.length % 3)) % 3;
+                for (let i = 0; i < remainingSlots; i++) {
+                    const emptySlot = document.createElement('div');
+                    emptySlot.className = 'invisible';
+                    grid.appendChild(emptySlot);
+                }
+            }
+            
+            // Render fallback achievements if gamification not available
+            renderFallbackAchievements() {
+                const container = document.getElementById('achievements-grid');
+                container.innerHTML = `
+                    <div class="grid grid-cols-3 gap-3">
+                        <!-- Sample achievements -->
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-primary/20 bg-card-light dark:bg-card-dark p-3 text-center active:scale-95 transition-transform duration-100">
+                            <div class="absolute top-2 right-2 text-primary">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <span class="text-2xl">🎯</span>
+                            </div>
+                            <h3 class="text-xs font-bold leading-tight text-text-main-light dark:text-text-main-dark">Primeira Tarefa</h3>
+                        </div>
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-primary/20 bg-card-light dark:bg-card-dark p-3 text-center active:scale-95 transition-transform duration-100">
+                            <div class="absolute top-2 right-2 text-primary">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <span class="text-2xl">👑</span>
+                            </div>
+                            <h3 class="text-xs font-bold leading-tight text-text-main-light dark:text-text-main-dark">Mestre das Tarefas</h3>
+                        </div>
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-3 text-center opacity-60 grayscale active:opacity-100 active:grayscale-0 transition-all duration-200">
+                            <div class="absolute top-2 right-2 text-text-sub-light dark:text-text-sub-dark">
+                                <span class="material-symbols-outlined text-[16px]">lock</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400">
+                                <span class="text-2xl opacity-50">💯</span>
+                            </div>
+                            <h3 class="text-xs font-medium leading-tight text-text-sub-light dark:text-text-sub-dark">Centenário</h3>
+                        </div>
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-primary/20 bg-card-light dark:bg-card-dark p-3 text-center active:scale-95 transition-transform duration-100">
+                            <div class="absolute top-2 right-2 text-primary">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+                                <span class="text-2xl">🔥</span>
+                            </div>
+                            <h3 class="text-xs font-bold leading-tight text-text-main-light dark:text-text-main-dark">Streak 7 Dias</h3>
+                        </div>
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-3 text-center opacity-60 grayscale active:opacity-100 active:grayscale-0 transition-all duration-200">
+                            <div class="absolute top-2 right-2 text-text-sub-light dark:text-text-sub-dark">
+                                <span class="material-symbols-outlined text-[16px]">lock</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400">
+                                <span class="text-2xl opacity-50">💪</span>
+                            </div>
+                            <h3 class="text-xs font-medium leading-tight text-text-sub-light dark:text-text-sub-dark">Streak 30 Dias</h3>
+                        </div>
+                        <div class="group relative flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-3 text-center opacity-60 grayscale active:opacity-100 active:grayscale-0 transition-all duration-200">
+                            <div class="absolute top-2 right-2 text-text-sub-light dark:text-text-sub-dark">
+                                <span class="material-symbols-outlined text-[16px]">lock</span>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400">
+                                <span class="text-2xl opacity-50">⭐</span>
+                            </div>
+                            <h3 class="text-xs font-medium leading-tight text-text-sub-light dark:text-text-sub-dark">Nível 10</h3>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize achievements page when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            new AchievementsPage();
+        });
+    </script>
+</body>
+</html>
