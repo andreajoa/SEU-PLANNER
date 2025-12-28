@@ -2721,3 +2721,15 @@
         });
 
         
+
+        // Initialize App Function
+        async function initializeApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            
+            // Load user data and initialize app
+            console.log('App initialized for user:', currentUser.email);
+        }
+    </script>
+</body>
+</html>
