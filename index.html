@@ -2559,17 +2559,17 @@
 
 
 // FORCE OPEN - Esconde loading IMEDIATAMENTE
-setTimeout(() => {
+// FIXED: setTimeout(() => {
     const loading = document.getElementById('loading-screen');
     if (loading) loading.style.display = 'none';
     const auth = document.getElementById('auth-screen');
     if (auth) auth.style.display = 'flex';
     console.log('FORCED OPEN');
-}, 100);
+// }, 100);
 
 // Inicialização básica
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
+    // FIXED: setTimeout(() => {
         document.getElementById('loading-screen').style.display = 'none';
         document.getElementById('auth-screen').style.display = 'flex';
     }, 200);
@@ -2587,3 +2587,40 @@ async function initializeApp() {
     </script>
 </body>
 </html>
+
+<!-- CRITICAL FIX: Proper initialization -->
+<script>
+window.addEventListener('load', function() {
+    console.log('CRITICAL FIX: Page loaded, initializing...');
+    setTimeout(function() {
+        const loading = document.getElementById('loading-screen');
+        const authScreen = document.getElementById('auth-screen');
+        const mainApp = document.getElementById('main-app');
+        
+        if (loading) {
+            loading.classList.add('hidden');
+            loading.style.display = 'none';
+        }
+        
+        // Check if user is logged in (demo mode)
+        const hasUser = localStorage.getItem('planner_demo_user');
+        
+        if (hasUser && mainApp) {
+            mainApp.style.display = 'block';
+            if (authScreen) authScreen.style.display = 'none';
+            console.log('User found, showing main app');
+        } else if (authScreen) {
+            authScreen.style.display = 'flex';
+            if (mainApp) mainApp.style.display = 'none';
+            console.log('No user, showing auth screen');
+        }
+    }, 500);
+});
+
+// Auto-login for demo mode
+document.getElementById('auth-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    localStorage.setItem('planner_demo_user', 'demo');
+    location.reload();
+});
+</script>
