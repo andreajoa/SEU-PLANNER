@@ -2585,90 +2585,93 @@ async function initializeApp() {
 }
 
     </script>
+
+<!-- PLANNER ULTRA COMPLETE SCRIPT -->
+<script>
+auth-form');
+    if (authForm) {
+        authForm.addEventListener('submit', handleAuth);
+        console.log('✅ Auth form listener attached');
+    }
+    
+    // Setup auth tabs
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const isSignup = this.dataset.tab === 'signup';
+            const nameGroup = document.getElementById('name-group');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            
+            if (nameGroup) nameGroup.style.display = isSignup ? 'block' : 'none';
+            if (submitBtn) submitBtn.querySelector('span').textContent = isSignup ? 'Criar Conta' : 'Entrar';
+        });
+    });
+    
+    // Setup tag input Enter key
+    const tagInput = document.getElementById('tag-input');
+    if (tagInput) {
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag();
+            }
+        });
+    }
+    
+    // Setup subtask input Enter key
+    const subtaskInput = document.getElementById('subtask-input');
+    if (subtaskInput) {
+        subtaskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSubtask();
+            }
+        });
+    }
+    
+    console.log('✅ Planner ULTRA fully initialized!');
+});
+
+// Make all functions globally accessible
+window.switchTab = switchTab;
+window.createPlanner = createPlanner;
+window.openPlanner = openPlanner;
+window.deletePlanner = deletePlanner;
+window.closePlannerModal = closePlannerModal;
+window.openTaskModal = openTaskModal;
+window.closeTaskModal = closeTaskModal;
+window.saveTask = saveTask;
+window.toggleTask = toggleTask;
+window.deleteTask = deleteTask;
+window.setView = setView;
+window.filterTasks = filterTasks;
+window.addTag = addTag;
+window.removeTag = removeTag;
+window.addSubtask = addSubtask;
+window.removeSubtask = removeSubtask;
+window.closeLevelUpModal = closeLevelUpModal;
+window.changeMonth = changeMonth;
+window.openTemplate = openTemplate;
+window.openTutorial = openTutorial;
+window.exportCSV = exportCSV;
+window.exportPDF = exportPDF;
+window.copyCalendarUrl = copyCalendarUrl;
+window.showPaywall = showPaywall;
+window.subscribe = subscribe;
+window.logout = logout;
+window.changeLanguage = changeLanguage;
+
+console.log('✅ Planner ULTRA Complete v1.0 - All functions loaded!');
+
+</script>
+
 </body>
 </html>
 
 
-<script src="app-functions.js"></script>
-<script>
-// Global state
-window.plannerState = {
-    currentUser: null,
-    planners: [],
-    tasks: [],
-    currentPlanner: null,
-    currentView: 'list',
-    currentLang: 'pt',
-    currentTags: [],
-    currentSubtasks: [],
-    editingTaskId: null
-};
 
-// Make functions globally accessible
-window.switchTab = function(tab) { console.log('Switch tab:', tab); };
-window.createPlanner = function(type) {
-    const user = JSON.parse(localStorage.getItem('planner_user') || '{}');
-    const planners = JSON.parse(localStorage.getItem('planner_planners') || '[]');
-    
-    const types = {todo: 'To-Do', projeto: 'Projeto', habitos: 'Hábitos', financeiro: 'Financeiro'};
-    const planner = {
-        id: 'p' + Date.now(),
-        name: types[type] + ' ' + (planners.length + 1),
-        type: type,
-        created_at: new Date().toISOString()
-    };
-    
-    planners.push(planner);
-    localStorage.setItem('planner_planners', JSON.stringify(planners));
-    
-    alert('✅ Planner "' + planner.name + '" criado!');
-    location.reload();
-};
-
-window.openPlanner = function(id) { alert('Abrir planner: ' + id); };
-window.deletePlanner = function(id) { 
-    if(confirm('Excluir?')) alert('Planner excluído'); 
-};
-window.closePlannerModal = function() {
-    document.getElementById('planner-modal').classList.remove('active');
-};
-window.openTaskModal = function() {
-    document.getElementById('task-modal').classList.add('active');
-};
-window.closeTaskModal = function() {
-    document.getElementById('task-modal').classList.remove('active');
-};
-window.saveTask = function() {
-    alert('Tarefa salva!');
-    closeTaskModal();
-};
-window.setView = function(v) { console.log('View:', v); };
-window.filterTasks = function() { console.log('Filter'); };
-window.addTag = function() { console.log('Tag added'); };
-window.addSubtask = function() { console.log('Subtask added'); };
-window.exportCSV = function() { alert('📊 Export CSV'); };
-window.exportPDF = function() { alert('📄 Export PDF'); };
-window.changeMonth = function(d) { console.log('Month:', d); };
-window.openTemplate = function(t) { alert('Template: ' + t); };
-window.openTutorial = function(t) { alert('Tutorial: ' + t); };
-window.copyCalendarUrl = function() {
-    const url = document.getElementById('calendar-url').textContent;
-    navigator.clipboard.writeText(url).then(() => alert('📋 Link copiado!'));
-};
-window.changeLanguage = function(lang) {
-    localStorage.setItem('planner_ultra_lang', lang);
-    alert('Idioma alterado para: ' + lang);
-};
-window.showPaywall = function() {
-    document.getElementById('paywall-modal').classList.add('active');
-};
-window.subscribe = function() {
-    alert('💳 Assinatura em desenvolvimento');
-    document.getElementById('paywall-modal').classList.remove('active');
-};
-
-console.log('✅ All functions loaded');
-</script>
 
 <!-- CRITICAL FIX: Proper initialization -->
 <script>
