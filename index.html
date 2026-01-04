@@ -2232,21 +2232,8 @@
         // ==========================================
         // STATE MANAGEMENT
         // ==========================================
-        
-        let currentUser = null;
-        let currentPlanner = null;
-        let tasks = [];
-        let planners = [];
-        let currentView = 'list';
-        let currentLang = localStorage.getItem('planner_ultra_lang') || 'pt';
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let editingTaskId = null;
-        let currentTags = [];
-        let currentSubtasks = [];
-        let deferredPrompt = null;
-        let weeklyChart = null;
-        let priorityChart = null;
+        // NOTE: Global variables are now managed in planner-functions.js
+        // These declarations are kept for backward compatibility but will be overridden
 
         // ==========================================
         // INTERNATIONALIZATION
