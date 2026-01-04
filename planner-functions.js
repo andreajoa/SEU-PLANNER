@@ -90,10 +90,13 @@ function logout() {
 // ==========================================
 
 function switchTab(tabName) {
+    console.log('Switching to tab:', tabName);
+    
     // Update tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.dataset.tab === tabName || btn.onclick?.toString().includes(tabName)) {
+        const btnTab = btn.dataset.tab || (btn.onclick?.toString().match(/switchTab\(['"](.*?)['"]\)/)?.[1]);
+        if (btnTab === tabName) {
             btn.classList.add('active');
         }
     });
@@ -106,11 +109,20 @@ function switchTab(tabName) {
     const targetTab = document.getElementById('tab-' + tabName);
     if (targetTab) {
         targetTab.classList.add('active');
+        console.log('Tab activated:', tabName);
         
         // Load data for specific tabs
-        if (tabName === 'stats') loadStats();
-        if (tabName === 'achievements') loadAchievements();
-        if (tabName === 'calendar') renderCalendar();
+        if (tabName === 'stats') {
+            setTimeout(() => loadStats(), 100);
+        }
+        if (tabName === 'achievements') {
+            setTimeout(() => loadAchievements(), 100);
+        }
+        if (tabName === 'calendar') {
+            setTimeout(() => renderCalendar(), 100);
+        }
+    } else {
+        console.error('Tab not found:', 'tab-' + tabName);
     }
 }
 
@@ -119,6 +131,13 @@ function switchTab(tabName) {
 // ==========================================
 
 async function createPlanner(type) {
+    console.log('Creating planner:', type);
+    
+    if (!currentUser) {
+        alert('Por favor, faça login primeiro!');
+        return;
+    }
+    
     const plannerNames = {
         todo: 'To-Do List',
         projeto: 'Projeto',
@@ -147,7 +166,16 @@ async function createPlanner(type) {
     }
 
     renderPlanners();
-    openPlanner(planner.id);
+    
+    // Close any open modals first
+    document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+        modal.classList.remove('active');
+    });
+    
+    // Open the new planner
+    setTimeout(() => {
+        openPlanner(planner.id);
+    }, 100);
 }
 
 function openPlanner(plannerId) {
@@ -799,7 +827,9 @@ function closeLevelUpModal() {
 }
 
 function openTemplate(type) {
-    alert(`Template ${type} será implementado em breve!`);
+    console.log('Opening template:', type);
+    // For now, just show an alert. In the future, this could open a modal with template details
+    alert(`Template "${type}" será implementado em breve! Você poderá usar este template para criar planners automaticamente.`);
 }
 
 function openTutorial(type) {
@@ -854,22 +884,41 @@ function closeInstallBanner() {
 // ==========================================
 
 async function initializeApp() {
+    console.log('Initializing app...');
+    
     // Load user
     const userStr = localStorage.getItem('planner_user');
     if (userStr) {
         currentUser = JSON.parse(userStr);
+        console.log('User loaded:', currentUser.email);
+    } else {
+        console.warn('No user found in localStorage');
     }
 
     // Load planners and tasks
-    loadPlanners();
+    const savedPlanners = localStorage.getItem('planner_planners');
+    if (savedPlanners) {
+        planners = JSON.parse(savedPlanners);
+        console.log('Loaded planners:', planners.length);
+    }
+    
+    const savedTasks = localStorage.getItem('planner_tasks');
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+        console.log('Loaded tasks:', tasks.length);
+    }
     
     // Update UI
     updateUI();
 
     // Show main app
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    document.getElementById('loading-screen').style.display = 'none';
+    const authScreen = document.getElementById('auth-screen');
+    const mainApp = document.getElementById('main-app');
+    const loadingScreen = document.getElementById('loading-screen');
+    
+    if (authScreen) authScreen.style.display = 'none';
+    if (mainApp) mainApp.style.display = 'block';
+    if (loadingScreen) loadingScreen.style.display = 'none';
 
     // Update streak
     if (currentUser) {
@@ -892,26 +941,34 @@ async function initializeApp() {
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        document.getElementById('install-banner').classList.add('active');
+        const installBanner = document.getElementById('install-banner');
+        if (installBanner) installBanner.classList.add('active');
     });
+    
+    console.log('App initialized successfully!');
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded - Initializing...');
+    
     // Check if user is logged in
     const hasUser = localStorage.getItem('planner_demo_user');
     
     if (hasUser) {
-        initializeApp();
+        setTimeout(() => initializeApp(), 100);
     } else {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('auth-screen').style.display = 'flex';
+        const loading = document.getElementById('loading-screen');
+        const authScreen = document.getElementById('auth-screen');
+        if (loading) loading.style.display = 'none';
+        if (authScreen) authScreen.style.display = 'flex';
     }
 
     // Setup auth form
     const authForm = document.getElementById('auth-form');
     if (authForm) {
         authForm.addEventListener('submit', handleAuth);
+        console.log('Auth form listener attached');
     }
 
     // Setup auth tabs
@@ -947,6 +1004,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Ensure all functions are available immediately
+    console.log('All functions initialized and available');
 });
 
 // Export all functions to window

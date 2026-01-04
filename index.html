@@ -1639,25 +1639,25 @@
                         <div class="icon">✅</div>
                         <h3>To-Do List</h3>
                         <p id="desc-todo">Gerenciamento simples de tarefas</p>
-                        <button class="btn btn-success btn-sm" id="btn-create">Criar</button>
+                        <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); createPlanner('todo');">Criar</button>
                     </div>
                     <div class="planner-card projeto" onclick="createPlanner('projeto')">
                         <div class="icon">🏗️</div>
                         <h3 id="title-projects">Projetos</h3>
                         <p id="desc-projects">Acompanhamento de projetos multi-fase</p>
-                        <button class="btn btn-sm" style="background: var(--info); color: white;">Criar</button>
+                        <button class="btn btn-sm" style="background: var(--info); color: white;" onclick="event.stopPropagation(); createPlanner('projeto');">Criar</button>
                     </div>
                     <div class="planner-card habitos" onclick="createPlanner('habitos')">
                         <div class="icon">🔥</div>
                         <h3 id="title-habits">Hábitos</h3>
                         <p id="desc-habits">Rastreador de hábitos diários</p>
-                        <button class="btn btn-sm" style="background: var(--warning); color: white;">Criar</button>
+                        <button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation(); createPlanner('habitos');">Criar</button>
                     </div>
                     <div class="planner-card financeiro" onclick="createPlanner('financeiro')">
                         <div class="icon">💰</div>
                         <h3 id="title-financial">Financeiro</h3>
                         <p id="desc-financial">Controle de orçamento e despesas</p>
-                        <button class="btn btn-sm" style="background: var(--primary); color: white;">Criar</button>
+                        <button class="btn btn-sm" style="background: var(--primary); color: white;" onclick="event.stopPropagation(); createPlanner('financeiro');">Criar</button>
                     </div>
                 </div>
 
