@@ -1098,6 +1098,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('All functions initialized and available');
+    
+    // Attach event listeners as fallback for onclick handlers
+    setTimeout(() => {
+        // Attach to planner cards
+        document.querySelectorAll('.planner-card').forEach(card => {
+            const type = card.classList.contains('todo') ? 'todo' :
+                        card.classList.contains('projeto') ? 'projeto' :
+                        card.classList.contains('habitos') ? 'habitos' :
+                        card.classList.contains('financeiro') ? 'financeiro' : null;
+            
+            if (type) {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        createPlanner(type);
+                    }
+                });
+                
+                const btn = card.querySelector('button');
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        createPlanner(type);
+                    });
+                }
+            }
+        });
+        
+        // Attach to tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            const tabName = btn.dataset.tab || btn.textContent.match(/(planners|library|tutorials|stats|achievements|calendar|google)/i)?.[0];
+            if (tabName) {
+                btn.addEventListener('click', () => switchTab(tabName));
+            }
+        });
+        
+        console.log('✅ Event listeners attached as fallback');
+    }, 1000);
 });
 
 
