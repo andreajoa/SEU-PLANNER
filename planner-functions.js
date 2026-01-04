@@ -1025,39 +1025,42 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('All functions initialized and available');
 });
 
-// Export all functions to window
-window.handleAuth = handleAuth;
-window.logout = logout;
-window.switchTab = switchTab;
-window.createPlanner = createPlanner;
-window.openPlanner = openPlanner;
-window.deletePlanner = deletePlanner;
-window.closePlannerModal = closePlannerModal;
-window.openTaskModal = openTaskModal;
-window.closeTaskModal = closeTaskModal;
-window.saveTask = saveTask;
-window.toggleTask = toggleTask;
-window.deleteTask = deleteTask;
-window.setView = setView;
-window.filterTasks = filterTasks;
-window.addTag = addTag;
-window.removeTag = removeTag;
-window.removeTagByIndex = removeTagByIndex;
-window.addSubtask = addSubtask;
-window.removeSubtask = removeSubtask;
-window.closeLevelUpModal = closeLevelUpModal;
-window.changeMonth = changeMonth;
-window.selectDate = selectDate;
-window.openTemplate = openTemplate;
-window.openTutorial = openTutorial;
-window.exportCSV = exportCSV;
-window.exportPDF = exportPDF;
-window.copyCalendarUrl = copyCalendarUrl;
-window.showPaywall = showPaywall;
-window.subscribe = subscribe;
-window.changeLanguage = changeLanguage;
-window.installPWA = installPWA;
-window.closeInstallBanner = closeInstallBanner;
-
-console.log('✅ Planner ULTRA - All functions loaded!');
+// Export all functions to window immediately (before DOM loads)
+// This ensures onclick handlers work correctly
+(function() {
+    window.handleAuth = handleAuth;
+    window.logout = logout;
+    window.switchTab = switchTab;
+    window.createPlanner = createPlanner;
+    window.openPlanner = openPlanner;
+    window.deletePlanner = deletePlanner;
+    window.closePlannerModal = closePlannerModal;
+    window.openTaskModal = openTaskModal;
+    window.closeTaskModal = closeTaskModal;
+    window.saveTask = saveTask;
+    window.toggleTask = toggleTask;
+    window.deleteTask = deleteTask;
+    window.setView = setView;
+    window.filterTasks = filterTasks;
+    window.addTag = addTag;
+    window.removeTag = removeTag;
+    window.removeTagByIndex = removeTagByIndex;
+    window.addSubtask = addSubtask;
+    window.removeSubtask = removeSubtask;
+    window.closeLevelUpModal = closeLevelUpModal;
+    window.changeMonth = changeMonth;
+    window.selectDate = selectDate;
+    window.openTemplate = openTemplate;
+    window.openTutorial = openTutorial;
+    window.exportCSV = exportCSV;
+    window.exportPDF = exportPDF;
+    window.copyCalendarUrl = copyCalendarUrl;
+    window.showPaywall = showPaywall;
+    window.subscribe = subscribe;
+    window.changeLanguage = changeLanguage;
+    window.installPWA = installPWA;
+    window.closeInstallBanner = closeInstallBanner;
+    
+    console.log('✅ Planner ULTRA - All functions exported to window!');
+})();
 
