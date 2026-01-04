@@ -2,6 +2,24 @@
 // PLANNER ULTRA - COMPLETE FUNCTIONS
 // ==========================================
 
+console.log('🚀 Loading Planner ULTRA functions...');
+
+// Initialize global variables
+let currentUser = null;
+let currentPlanner = null;
+let tasks = [];
+let planners = [];
+let currentView = 'list';
+let currentLang = localStorage.getItem('planner_ultra_lang') || 'pt';
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let editingTaskId = null;
+let currentTags = [];
+let currentSubtasks = [];
+let deferredPrompt = null;
+let weeklyChart = null;
+let priorityChart = null;
+
 // Initialize Supabase client (demo mode)
 if (typeof window.supabase === 'undefined') {
     window.supabase = {
@@ -90,7 +108,7 @@ function logout() {
 // ==========================================
 
 function switchTab(tabName) {
-    console.log('Switching to tab:', tabName);
+    console.log('🔄 switchTab called with:', tabName);
     
     // Update tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -131,11 +149,19 @@ function switchTab(tabName) {
 // ==========================================
 
 async function createPlanner(type) {
-    console.log('Creating planner:', type);
+    console.log('🎯 createPlanner called with type:', type);
+    console.log('Current user:', currentUser);
     
     if (!currentUser) {
-        alert('Por favor, faça login primeiro!');
-        return;
+        // Try to load user from localStorage
+        const userStr = localStorage.getItem('planner_user');
+        if (userStr) {
+            currentUser = JSON.parse(userStr);
+            console.log('User loaded from localStorage');
+        } else {
+            alert('Por favor, faça login primeiro!');
+            return;
+        }
     }
     
     const plannerNames = {
@@ -1000,6 +1026,19 @@ window.installPWA = installPWA;
 window.closeInstallBanner = closeInstallBanner;
 
 console.log('✅ Planner ULTRA - All functions exported to window!');
+
+// Test if functions are available
+if (typeof window.createPlanner !== 'undefined') {
+    console.log('✅ createPlanner function is available!');
+} else {
+    console.error('❌ createPlanner function NOT available!');
+}
+
+if (typeof window.switchTab !== 'undefined') {
+    console.log('✅ switchTab function is available!');
+} else {
+    console.error('❌ switchTab function NOT available!');
+}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
