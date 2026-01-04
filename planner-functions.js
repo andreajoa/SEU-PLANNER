@@ -179,13 +179,24 @@ async function createPlanner(type) {
 }
 
 function openPlanner(plannerId) {
+    console.log('Opening planner:', plannerId);
     currentPlanner = planners.find(p => p.id === plannerId);
-    if (!currentPlanner) return;
+    if (!currentPlanner) {
+        console.error('Planner not found:', plannerId);
+        return;
+    }
 
     loadTasks();
-    document.getElementById('planner-modal-title').textContent = currentPlanner.name;
-    document.getElementById('planner-modal').classList.add('active');
-    renderTasks();
+    const modalTitle = document.getElementById('planner-modal-title');
+    const modal = document.getElementById('planner-modal');
+    
+    if (modalTitle) modalTitle.textContent = currentPlanner.name;
+    if (modal) {
+        modal.classList.add('active');
+        renderTasks();
+    } else {
+        console.error('Modal elements not found');
+    }
 }
 
 function deletePlanner(plannerId) {
@@ -208,7 +219,10 @@ function closePlannerModal() {
 
 function renderPlanners() {
     const container = document.getElementById('planners-list');
-    if (!container) return;
+    if (!container) {
+        console.error('Planners list container not found');
+        return;
+    }
 
     if (planners.length === 0) {
         container.innerHTML = `
@@ -231,7 +245,7 @@ function renderPlanners() {
         };
         
         return `
-            <div class="planner-item" onclick="openPlanner('${planner.id}')">
+            <div class="planner-item" onclick="openPlanner('${planner.id}')" style="cursor: pointer;">
                 <div class="planner-item-info">
                     <div class="planner-item-icon ${typeClass}">${icons[typeClass] || '📋'}</div>
                     <div class="planner-item-details">
@@ -240,11 +254,13 @@ function renderPlanners() {
                     </div>
                 </div>
                 <div class="planner-item-actions">
-                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deletePlanner('${planner.id}')">🗑️</button>
+                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); event.preventDefault(); deletePlanner('${planner.id}'); return false;">🗑️</button>
                 </div>
             </div>
         `;
     }).join('');
+    
+    console.log('Planners rendered:', planners.length);
 }
 
 function savePlanners() {
