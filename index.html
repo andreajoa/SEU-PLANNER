@@ -2556,6 +2556,24 @@
     
     <!-- Main application functions -->
     <script src="planner-functions.js"></script>
+    
+    <!-- Verify functions are loaded -->
+    <script>
+        // Wait a bit and verify functions are loaded
+        setTimeout(function() {
+            console.log('🔍 Verifying functions...');
+            console.log('createPlanner available:', typeof window.createPlanner);
+            console.log('switchTab available:', typeof window.switchTab);
+            console.log('openPlanner available:', typeof window.openPlanner);
+            
+            if (typeof window.createPlanner === 'undefined') {
+                console.error('❌ CRITICAL ERROR: createPlanner is not available!');
+                alert('ERRO: Funções não carregaram. Recarregue a página.');
+            } else {
+                console.log('✅ All functions loaded successfully!');
+            }
+        }, 500);
+    </script>
 
 </body>
 </html>
