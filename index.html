@@ -2223,11 +2223,8 @@
         // Demo mode (when Supabase is not configured)
         const DEMO_MODE = SUPABASE_URL === 'https://your-project.supabase.co';
         
-        // Initialize Supabase
-        let supabase = null;
-        if (!DEMO_MODE && typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
+        // Initialize Supabase - handled in planner-functions.js
+        // Supabase client is initialized there to avoid conflicts
 
         // ==========================================
         // STATE MANAGEMENT
