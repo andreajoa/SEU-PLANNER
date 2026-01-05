@@ -10,7 +10,7 @@ let currentPlanner = null;
 let tasks = [];
 let planners = [];
 let currentView = 'list';
-let currentLang = localStorage.getItem('planner_ultra_lang') || 'pt';
+let currentLang = 'pt'; // Will be loaded from localStorage after DOM is ready
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let editingTaskId = null;
@@ -19,6 +19,42 @@ let currentSubtasks = [];
 let deferredPrompt = null;
 let weeklyChart = null;
 let priorityChart = null;
+
+// Safe localStorage access functions
+function safeGetLocalStorage(key, defaultValue) {
+    try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            return localStorage.getItem(key) || defaultValue;
+        }
+    } catch (e) {
+        console.warn('localStorage not available:', e);
+    }
+    return defaultValue;
+}
+
+function safeSetLocalStorage(key, value) {
+    try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem(key, value);
+            return true;
+        }
+    } catch (e) {
+        console.warn('Could not save to localStorage:', e);
+    }
+    return false;
+}
+
+function safeRemoveLocalStorage(key) {
+    try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.removeItem(key);
+            return true;
+        }
+    } catch (e) {
+        console.warn('Could not remove from localStorage:', e);
+    }
+    return false;
+}
 
 // Initialize Supabase client (demo mode)
 if (typeof window.supabase === 'undefined') {
@@ -31,8 +67,8 @@ if (typeof window.supabase === 'undefined') {
                 return { data: { user: { id: 'demo-user', email: credentials.email }, session: {} }, error: null };
             },
             signOut: async () => {
-                localStorage.removeItem('planner_user');
-                localStorage.removeItem('planner_demo_user');
+                safeRemoveLocalStorage('planner_user');
+                safeRemoveLocalStorage('planner_demo_user');
                 return { error: null };
             },
             onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
@@ -81,8 +117,8 @@ async function handleAuth(e) {
             created_at: new Date().toISOString()
         };
 
-        localStorage.setItem('planner_user', JSON.stringify(userInfo));
-        localStorage.setItem('planner_demo_user', 'true');
+        safeSetLocalStorage('planner_user', JSON.stringify(userInfo));
+        safeSetLocalStorage('planner_demo_user', 'true');
         
         currentUser = userInfo;
         await initializeApp();
@@ -96,8 +132,8 @@ async function handleAuth(e) {
 function logout() {
     if (confirm('Tem certeza que deseja sair?')) {
         supabase.auth.signOut();
-        localStorage.removeItem('planner_user');
-        localStorage.removeItem('planner_demo_user');
+        safeRemoveLocalStorage('planner_user');
+        safeRemoveLocalStorage('planner_demo_user');
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('main-app').style.display = 'none';
     }
@@ -154,7 +190,7 @@ async function createPlanner(type) {
     
     if (!currentUser) {
         // Try to load user from localStorage
-        const userStr = localStorage.getItem('planner_user');
+        const userStr = safeGetLocalStorage('planner_user', null);
         if (userStr) {
             currentUser = JSON.parse(userStr);
             console.log('User loaded from localStorage');
@@ -188,7 +224,7 @@ async function createPlanner(type) {
     } else if (currentUser) {
         currentUser.xp = (currentUser.xp || 0) + 50;
         currentUser.planners_created = (currentUser.planners_created || 0) + 1;
-        localStorage.setItem('planner_user', JSON.stringify(currentUser));
+        safeSetLocalStorage('planner_user', JSON.stringify(currentUser));
     }
 
     renderPlanners();
@@ -290,11 +326,11 @@ function renderPlanners() {
 }
 
 function savePlanners() {
-    localStorage.setItem('planner_planners', JSON.stringify(planners));
+    safeSetLocalStorage('planner_planners', JSON.stringify(planners));
 }
 
 function loadPlanners() {
-    const saved = localStorage.getItem('planner_planners');
+    const saved = safeGetLocalStorage('planner_planners', null);
     if (saved) {
         planners = JSON.parse(saved);
     }
@@ -401,7 +437,7 @@ function toggleTask(taskId) {
         } else if (currentUser) {
             currentUser.xp = (currentUser.xp || 0) + 10;
             currentUser.tasks_completed = (currentUser.tasks_completed || 0) + 1;
-            localStorage.setItem('planner_user', JSON.stringify(currentUser));
+            safeSetLocalStorage('planner_user', JSON.stringify(currentUser));
         }
         updateStats();
     }
@@ -565,11 +601,11 @@ function setView(view) {
 }
 
 function saveTasks() {
-    localStorage.setItem('planner_tasks', JSON.stringify(tasks));
+    safeSetLocalStorage('planner_tasks', JSON.stringify(tasks));
 }
 
 function loadTasks() {
-    const saved = localStorage.getItem('planner_tasks');
+    const saved = safeGetLocalStorage('planner_tasks', null);
     if (saved) {
         tasks = JSON.parse(saved);
     }
@@ -928,26 +964,30 @@ function closeInstallBanner() {
 async function initializeApp() {
     console.log('Initializing app...');
     
-    // Load user
-    const userStr = localStorage.getItem('planner_user');
-    if (userStr) {
-        currentUser = JSON.parse(userStr);
-        console.log('User loaded:', currentUser.email);
-    } else {
-        console.warn('No user found in localStorage');
-    }
+    try {
+        // Load user
+        const userStr = safeGetLocalStorage('planner_user', null);
+        if (userStr) {
+            currentUser = JSON.parse(userStr);
+            console.log('User loaded:', currentUser.email);
+        } else {
+            console.warn('No user found in localStorage');
+        }
 
-    // Load planners and tasks
-    const savedPlanners = localStorage.getItem('planner_planners');
-    if (savedPlanners) {
-        planners = JSON.parse(savedPlanners);
-        console.log('Loaded planners:', planners.length);
-    }
-    
-    const savedTasks = localStorage.getItem('planner_tasks');
-    if (savedTasks) {
-        tasks = JSON.parse(savedTasks);
-        console.log('Loaded tasks:', tasks.length);
+        // Load planners and tasks
+        const savedPlanners = safeGetLocalStorage('planner_planners', null);
+        if (savedPlanners) {
+            planners = JSON.parse(savedPlanners);
+            console.log('Loaded planners:', planners.length);
+        }
+        
+        const savedTasks = safeGetLocalStorage('planner_tasks', null);
+        if (savedTasks) {
+            tasks = JSON.parse(savedTasks);
+            console.log('Loaded tasks:', tasks.length);
+        }
+    } catch (e) {
+        console.error('Error loading data from localStorage:', e);
     }
     
     // Update UI
@@ -975,7 +1015,7 @@ async function initializeApp() {
                 currentUser.streak = 1;
             }
             currentUser.last_activity = today.toISOString();
-            localStorage.setItem('planner_user', JSON.stringify(currentUser));
+            safeSetLocalStorage('planner_user', JSON.stringify(currentUser));
         }
     }
 
@@ -1044,8 +1084,15 @@ if (typeof window.switchTab !== 'undefined') {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Content Loaded - Initializing...');
     
+    // Load language preference
+    try {
+        currentLang = safeGetLocalStorage('planner_ultra_lang', 'pt');
+    } catch (e) {
+        currentLang = 'pt';
+    }
+    
     // Check if user is logged in
-    const hasUser = localStorage.getItem('planner_demo_user');
+    const hasUser = safeGetLocalStorage('planner_demo_user', null);
     
     if (hasUser) {
         setTimeout(() => initializeApp(), 100);

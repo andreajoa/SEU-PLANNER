@@ -170,12 +170,10 @@ class OfflineSupport {
     // Execute create task operation
     async executeCreateTask(taskData) {
         try {
-            // In a real app, this would make an API call to Supabase
-            // For now, we'll update localStorage
+            if (typeof window === 'undefined' || !window.localStorage) return false;
             let tasks = JSON.parse(localStorage.getItem('planner_tasks') || '[]');
             tasks.push(taskData);
             localStorage.setItem('planner_tasks', JSON.stringify(tasks));
-            
             return true;
         } catch (error) {
             console.error('Error executing create task:', error);
@@ -186,16 +184,13 @@ class OfflineSupport {
     // Execute update task operation
     async executeUpdateTask(taskData) {
         try {
-            // In a real app, this would make an API call to Supabase
-            // For now, we'll update localStorage
+            if (typeof window === 'undefined' || !window.localStorage) return false;
             let tasks = JSON.parse(localStorage.getItem('planner_tasks') || '[]');
             const taskIndex = tasks.findIndex(task => task.id === taskData.id);
-            
             if (taskIndex !== -1) {
                 tasks[taskIndex] = { ...tasks[taskIndex], ...taskData };
                 localStorage.setItem('planner_tasks', JSON.stringify(tasks));
             }
-            
             return true;
         } catch (error) {
             console.error('Error executing update task:', error);
@@ -206,12 +201,10 @@ class OfflineSupport {
     // Execute delete task operation
     async executeDeleteTask(taskId) {
         try {
-            // In a real app, this would make an API call to Supabase
-            // For now, we'll update localStorage
+            if (typeof window === 'undefined' || !window.localStorage) return false;
             let tasks = JSON.parse(localStorage.getItem('planner_tasks') || '[]');
             tasks = tasks.filter(task => task.id !== taskId);
             localStorage.setItem('planner_tasks', JSON.stringify(tasks));
-            
             return true;
         } catch (error) {
             console.error('Error executing delete task:', error);
@@ -222,10 +215,8 @@ class OfflineSupport {
     // Execute update user operation
     async executeUpdateUser(userData) {
         try {
-            // In a real app, this would make an API call to Supabase
-            // For now, we'll update localStorage
+            if (typeof window === 'undefined' || !window.localStorage) return false;
             localStorage.setItem('planner_user', JSON.stringify(userData));
-            
             return true;
         } catch (error) {
             console.error('Error executing update user:', error);
@@ -236,12 +227,10 @@ class OfflineSupport {
     // Execute create planner operation
     async executeCreatePlanner(plannerData) {
         try {
-            // In a real app, this would make an API call to Supabase
-            // For now, we'll update localStorage
+            if (typeof window === 'undefined' || !window.localStorage) return false;
             let planners = JSON.parse(localStorage.getItem('planner_planners') || '[]');
             planners.push(plannerData);
             localStorage.setItem('planner_planners', JSON.stringify(planners));
-            
             return true;
         } catch (error) {
             console.error('Error executing create planner:', error);
@@ -252,7 +241,9 @@ class OfflineSupport {
     // Save offline queue to localStorage
     saveOfflineQueue() {
         try {
-            localStorage.setItem('offline_queue', JSON.stringify(this.offlineQueue));
+            if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('offline_queue', JSON.stringify(this.offlineQueue));
+            }
         } catch (error) {
             console.error('Error saving offline queue:', error);
         }
@@ -261,9 +252,11 @@ class OfflineSupport {
     // Load offline queue from localStorage
     loadOfflineQueue() {
         try {
-            const queueData = localStorage.getItem('offline_queue');
-            if (queueData) {
-                this.offlineQueue = JSON.parse(queueData);
+            if (typeof window !== 'undefined' && window.localStorage) {
+                const queueData = localStorage.getItem('offline_queue');
+                if (queueData) {
+                    this.offlineQueue = JSON.parse(queueData);
+                }
             }
         } catch (error) {
             console.error('Error loading offline queue:', error);

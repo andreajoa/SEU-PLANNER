@@ -22,8 +22,13 @@ class GamificationSystem {
     }
     
     getCurrentUser() {
-        const user = localStorage.getItem('planner_user');
-        return user ? JSON.parse(user) : null;
+        try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+                const user = localStorage.getItem('planner_user');
+                return user ? JSON.parse(user) : null;
+            }
+        } catch (e) {}
+        return null;
     }
     
     // Calculate level based on XP
@@ -85,7 +90,11 @@ class GamificationSystem {
         }
         
         // Update user in localStorage
-        localStorage.setItem('planner_user', JSON.stringify(this.user));
+        try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('planner_user', JSON.stringify(this.user));
+            }
+        } catch (e) {}
         
         // Update UI if on a page that shows stats
         this.updateUserStats();
@@ -149,7 +158,11 @@ class GamificationSystem {
         this.user.last_activity = new Date().toISOString().split('T')[0];
         
         // Update user in localStorage
-        localStorage.setItem('planner_user', JSON.stringify(this.user));
+        try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('planner_user', JSON.stringify(this.user));
+            }
+        } catch (e) {}
         
         // Update UI if on a page that shows stats
         this.updateUserStats();

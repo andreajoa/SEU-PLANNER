@@ -21,7 +21,11 @@ let supabase = {
         signOut: async () => {
             // Mock logout implementation
             console.log('Mock logout');
-            localStorage.removeItem('planner_user');
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    localStorage.removeItem('planner_user');
+                }
+            } catch (e) {}
             return { error: null };
         },
         onAuthStateChange: (callback) => {
@@ -31,7 +35,12 @@ let supabase = {
         },
         getUser: async () => {
             // Mock get user
-            const user = localStorage.getItem('planner_user');
+            let user = null;
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    user = localStorage.getItem('planner_user');
+                }
+            } catch (e) {}
             if (user) {
                 return { data: { user: JSON.parse(user) }, error: null };
             }
@@ -64,8 +73,10 @@ function initSupabase() {
     if (config) {
         const { url, key } = JSON.parse(config);
         if (url && key && url !== 'https://your-project.supabase.co' && key !== 'your-anon-key') {
-            // Use real Supabase client
-            supabase = createClient(url, key);
+            // Use real Supabase client (if available)
+            if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(url, key);
+            }
         }
     }
 }
@@ -96,7 +107,11 @@ async function signUp(email, password, name) {
                 streak: 0,
                 created_at: new Date().toISOString()
             };
-            localStorage.setItem('planner_user', JSON.stringify(userInfo));
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    localStorage.setItem('planner_user', JSON.stringify(userInfo));
+                }
+            } catch (e) {}
         }
 
         return { success: true, data };
@@ -118,7 +133,12 @@ async function signIn(email, password) {
         // Store user info in localStorage for immediate use
         if (data.user) {
             // Get additional user data from our local storage or database
-            let userInfo = localStorage.getItem('planner_user');
+            let userInfo = null;
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    userInfo = localStorage.getItem('planner_user');
+                }
+            } catch (e) {}
             if (userInfo) {
                 userInfo = JSON.parse(userInfo);
                 userInfo.id = data.user.id;
@@ -133,7 +153,11 @@ async function signIn(email, password) {
                     streak: 0
                 };
             }
-            localStorage.setItem('planner_user', JSON.stringify(userInfo));
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    localStorage.setItem('planner_user', JSON.stringify(userInfo));
+                }
+            } catch (e) {}
         }
 
         return { success: true, data };
@@ -166,8 +190,12 @@ async function signOut() {
         if (error) throw error;
         
         // Clear local storage
-        localStorage.removeItem('planner_user');
-        localStorage.removeItem('planner_current_view');
+        try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.removeItem('planner_user');
+                localStorage.removeItem('planner_current_view');
+            }
+        } catch (e) {}
         
         return { success: true };
     } catch (error) {
@@ -178,14 +206,24 @@ async function signOut() {
 
 // Check if user is authenticated
 function isAuthenticated() {
-    const user = localStorage.getItem('planner_user');
-    return user !== null;
+    try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            const user = localStorage.getItem('planner_user');
+            return user !== null;
+        }
+    } catch (e) {}
+    return false;
 }
 
 // Get current user
 function getCurrentUser() {
-    const user = localStorage.getItem('planner_user');
-    return user ? JSON.parse(user) : null;
+    try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            const user = localStorage.getItem('planner_user');
+            return user ? JSON.parse(user) : null;
+        }
+    } catch (e) {}
+    return null;
 }
 
 // Update user profile
@@ -196,7 +234,11 @@ async function updateUserProfile(updates) {
 
         // Update local storage
         const updatedUser = { ...user, ...updates };
-        localStorage.setItem('planner_user', JSON.stringify(updatedUser));
+        try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('planner_user', JSON.stringify(updatedUser));
+            }
+        } catch (e) {}
 
         // In a real app, also update the database
         // const { error } = await supabase
