@@ -1,15 +1,10 @@
 services:
   - type: web
     name: seu-planner-frontend
-    env: static
+    env: node
     buildCommand: npm install && npm run build
-    publish: dist
-    staticPublish:
-      routing:
-        redirect:
-          - src: /.*
-            dest: /index.html
-            type: 200
+    startCommand: npm start
     envVars:
       - key: VITE_API_URL
         value: https://seu-planner-api.onrender.com/api
+        # value: http://localhost:5000/api  # Para desenvolvimento local
