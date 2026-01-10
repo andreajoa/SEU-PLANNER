@@ -39,6 +39,25 @@ def create_app(config_name='development'):
         db.session.rollback()
         return jsonify({'error': 'Internal server error'}), 500
 
+    # Root route - API info
+    @app.route('/')
+    def index():
+        return jsonify({
+            'name': 'Planner Premium ULTRA API',
+            'version': '1.0.0',
+            'status': 'running',
+            'endpoints': {
+                'health': '/api/health',
+                'auth': '/api/auth/*',
+                'planners': '/api/planners/*',
+                'tasks': '/api/tasks/*',
+                'user': '/api/user/*',
+                'achievements': '/api/achievements/*'
+            },
+            'frontend': 'https://seu-planner.onrender.com',
+            'docs': 'https://github.com/andreajoa/SEU-PLANNER'
+        })
+
     # Health check
     @app.route('/api/health')
     def health():
