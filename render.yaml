@@ -6,6 +6,5 @@ services:
     startCommand: npm start
     envVars:
       - key: VITE_API_URL
-        value: https://SEU-PLANNER-API.onrender.com/api
-        # IMPORTANT: This is your actual backend URL!
-        # Service name in Render: SEU-PLANNER-API
+        value: https://seu-planner-api.onrender.com/api
+        # IMPORTANT: Update this to your actual backend URL from Render dashboard
