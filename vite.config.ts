@@ -20,6 +20,15 @@ export default defineConfig({
     port: 5173,
     host: true
   },
+  preview: {
+    host: true,
+    port: 4173,
+    allowedHosts: [
+      'seu-planner.onrender.com',
+      '.onrender.com',
+      'localhost'
+    ]
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
