@@ -6,9 +6,7 @@
 import { useState, useEffect, Suspense, lazy } from 'react'
 import { useStore } from './stores/useStore'
 import { useUser } from './lib/queries'
-import { supabase, auth } from './lib/supabase'
 import { Loader2 } from 'lucide-react'
-import { cn } from './lib/utils'
 
 // Lazy load pages for better performance
 const AuthPage = lazy(() => import('./components/auth/AuthPage'))
@@ -19,24 +17,21 @@ function App() {
   const { data: userData, isLoading, error } = useUser()
   const [mounted, setMounted] = useState(false)
 
-  // Handle auth state changes
+  // Initialize app
   useEffect(() => {
     setMounted(true)
+  }, [])
 
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        // User will be loaded by useUser query
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null)
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
+  // Sync user data from API
+  useEffect(() => {
+    if (userData) {
+      setUser(userData)
+    } else if (userData === null && localStorage.getItem('access_token')) {
+      // Token exists but user not found - clear invalid token
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
     }
-  }, [setUser])
+  }, [userData, setUser])
 
   // Initialize theme
   useEffect(() => {
