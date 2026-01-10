@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: seu-planner-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    publish: dist
+    staticPublish:
+      routing:
+        redirect:
+          - src: /.*
+            dest: /index.html
+            type: 200
+    envVars:
+      - key: VITE_API_URL
+        value: https://seu-planner-api.onrender.com/api
