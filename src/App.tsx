@@ -7,6 +7,7 @@ import { useState, useEffect, Suspense, lazy } from 'react'
 import { useStore } from './stores/useStore'
 import { useUser } from './lib/queries'
 import { Loader2 } from 'lucide-react'
+import { APIStatus } from './components/debug/APIStatus'
 
 // Lazy load pages for better performance
 const AuthPage = lazy(() => import('./components/auth/AuthPage'))
@@ -90,6 +91,25 @@ function App() {
   // Show auth page if not logged in
   if (!user) {
     return (
+      <>
+        <APIStatus />
+        <Suspense
+          fallback={
+            <div className="min-h-screen flex items-center justify-center bg-background">
+              <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+          }
+        >
+          <AuthPage />
+        </Suspense>
+      </>
+    )
+  }
+
+  // Show dashboard if logged in
+  return (
+    <>
+      <APIStatus />
       <Suspense
         fallback={
           <div className="min-h-screen flex items-center justify-center bg-background">
@@ -97,22 +117,9 @@ function App() {
           </div>
         }
       >
-        <AuthPage />
+        <DashboardPage />
       </Suspense>
-    )
-  }
-
-  // Show dashboard if logged in
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <Loader2 className="w-8 h-8 animate-spin" />
-        </div>
-      }
-    >
-      <DashboardPage />
-    </Suspense>
+    </>
   )
 }
 
