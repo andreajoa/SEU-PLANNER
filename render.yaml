@@ -6,5 +6,8 @@ services:
     startCommand: npm start
     envVars:
       - key: VITE_API_URL
-        value: https://seu-planner-api.onrender.com/api
-        # value: http://localhost:5000/api  # Para desenvolvimento local
+        value: https://planner-api.onrender.com/api
+        # IMPORTANT: Change this to your actual backend URL!
+        # Find it at: https://dashboard.render.com
+        # Common patterns: planner-api, planner-backend, seu-planner-api
+        # Add /api at the end: https://your-backend.onrender.com/api
