@@ -1,0 +1,8 @@
+backend/
+scripts/
+*.py
+*.pyc
+__pycache__/
+venv/
+.env
+.env.local

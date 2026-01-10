@@ -2,9 +2,10 @@ services:
   - type: web
     name: seu-planner-frontend
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: ./build.sh
     startCommand: npm start
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: VITE_API_URL
         value: https://seu-planner-api.onrender.com/api
-        # IMPORTANT: Update this to your actual backend URL from Render dashboard

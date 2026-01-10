@@ -1,0 +1,8 @@
+# Ignore backend during frontend deployment
+backend/
+*.py
+requirements.txt
+Procfile
+*.pyc
+__pycache__/
+venv/
