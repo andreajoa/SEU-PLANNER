@@ -34,12 +34,11 @@ def create_admin_user():
             email='admin@planner.com',
             username='admin',
             password_hash=password_hash,
-            name='Administrator',
             level=99,
             xp=9999,
+            total_xp=9999,
             streak=365,
-            tasks_completed=1000,
-            planners_created=50
+            tasks_completed=1000
         )
 
         db.session.add(admin_user)
