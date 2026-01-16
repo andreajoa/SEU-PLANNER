@@ -2,7 +2,7 @@ services:
   - type: web
     name: seu-planner-frontend
     env: node
-    buildCommand: ./build.sh
+    buildCommand: npm install && npm run build
     startCommand: node server.cjs
     envVars:
       - key: NODE_ENV
