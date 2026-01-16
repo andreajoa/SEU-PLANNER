@@ -1,8 +1,42 @@
-# Ignore backend during frontend deployment
+# Ignore backend directory completely
 backend/
+
+# Ignore all Python files
 *.py
-requirements.txt
-Procfile
 *.pyc
+*.pyo
+*.pyd
+
+# Ignore Python artifacts
 __pycache__/
 venv/
+.venv/
+*.egg-info/
+dist-info/
+
+# Ignore Python requirements
+requirements.txt
+requirements/
+ Pipfile
+ Pipfile.lock
+ poetry.lock
+ setup.py
+
+# Ignore Python-specific files
+.python-version
+.flaskenv
+
+# Ignore backend documentation for frontend deploy
+*.md
+
+# Keep only frontend files
+package.json
+package-lock.json
+tsconfig.json
+vite.config.ts
+tailwind.config.ts
+eslint.config.js
+postcss.config.js
+src/
+public/
+index.html
