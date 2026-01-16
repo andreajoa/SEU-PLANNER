@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -8,22 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-=======
+# Environment
+.env
+.env.local
+.env.production.local
+
 # Backups
 *.backup
 
@@ -33,9 +27,6 @@ dist-ssr
 # Temp files
 fix-append.js
 
-# Node modules (if any)
-node_modules/
-
 # Vercel
 .vercel
 
@@ -43,6 +34,11 @@ node_modules/
 .vscode/
 .idea/
 
+# Python (for backend)
+*.pyc
+__pycache__/
+venv/
+*.py
+
 # Duplicated stitch folders (not needed)
 stitch_main_dashboard*/
->>>>>>> 8217a93cc022e494e4bf70d328030db1fbee900b
