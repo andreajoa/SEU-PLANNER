@@ -1,7 +1,4 @@
-/**
- * Authentication Page Component
- */
-
+/** * Authentication Page Component */
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '@/lib/supabase'
@@ -19,7 +16,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
-  const { setUser, setLanguage } = useStore()
+  const { setUser } = useStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,9 +27,21 @@ export default function AuthPage() {
       if (isLogin) {
         // Sign in
         const { data, error } = await auth.signIn(email, password)
+        
         if (error) throw error
-
-        toast.success('Login realizado com sucesso!')
+        
+        if (data?.user) {
+          // Store user in global state
+          setUser(data.user)
+          localStorage.setItem('user', JSON.stringify(data.user))
+          
+          toast.success('Login realizado com sucesso!')
+          
+          // Redirect to dashboard after short delay
+          setTimeout(() => {
+            navigate('/dashboard')
+          }, 500)
+        }
       } else {
         // Sign up
         if (!name.trim()) {
@@ -40,13 +49,21 @@ export default function AuthPage() {
           setLoading(false)
           return
         }
-
+        
         const { data, error } = await auth.signUp(email, password, name)
+        
         if (error) throw error
-
-        toast.success('Conta criada com sucesso! Verifique seu email.')
+        
+        toast.success('Conta criada com sucesso! Faça login para continuar.')
+        
+        // Switch to login form after successful signup
+        setTimeout(() => {
+          setIsLogin(true)
+          setPassword('')
+        }, 1500)
       }
     } catch (error: any) {
+      console.error('Auth error:', error)
       toast.error(error.message || 'Erro na autenticação')
     } finally {
       setLoading(false)
@@ -70,7 +87,6 @@ export default function AuthPage() {
               {isLogin ? 'Entre para continuar' : 'Crie sua conta gratuita'}
             </CardDescription>
           </CardHeader>
-
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
@@ -89,7 +105,6 @@ export default function AuthPage() {
                   />
                 </div>
               )}
-
               <div className="space-y-2">
                 <label className="text-sm font-medium" htmlFor="email">
                   Email
@@ -104,7 +119,6 @@ export default function AuthPage() {
                   className="h-11"
                 />
               </div>
-
               <div className="space-y-2">
                 <label className="text-sm font-medium" htmlFor="password">
                   Senha
@@ -120,7 +134,6 @@ export default function AuthPage() {
                   className="h-11"
                 />
               </div>
-
               <Button
                 type="submit"
                 className="w-full h-11 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
@@ -135,7 +148,6 @@ export default function AuthPage() {
                   <>{isLogin ? 'Entrar' : 'Criar Conta'}</>
                 )}
               </Button>
-
               <div className="text-center">
                 <button
                   type="button"
@@ -146,7 +158,6 @@ export default function AuthPage() {
                 </button>
               </div>
             </form>
-
             <div className="mt-6 pt-6 border-t">
               <div className="text-center text-sm text-muted-foreground">
                 <p className="font-medium mb-2">✨ Recursos Premium:</p>
@@ -160,7 +171,6 @@ export default function AuthPage() {
             </div>
           </CardContent>
         </Card>
-
         <p className="text-center text-white/80 text-sm mt-4">
           Versão 2.0 - React + TypeScript + Vite
         </p>
