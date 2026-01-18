@@ -79,5 +79,8 @@ def create_app(config_name='development'):
     # Initialize database
     with app.app_context():
         db.create_all()
+        # Initialize default achievements
+        from app.achievements import init_achievements
+        init_achievements()
     
     return app

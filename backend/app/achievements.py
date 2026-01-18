@@ -148,3 +148,69 @@ def get_user_achievements():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@achievements_bp.route('/<int:achievement_id>/unlock', methods=['POST'])
+@jwt_required()
+def unlock_achievement(achievement_id):
+    """Unlock a specific achievement"""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        achievement = Achievement.query.get(achievement_id)
+        if not achievement:
+            return jsonify({'error': 'Achievement not found'}), 404
+
+        # Check if already unlocked
+        existing = UserAchievement.query.filter_by(
+            user_id=user_id,
+            achievement_id=achievement_id
+        ).first()
+
+        if existing:
+            return jsonify({'message': 'Achievement already unlocked'}), 200
+
+        # Unlock achievement
+        user_achievement = UserAchievement(
+            user_id=user_id,
+            achievement_id=achievement_id
+        )
+        db.session.add(user_achievement)
+
+        # Award XP
+        user.xp += achievement.xp_reward
+        user.total_xp += achievement.xp_reward
+
+        # Level up logic
+        new_level = (user.total_xp // 100) + 1
+        if new_level > user.level:
+            user.level = new_level
+
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Achievement unlocked!',
+            'achievement': achievement.to_dict(),
+            'user': user.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@achievements_bp.route('/leaderboard', methods=['GET'])
+@jwt_required()
+def get_leaderboard():
+    """Get leaderboard"""
+    try:
+        users = User.query.order_by(User.total_xp.desc()).limit(10).all()
+
+        return jsonify({
+            'leaderboard': [u.to_dict() for u in users]
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

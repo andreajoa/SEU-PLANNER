@@ -30,7 +30,8 @@ def init_database(app):
                 xp=9999,
                 total_xp=9999,
                 streak=365,
-                tasks_completed=1000
+                tasks_completed=1000,
+                planners_created=5
             )
 
             db.session.add(admin_user)

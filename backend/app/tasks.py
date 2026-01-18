@@ -179,6 +179,50 @@ def delete_task(task_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+@tasks_bp.route('/<int:task_id>/toggle', methods=['PATCH'])
+@jwt_required()
+def toggle_task(task_id):
+    """Toggle task completion status"""
+    try:
+        user_id = get_jwt_identity()
+        task = Task.query.filter_by(id=task_id, user_id=user_id).first()
+
+        if not task:
+            return jsonify({'error': 'Task not found'}), 404
+
+        data = request.get_json()
+        completed = data.get('completed', False)
+
+        if completed:
+            task.status = 'completed'
+            if not task.completed_at:
+                task.completed_at = datetime.utcnow()
+                # Award XP to user
+                user = User.query.get(user_id)
+                if user:
+                    user.xp += task.xp_reward
+                    user.total_xp += task.xp_reward
+                    user.tasks_completed += 1
+
+                    # Level up logic (every 100 XP)
+                    new_level = (user.total_xp // 100) + 1
+                    if new_level > user.level:
+                        user.level = new_level
+        else:
+            task.status = 'pending'
+            task.completed_at = None
+
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Task toggled successfully',
+            'task': task.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
 # Subtasks routes
 @tasks_bp.route('/<int:task_id>/subtasks', methods=['POST'])
 @jwt_required()
@@ -257,6 +301,34 @@ def delete_subtask(subtask_id):
         db.session.commit()
 
         return jsonify({'message': 'Subtask deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@tasks_bp.route('/<int:task_id>/subtasks/<int:subtask_id>/toggle', methods=['PATCH'])
+@jwt_required()
+def toggle_subtask(task_id, subtask_id):
+    """Toggle subtask completion status"""
+    try:
+        user_id = get_jwt_identity()
+        subtask = Subtask.query.join(Task).filter(
+            Subtask.id == subtask_id,
+            Task.id == task_id,
+            Task.user_id == user_id
+        ).first()
+
+        if not subtask:
+            return jsonify({'error': 'Subtask not found'}), 404
+
+        # Toggle completion
+        subtask.completed = not subtask.completed
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Subtask toggled successfully',
+            'subtask': subtask.to_dict()
+        }), 200
 
     except Exception as e:
         db.session.rollback()

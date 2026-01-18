@@ -61,6 +61,22 @@ def get_user_stats():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@user_bp.route('/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    """Get current user profile"""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify(user.to_dict()), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @user_bp.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
