@@ -22,10 +22,10 @@ class User(db.Model):
     total_xp = db.Column(db.Integer, default=0)
     planners_created = db.Column(db.Integer, default=0)
 
-    # Relationships
-    planners = db.relationship('Planner', backref='user', lazy='dynamic', cascade='all,delete-orphan')
-    tasks = db.relationship('Task', backref='user', lazy='dynamic', cascade='all,delete-orphan')
-    achievements = db.relationship('UserAchievement', backref='user', lazy='dynamic', cascade='all,delete-orphan')
+    # Relationships - use back_populates to avoid SQLAlchemy warnings
+    planners = db.relationship('Planner', back_populates='user', lazy='dynamic', cascade='all,delete-orphan')
+    tasks = db.relationship('Task', back_populates='user', lazy='dynamic', cascade='all,delete-orphan')
+    user_achievements = db.relationship('UserAchievement', back_populates='user', lazy='dynamic', cascade='all,delete-orphan')
 
     def to_dict(self):
         return {
@@ -65,7 +65,8 @@ class Planner(db.Model):
     target_value = db.Column(db.Integer)  # e.g., 30 minutes
 
     # Relationships
-    tasks = db.relationship('Task', backref='planner', lazy='dynamic', cascade='all,delete-orphan')
+    user = db.relationship('User', back_populates='planners')
+    tasks = db.relationship('Task', back_populates='planner', lazy='dynamic', cascade='all,delete-orphan')
 
     def to_dict(self):
         return {
@@ -108,6 +109,8 @@ class Task(db.Model):
     tags = db.Column(db.String(500))
 
     # Relationships
+    user = db.relationship('User', back_populates='tasks')
+    planner = db.relationship('Planner', back_populates='tasks')
     subtasks = db.relationship('Subtask', backref='task', lazy='dynamic', cascade='all,delete-orphan')
 
     def to_dict(self):
@@ -185,6 +188,7 @@ class UserAchievement(db.Model):
     unlocked_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships
+    user = db.relationship('User', back_populates='user_achievements')
     achievement = db.relationship('Achievement', backref='user_achievements')
 
     def to_dict(self):
