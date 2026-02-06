@@ -203,7 +203,7 @@ export default function DashboardPage() {
       setTasks(demoTasks)
       localStorage.setItem('tasks', JSON.stringify(demoTasks))
     }
-  }, [user, planners, setPlanners, setTasks])
+  }, [user, setPlanners, setTasks])
 
   // Logout
   const handleLogout = async () => {
