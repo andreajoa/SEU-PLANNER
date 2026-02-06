@@ -21,9 +21,18 @@ export function useUser() {
         return null
       }
 
-      const response = await api.get('/user/profile')
-      // API retorna o user diretamente, não {user: ...}
-      return response.data.user || response.data
+      try {
+        const response = await api.get('/user/profile')
+        // API retorna o user diretamente, não {user: ...}
+        return response.data.user || response.data
+      } catch (error: any) {
+        // Se API falhar, retorna null (demo mode)
+        if (error.response?.status === 422 || error.response?.status === 401 || error.response?.status === 404) {
+          console.log('API não disponível, usando demo mode')
+          return null
+        }
+        throw error
+      }
     },
     retry: false
   })
