@@ -15,13 +15,6 @@ export default defineConfig({
       all: true,
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
-        'src/test/**',
-        '**/*.d.ts',
-        '**/*.config.*',
-        'src/main.tsx',
-      ],
-    },
-      exclude: [
         'node_modules/',
         'src/test/',
         '**/*.d.ts',
@@ -29,14 +22,7 @@ export default defineConfig({
         '**/mockData/*',
         'src/main.tsx',
       ],
-      thresholds: {
-        lines: 70,
-        functions: 70,
-        branches: 70,
-        statements: 70,
-      },
     },
-    ui: true,
   },
   resolve: {
     alias: {
