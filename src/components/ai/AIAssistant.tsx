@@ -356,7 +356,7 @@ export function AIAssistant() {
                 </CardContent>
               </Card>
             ))
-          ))}
+        )}
 
           {/* Energy-based matching */}
           {tasks.filter((t) => !t.done).length > 0 && (

@@ -14,7 +14,7 @@ export interface TaskSuggestion {
   description: string
   priority: Task['priority']
   category: Task['category']
-  estimatedTime: number
+  duration: number
   reason: string
 }
 
@@ -85,7 +85,7 @@ export async function generateTaskSuggestions(
       description: 'Você tem muitas tarefas urgentes. Considere dividir em subtarefas menores.',
       priority: 'alta',
       category: 'pessoal',
-      estimatedTime: 15,
+      duration: 15,
       reason: 'Mestrar tarefas grandes aumenta a probabilidade de conclusão',
     })
   }
@@ -107,7 +107,7 @@ export async function generateTaskSuggestions(
       description: `Você tem poucas tarefas na categoria ${leastWorkedCategory}.`,
       priority: 'media',
       category: leastWorkedCategory,
-      estimatedTime: 30,
+      duration: 30,
       reason: 'Equilíbrio entre categorias melhora o bem-estar geral',
     })
   }
@@ -120,7 +120,7 @@ export async function generateTaskSuggestions(
       description: 'Sua taxa de conclusão está abaixo de 50%. Talvez esteja superestimando sua capacidade.',
       priority: 'alta',
       category: 'pessoal',
-      estimatedTime: 20,
+      duration: 20,
       reason: 'Estimativas realistas aumentam a confiança no planejamento',
     })
   }
@@ -132,7 +132,7 @@ export async function generateTaskSuggestions(
       description: `Você está em um streak de ${user.streak} dias. Continue assim!`,
       priority: 'media',
       category: 'pessoal',
-      estimatedTime: 10,
+      duration: 10,
       reason: 'Streaks longos criam hábitos duradouros',
     })
   }
@@ -145,7 +145,7 @@ export async function generateTaskSuggestions(
       description: 'Sua produtividade tende a maior pela manhã. Faça as tarefas mais difíceis agora.',
       priority: 'alta',
       category: 'trabalho',
-      estimatedTime: 60,
+      duration: 60,
       reason: 'A maioria das pessoas é mais produtiva no período da manhã',
     })
   }
@@ -320,7 +320,7 @@ export function prioritizeTasksAI(tasks: Task[]): Task[] {
       }
 
       // Boost for quick wins (estimated time <= 30min)
-      if (task.estimatedTime && task.estimatedTime <= 30) {
+      if (task.duration && task.duration <= 30) {
         score += 1
       }
 
@@ -445,8 +445,8 @@ export async function generateAISuggestionsWithOpenAI(
     // Parse response into array of suggestions
     return content
       .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => line.replace(/^\d+\.\s*/, '').trim())
+      .filter((line: string) => line.trim().length > 0)
+      .map((line: string) => line.replace(/^\d+\.\s*/, '').trim())
       .slice(0, 5)
   } catch (error) {
     console.error('OpenAI API error:', error)
@@ -477,10 +477,10 @@ export function predictCompletionProbability(task: Task, user: User | null): num
   probability += priorityBonus[task.priority] || 0
 
   // Adjust based on estimated time
-  if (task.estimatedTime) {
-    if (task.estimatedTime <= 30) probability += 0.1
-    else if (task.estimatedTime <= 60) probability += 0.05
-    else if (task.estimatedTime > 120) probability -= 0.1
+  if (task.duration) {
+    if (task.duration <= 30) probability += 0.1
+    else if (task.duration <= 60) probability += 0.05
+    else if (task.duration > 120) probability -= 0.1
   }
 
   // Adjust based on category (user's strengths)

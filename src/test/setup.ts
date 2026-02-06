@@ -5,6 +5,13 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers)
 
+// Type declarations for jest-dom matchers
+declare global {
+  namespace Vi {
+    interface Assertion<T = any> extends jest.Matchers<void, T> {}
+  }
+}
+
 // Cleanup after each test
 afterEach(() => {
   cleanup()

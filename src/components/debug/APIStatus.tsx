@@ -1,10 +1,10 @@
 /**
  * API Status Component
- * Shows which API URL is working and connection status
+ * Shows API URL connection status
  */
 
 import { useEffect, useState } from 'react'
-import { POSSIBLE_API_URLS } from '@/lib/api'
+import { API_BASE_URL } from '@/lib/api'
 import axios from 'axios'
 
 interface APIStatus {
@@ -14,37 +14,32 @@ interface APIStatus {
 }
 
 export function APIStatus() {
-  const [statuses, setStatuses] = useState<APIStatus[]>([])
+  const [status, setStatus] = useState<APIStatus>({
+    url: API_BASE_URL,
+    status: 'testing'
+  })
   const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
-    async function testAllAPIs() {
-      const results: APIStatus[] = []
-
-      for (const url of POSSIBLE_API_URLS) {
-        const start = Date.now()
-        try {
-          await axios.get(`${url}/health`, { timeout: 3000 })
-          results.push({
-            url,
-            status: 'working',
-            responseTime: Date.now() - start
-          })
-        } catch {
-          results.push({
-            url,
-            status: 'failed'
-          })
-        }
+    async function testAPI() {
+      const start = Date.now()
+      try {
+        await axios.get(`${API_BASE_URL}/health`, { timeout: 3000 })
+        setStatus({
+          url: API_BASE_URL,
+          status: 'working',
+          responseTime: Date.now() - start
+        })
+      } catch {
+        setStatus({
+          url: API_BASE_URL,
+          status: 'failed'
+        })
       }
-
-      setStatuses(results)
     }
 
-    testAllAPIs()
+    testAPI()
   }, [])
-
-  const workingAPI = statuses.find(s => s.status === 'working')
 
   if (!showDetails) {
     return (
@@ -69,56 +64,41 @@ export function APIStatus() {
         </button>
       </div>
 
-      {workingAPI ? (
+      {status.status === 'testing' ? (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded p-3 mb-3">
+          <p className="text-yellow-800 dark:text-yellow-200 font-semibold">
+            ⏳ Testing API...
+          </p>
+        </div>
+      ) : status.status === 'working' ? (
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded p-3 mb-3">
           <p className="text-green-800 dark:text-green-200 font-semibold">
-            ✅ API Found!
+            ✅ API Connected!
           </p>
           <p className="text-sm text-green-700 dark:text-green-300 mt-1 break-all">
-            {workingAPI.url}
+            {status.url}
           </p>
           <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-            Response time: {workingAPI.responseTime}ms
+            Response time: {status.responseTime}ms
           </p>
         </div>
       ) : (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-3 mb-3">
           <p className="text-red-800 dark:text-red-200 font-semibold">
-            ❌ No working API found!
+            ❌ API Connection Failed!
           </p>
-          <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-            Check Render dashboard for your backend URL
+          <p className="text-sm text-red-700 dark:text-red-300 mt-1 break-all">
+            {status.url}
+          </p>
+          <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+            Check if backend is running
           </p>
         </div>
       )}
 
-      <div className="space-y-2 max-h-60 overflow-y-auto">
-        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Tested URLs:</p>
-        {statuses.map((s, i) => (
-          <div
-            key={i}
-            className={`text-xs p-2 rounded border ${
-              s.status === 'working'
-                ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200'
-                : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200'
-            }`}
-          >
-            <div className="flex justify-between items-center">
-              <span className="break-all flex-1">{s.url}</span>
-              <span className="ml-2 font-semibold">
-                {s.status === 'working' ? '✅' : '❌'}
-              </span>
-            </div>
-            {s.responseTime && (
-              <p className="text-xs mt-1 opacity-75">{s.responseTime}ms</p>
-            )}
-          </div>
-        ))}
-      </div>
-
       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
         <p className="text-xs text-gray-600 dark:text-gray-400">
-          💡 Open browser console (F12) to see detailed logs
+          💡 Set VITE_API_URL environment variable if needed
         </p>
       </div>
     </div>
