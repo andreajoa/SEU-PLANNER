@@ -6,7 +6,7 @@ from sqlalchemy import func
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route('/stats', methods=['GET'])
+@user_bp.route('/user/stats', methods=['GET'])
 @jwt_required()
 def get_user_stats():
     """Get user statistics"""
@@ -61,7 +61,7 @@ def get_user_stats():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@user_bp.route('/profile', methods=['GET'])
+@user_bp.route('/user/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
     """Get current user profile"""
@@ -77,7 +77,7 @@ def get_profile():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@user_bp.route('/profile', methods=['PUT'])
+@user_bp.route('/user/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
     """Update user profile"""
@@ -103,7 +103,7 @@ def update_profile():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@user_bp.route('/leaderboard', methods=['GET'])
+@user_bp.route('/user/leaderboard', methods=['GET'])
 @jwt_required()
 def get_leaderboard():
     """Get global leaderboard"""

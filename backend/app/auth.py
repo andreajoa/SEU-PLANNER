@@ -5,7 +5,7 @@ import bcrypt
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/auth/register', methods=['POST'])
 def register():
     """Register a new user"""
     try:
@@ -50,7 +50,7 @@ def register():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/auth/login', methods=['POST'])
 def login():
     """Login user"""
     try:
@@ -84,7 +84,7 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@auth_bp.route('/me', methods=['GET'])
+@auth_bp.route('/auth/me', methods=['GET'])
 @jwt_required()
 def get_current_user():
     """Get current authenticated user"""
@@ -100,7 +100,7 @@ def get_current_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@auth_bp.route('/refresh', methods=['POST'])
+@auth_bp.route('/auth/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
     """Refresh access token"""

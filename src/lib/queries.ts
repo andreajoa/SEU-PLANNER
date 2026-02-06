@@ -22,7 +22,8 @@ export function useUser() {
       }
 
       const response = await api.get('/user/profile')
-      return response.data
+      // API retorna o user diretamente, não {user: ...}
+      return response.data.user || response.data
     },
     retry: false
   })
@@ -51,7 +52,7 @@ export function useUserStats() {
     queryKey: ['user', 'stats'],
     queryFn: async () => {
       const response = await api.get('/user/stats')
-      return response.data
+      return response.data.stats || response.data || {}
     }
   })
 }
@@ -65,7 +66,7 @@ export function usePlanners() {
     queryKey: ['planners'],
     queryFn: async () => {
       const response = await api.get('/planners')
-      return response.data
+      return response.data.planners || response.data || []
     }
   })
 }
@@ -75,7 +76,7 @@ export function usePlanner(id: string) {
     queryKey: ['planner', id],
     queryFn: async () => {
       const response = await api.get(`/planners/${id}`)
-      return response.data
+      return response.data.planner || response.data
     },
     enabled: !!id
   })
@@ -145,7 +146,7 @@ export function useTasks(plannerId: string) {
     queryKey: ['tasks', plannerId],
     queryFn: async () => {
       const response = await api.get(`/tasks?planner_id=${plannerId}`)
-      return response.data
+      return response.data.tasks || response.data || []
     },
     enabled: !!plannerId
   })
@@ -156,7 +157,7 @@ export function useTask(id: string) {
     queryKey: ['task', id],
     queryFn: async () => {
       const response = await api.get(`/tasks/${id}`)
-      return response.data
+      return response.data.task || response.data
     },
     enabled: !!id
   })
@@ -305,7 +306,7 @@ export function useAchievements() {
     queryKey: ['achievements'],
     queryFn: async () => {
       const response = await api.get('/achievements')
-      return response.data
+      return response.data.achievements || response.data || []
     }
   })
 }
@@ -335,7 +336,7 @@ export function useLeaderboard() {
     queryKey: ['leaderboard'],
     queryFn: async () => {
       const response = await api.get('/achievements/leaderboard')
-      return response.data
+      return response.data.leaderboard || response.data || []
     }
   })
 }

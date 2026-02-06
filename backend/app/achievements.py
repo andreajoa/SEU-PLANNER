@@ -27,7 +27,7 @@ def init_achievements():
         db.session.commit()
         print("✅ Default achievements initialized")
 
-@achievements_bp.route('/init', methods=['POST'])
+@achievements_bp.route('/achievements/init', methods=['POST'])
 def initialize_achievements():
     """Initialize achievements (admin endpoint)"""
     try:
@@ -36,7 +36,7 @@ def initialize_achievements():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@achievements_bp.route('/', methods=['GET'])
+@achievements_bp.route('/achievements', methods=['GET'])
 @jwt_required()
 def get_achievements():
     """Get all achievements"""
@@ -64,7 +64,7 @@ def get_achievements():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@achievements_bp.route('/check', methods=['POST'])
+@achievements_bp.route('/achievements/check', methods=['POST'])
 @jwt_required()
 def check_achievements():
     """Check and unlock new achievements"""
@@ -131,7 +131,7 @@ def check_achievements():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@achievements_bp.route('/user', methods=['GET'])
+@achievements_bp.route('/achievements/user', methods=['GET'])
 @jwt_required()
 def get_user_achievements():
     """Get user's unlocked achievements"""
@@ -149,7 +149,7 @@ def get_user_achievements():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@achievements_bp.route('/<int:achievement_id>/unlock', methods=['POST'])
+@achievements_bp.route('/achievements/<int:achievement_id>/unlock', methods=['POST'])
 @jwt_required()
 def unlock_achievement(achievement_id):
     """Unlock a specific achievement"""
@@ -201,7 +201,7 @@ def unlock_achievement(achievement_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@achievements_bp.route('/leaderboard', methods=['GET'])
+@achievements_bp.route('/achievements/leaderboard', methods=['GET'])
 @jwt_required()
 def get_leaderboard():
     """Get leaderboard"""

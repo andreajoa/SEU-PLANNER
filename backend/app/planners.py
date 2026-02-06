@@ -5,7 +5,7 @@ from datetime import datetime
 
 planners_bp = Blueprint('planners', __name__)
 
-@planners_bp.route('/', methods=['GET'])
+@planners_bp.route('/planners', methods=['GET'])
 @jwt_required()
 def get_planners():
     """Get all planners for current user"""
@@ -18,14 +18,12 @@ def get_planners():
             query = query.filter_by(type=planner_type)
 
         planners = query.order_by(Planner.created_at.desc()).all()
-        return jsonify({
-            'planners': [p.to_dict() for p in planners]
-        }), 200
+        return jsonify([p.to_dict() for p in planners]), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@planners_bp.route('/', methods=['POST'])
+@planners_bp.route('/planners', methods=['POST'])
 @jwt_required()
 def create_planner():
     """Create a new planner"""
@@ -36,7 +34,7 @@ def create_planner():
         planner = Planner(
             user_id=user_id,
             name=data.get('name', 'New Planner'),
-            type=data.get('type', 'daily'),
+            type=data.get('type', 'todo'),
             color=data.get('color', '#6B46C1'),
             icon=data.get('icon', '📋'),
             description=data.get('description'),
@@ -52,16 +50,13 @@ def create_planner():
             user.planners_created = (user.planners_created or 0) + 1
             db.session.commit()
 
-        return jsonify({
-            'message': 'Planner created successfully',
-            'planner': planner.to_dict()
-        }), 201
+        return jsonify(planner.to_dict()), 201
 
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@planners_bp.route('/<int:planner_id>', methods=['GET'])
+@planners_bp.route('/planners/<int:planner_id>', methods=['GET'])
 @jwt_required()
 def get_planner(planner_id):
     """Get a specific planner"""
@@ -72,17 +67,12 @@ def get_planner(planner_id):
         if not planner:
             return jsonify({'error': 'Planner not found'}), 404
 
-        # Get tasks for this planner
-        tasks = Task.query.filter_by(planner_id=planner_id).all()
-        planner_dict = planner.to_dict()
-        planner_dict['tasks'] = [t.to_dict() for t in tasks]
-
-        return jsonify({'planner': planner_dict}), 200
+        return jsonify(planner.to_dict()), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@planners_bp.route('/<int:planner_id>', methods=['PUT'])
+@planners_bp.route('/planners/<int:planner_id>', methods=['PUT'])
 @jwt_required()
 def update_planner(planner_id):
     """Update a planner"""
@@ -104,16 +94,13 @@ def update_planner(planner_id):
 
         db.session.commit()
 
-        return jsonify({
-            'message': 'Planner updated successfully',
-            'planner': planner.to_dict()
-        }), 200
+        return jsonify(planner.to_dict()), 200
 
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@planners_bp.route('/<int:planner_id>', methods=['DELETE'])
+@planners_bp.route('/planners/<int:planner_id>', methods=['DELETE'])
 @jwt_required()
 def delete_planner(planner_id):
     """Delete a planner"""
