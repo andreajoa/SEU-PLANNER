@@ -23,19 +23,6 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     minify: 'esbuild',
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          // Simplified chunking to avoid circular dependencies
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor'
-            }
-            return 'vendor'
-          }
-        },
-      },
-    },
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
