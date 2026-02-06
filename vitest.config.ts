@@ -11,7 +11,7 @@ export default defineConfig({
     include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
+      reporter: ['text', 'json', 'html', 'lcov', 'clover'],
       exclude: [
         'node_modules/',
         'src/test/',
