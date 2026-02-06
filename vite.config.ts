@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: [],
       manifest: {
         name: 'Planner Premium ULTRA',
         short_name: 'SEU-PLANNER',
@@ -17,38 +17,9 @@ export default defineConfig({
         theme_color: '#6B46C1',
         background_color: '#FEFDF8',
         display: 'standalone',
-        orientation: 'portrait',
         scope: '/',
         start_url: '/',
-        icons: [
-          {
-            src: '/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ],
         categories: ['productivity', 'lifestyle', 'utilities'],
-        shortcuts: [
-          {
-            name: 'Nova Tarefa',
-            short_name: 'Nova Tarefa',
-            description: 'Criar uma nova tarefa rapidamente',
-            url: '/dashboard?modal=new-task',
-            icons: [{ src: '/icon-192x192.png', sizes: '192x192', type: 'image/png' }]
-          },
-          {
-            name: 'Meus Planners',
-            short_name: 'Planners',
-            description: 'Ver todos os seus planners',
-            url: '/dashboard?tab=planners',
-            icons: [{ src: '/icon-192x192.png', sizes: '192x192', type: 'image/png' }]
-          }
-        ]
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
@@ -94,19 +65,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks
+          // Simplified chunking to avoid circular dependencies
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor'
-            }
-            if (id.includes('@tanstack/react-query')) {
-              return 'query-vendor'
-            }
-            if (id.includes('framer-motion') || id.includes('recharts')) {
-              return 'ui-vendor'
-            }
-            if (id.includes('@radix-ui')) {
-              return 'radix-vendor'
             }
             return 'vendor'
           }
